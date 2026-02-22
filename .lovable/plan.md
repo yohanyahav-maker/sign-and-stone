@@ -1,95 +1,89 @@
 
-
-# תוכנית פיתוח — "שינוי חתום" MVP
+# דף נחיתה שיווקי מקצועי — "שינוי חתום"
 
 ## סקירה כללית
-פלטפורמת SaaS בעברית (RTL) לקבלני בנייה בישראל לניהול שינויי חוזה (Change Orders). קבלן יוצר שינוי, מתמחר, שולח ללקוח בוואטסאפ, הלקוח חותם דיגיטלית, ונוצר PDF חתום.
+בניית דף נחיתה שיווקי מקצועי ב-RTL מלא עם עיצוב פרימיום, המותאם לקבלנים ועורכי דין. הדף יחליף את מסך ה-Index הקיים ויכלול 8 סקשנים.
 
----
+## מבנה הקבצים
 
-## שלב 1 — Design System + שלד האפליקציה
-- הגדרת פלטת צבעים: Ink (#0A0A0A), Amber (#C9873A), Paper (#FAFAF8) + צבעי סטטוס
-- פונט Heebo בלבד, RTL על html, כל הטיפוגרפיה לפי המפרט
-- רכיבי UI בסיסיים: כפתורים (Primary/Secondary/Danger/Success/Ghost), Status Badges, Cards, Inputs עם שגיאות inline
-- Mobile-first: min touch 44×44px, safe-area padding
-- Layout shell עם ניווט בסיסי
+הדף יפוצל לקומפוננטות עצמאיות תחת תיקייה חדשה:
 
-## שלב 2 — Supabase Schema + RLS + Auth
-- יצירת טבלאות: users, subscriptions, projects, change_orders, attachments, approvals, audit_log + user_roles
-- הגדרת CHECK constraints לכל enum (סטטוסים, קטגוריות, סוגי פרויקט)
-- RLS policies: קבלן רואה רק את הפרויקטים/שינויים שלו, audit_log append-only via service role
-- Supabase Auth עם OTP (SMS) — ללא סיסמאות
-- Storage buckets: attachments (private), pdfs (private), logos (public), contracts (private)
+```text
+src/components/landing/
+  HeroSection.tsx
+  ProblemSection.tsx
+  HowItWorksSection.tsx
+  BenefitsSection.tsx
+  TestimonialsCarousel.tsx
+  LogosSection.tsx
+  FaqSection.tsx
+  FooterSection.tsx
+```
 
-## שלב 3 — מסך Login OTP
-- Phase A: הזנת טלפון (שדה tel, autofocus, ולידציה 9-10 ספרות, CTA disabled עד תקין)
-- Phase B: 6 תיבות OTP נפרדות, תמיכת paste מלאה, auto-submit אחרי ספרה 6
-- שלח שוב אחרי 30 שניות (countdown), חסימה אחרי 3 כשלונות
-- שגיאות inline בלבד, לא toast
+הקובץ `src/pages/Index.tsx` יתעדכן לייבא ולהציג את כל הסקשנים.
 
-## שלב 4 — רשימת פרויקטים + יצירת פרויקט חדש
-- מסך ברכה אישי עם מונה שינויים ממתינים
-- Subscription Banner מותנה (TRIAL/PAST_DUE/CANCELED)
-- כרטיסי פרויקט עם badges: ⏳ ממתינים (amber), ✓ סכום מאושר (green)
-- FAB ליצירת פרויקט חדש
-- טופס פרויקט: שם, כתובת, סוג (dropdown), toggle פורטל לקוח + שדות לקוח מותנים
-- Empty state מעוצב
-- אכיפת PLAN_LIMIT עם הודעה ו-CTA לשדרוג
+## סקשנים
 
-## שלב 5 — יצירת שינוי (2 שלבים) + State Machine
-- **שלב 1 — פרטים**: כותרת, קטגוריה (10 אפשרויות), תיאור, העלאת מדיה (תמונה/וידאו/PDF) עם preview
-- **שלב 2 — תמחור**: שדה מחיר ₪ (40px, bold), toggle מע"מ עם חישוב real-time, ימי השפעה (+/-)
-- CTAs: "המשך לתמחור", "שמור טיוטה", "שלח לאישור"
-- State Machine קשיח: DRAFT→PRICED→SENT→APPROVED/REJECTED/CANCELED
-- Terminal states חוסמים כל עדכון (403)
-- כתיבת AuditLog לכל שינוי מצב
+### 1. Hero Section
+- כותרת ראשית: "כל שינוי בפרויקט – מתועד, מאושר ומוגן משפטית."
+- תת-כותרת על מניעת סכסוכים והגנה על הקבלן
+- CTA ראשי (כפתור Amber): "התחל ניסיון חינם" — מפנה ל-`/login`
+- CTA משני (outline): "בקש הדגמה"
+- רקע נקי עם גרדיאנט עדין
 
-## שלב 6 — מסך אישור שליחה + WhatsApp
-- Summary Card עם כל פרטי השינוי
-- CTA "שלח בוואטסאפ" — wa.me deep link עם תבנית הודעה מוכנה
-- "העתק קישור" כ-fallback
-- יצירת טוקן פורטל חד-פעמי (32 תווים, hash + expiry 7 ימים)
-- סטטוס → SENT, audit log נרשם
+### 2. Problem Section — "אזור הכאב"
+- 4 כרטיסים עם אייקונים (Lucide) המתארים בעיות נפוצות:
+  - שינויים בעל פה
+  - חוסר תיעוד
+  - מחלוקות כספיות
+  - סכסוכים משפטיים
+- עיצוב: רקע בהיר, כרטיסים עם border עדין
 
-## שלב 7 — פורטל לקוח (/portal/{token})
-- דף ציבורי ללא auth, מבוסס טוקן חד-פעמי
-- מחיר גדול במרכז (42px, 900w) כ-decision point
-- ימי השפעה בכתום, תיאור, טקסט משפטי
-- שדה שם מלא + checkbox הסכמה → CTA "חתום ואשר" (ירוק, disabled עד מילוי)
-- כפתור "דחה שינוי" → modal עם textarea לסיבה
-- מסך הצלחה/דחייה, מסך "כבר טופל", מסך "קישור פג תוקף"
-- Invalidation של טוקן אחרי שימוש
-- Footer עם לוגו קבלן + "מופעל ע"י שינוי חתום"
+### 3. How It Works — 3 שלבים
+- שלב 1: מזינים שינוי (אייקון + תיאור קצר)
+- שלב 2: תמחור ואישור דיגיטלי
+- שלב 3: תיעוד חתום ושמור בענן
+- קו מחבר ויזואלי בין השלבים (numbered circles)
 
-## שלב 8 — מסך פרטי שינוי + היסטוריה
-- Header עם badge סטטוס + כותרת + קטגוריה
-- כרטיסי סטטיסטיקה: מחיר + ימים
-- תיאור מלא + גלריית מדיה עם lightbox
-- Timeline היסטוריה: נוצר → נשלח → אושר/נדחה
-- כפתורי פעולה לפי סטטוס (ערוך, בטל, שכפל, הפק PDF, שלח שוב)
+### 4. Benefits Section — יתרונות לפי קהל
+- 3 כרטיסים/עמודות:
+  - לקבלן: שליטה, מעקב, הגנה
+  - לעורך דין: תיעוד משפטי, ראיות
+  - לקבלן משנה: שקיפות, אישורים ברורים
+- אייקונים ייחודיים לכל קהל
 
-## שלב 9 — Edge Functions (Backend)
-- **update-status**: ולידציית State Machine + AuditLog
-- **generate-portal-token**: יצירת טוקן חד-פעמי עם hash + expiry
-- **client-approve / client-reject**: ולידציית טוקן, יצירת Approval, עדכון סטטוס, שליחת מייל
-- **generate-pdf**: הפקת PDF server-side עם פרטי השינוי, חתימה, ושמירה ב-Storage
-- **stripe-webhook**: טיפול באירועי Stripe ועדכון subscriptions + AuditLog
+### 5. Testimonials Carousel
+- 10 המלצות מפורטות (שם, תפקיד, עיר, טקסט)
+- שימוש ב-Embla Carousel (כבר מותקן)
+- Desktop: 3 כרטיסים במקביל
+- Mobile: כרטיס אחד
+- גלילה אוטומטית אינסופית (Autoplay plugin) חלקה ורציפה
+- חצים לניווט ידני קדימה/אחורה
+- כרטיס המלצה: שם, תפקיד, עיר, מירכאות, טקסט
 
-## שלב 10 — Stripe (מנויים)
-- הגדרת מוצרים: BASIC (₪149/חודש), PRO (₪349/חודש)
-- Stripe Checkout hosted page (ILS, locale he-IL)
-- Stripe Customer Portal לניהול עצמאי
-- Webhook handler לעדכון סטטוס מנוי
-- Trial 14 יום ללא כרטיס אשראי
-- אכיפת מגבלות תוכנית (project_limit, monthly_change_limit)
+### 6. Logos Section
+- כותרת: "מהימנים על ידי אנשי מקצוע מובילים בענף"
+- 8-10 placeholder logos בסגנון חברות בנייה ישראליות
+- Placeholder מעוצב: עיגולים/מלבנים עם שם חברה בטקסט (ניתן להחלפה בעתיד)
+- גלילה אופקית עם אנימציה
 
-## שלב 11 — אימיילים טרנזקציוניים (Resend)
-- Edge Function לשליחת מיילים דרך Resend API
-- תבניות: ברוך הבא, שינוי אושר (עם PDF מצורף), שינוי נדחה (עם סיבה), תשלום נכשל, סיום Trial
+### 7. FAQ Section
+- 6+ שאלות נפוצות באקורדיון (Accordion — כבר קיים בפרויקט)
+- נושאים: תוקף משפטי, חתימה דיגיטלית, שמירת נתונים, עבודה עם קבלני משנה, התאמה לעו"ד, אבטחת מידע
 
-## שלב 12 — דף נחיתה
-- Nav + Hero עם headline ו-CTA "התחל ניסיון חינם 14 יום"
-- סקשנים: כאבים, איך זה עובד (3 צעדים), פיצ'רים, עדויות, תמחור (BASIC vs PRO)
-- CTA סופי עם שדה טלפון
-- RTL, Heebo, פלטת Ink+Amber+Paper, mobile responsive
+### 8. Footer מקצועי
+- לוגו + תיאור קצר
+- קישורים: יצירת קשר, תנאי שימוש, מדיניות פרטיות
+- CTA נוסף: "התחל ניסיון חינם"
+- זכויות יוצרים
 
+## פרטים טכניים
+
+- **RTL**: כל הדף ב-`dir="rtl"` עם Tailwind classes מתאימות
+- **צבעים**: Ink (#0A0A0A), Amber (#C9873A), Paper (#FAFAF8) — משתנים קיימים
+- **פונט**: Heebo (כבר מוגדר)
+- **רספונסיביות**: Mobile-first, שימוש ב-breakpoints של Tailwind
+- **קרוסלה**: Embla Carousel עם Autoplay plugin (ייתכן צורך להתקין `embla-carousel-autoplay`)
+- **אקורדיון**: שימוש בקומפוננטת Accordion הקיימת
+- **אנימציות**: CSS keyframes לגלילת לוגואים, Tailwind animate לשאר
+- **מינימום שינויים ב-routing**: אין שינוי — ה-Index כבר ב-`/`
