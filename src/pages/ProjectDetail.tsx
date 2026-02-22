@@ -32,12 +32,8 @@ const demoChangeOrders = [
 ];
 
 const statusLabels: Record<string, string> = {
-  draft: "טיוטה",
-  priced: "תומחר",
-  sent: "נשלח",
-  approved: "אושר",
-  rejected: "נדחה",
-  canceled: "בוטל",
+  draft: "טיוטה", priced: "תומחר", sent: "נשלח",
+  approved: "אושר", rejected: "נדחה", canceled: "בוטל",
 };
 
 const categoryLabels: Record<string, string> = {
@@ -73,10 +69,7 @@ const ProjectDetail = () => {
     enabled: !!validProjectId && !isDemo,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .eq("id", validProjectId!)
-        .single();
+        .from("projects").select("*").eq("id", validProjectId!).single();
       if (error) throw error;
       return data;
     },
@@ -91,7 +84,7 @@ const ProjectDetail = () => {
     return (
       <div dir="rtl" className="px-4 py-6 space-y-5">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate("/projects")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+          <button onClick={() => navigate("/projects")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary transition-colors">
             <ArrowRight className="h-5 w-5" />
           </button>
           <div className="flex-1 min-w-0">
@@ -103,10 +96,8 @@ const ProjectDetail = () => {
         <div className="space-y-3">
           <h2 className="text-lg font-bold">שינויים</h2>
           {demoChangeOrders.map((co) => (
-            <div
-              key={co.id}
-              className="w-full text-right rounded-lg border bg-card p-4 space-y-2"
-            >
+            <div key={co.id} className="w-full text-right rounded-2xl bg-card p-4 space-y-2 relative overflow-hidden card-shimmer"
+                 style={{ border: '1px solid var(--border-default)' }}>
               <div className="flex items-start justify-between gap-2">
                 <h3 className="font-bold text-base">{co.title}</h3>
                 <StatusBadge variant={co.status as any} />
@@ -121,7 +112,8 @@ const ProjectDetail = () => {
 
         <button
           onClick={() => navigate("/login")}
-          className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform active:scale-95"
+          className="fixed bottom-20 left-4 z-40 flex h-[60px] w-[60px] items-center justify-center rounded-full shadow-gold-md transition-all hover:scale-110 active:scale-95 animate-fab-appear"
+          style={{ background: 'var(--gold-gradient)', color: '#1A1200' }}
           aria-label="שינוי חדש"
         >
           <Plus className="h-7 w-7" />
@@ -150,7 +142,7 @@ const ProjectDetail = () => {
   return (
     <div dir="rtl" className="px-4 py-6 space-y-5">
       <div className="flex items-center gap-3">
-        <button onClick={() => navigate("/projects")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+        <button onClick={() => navigate("/projects")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary transition-colors" style={{ border: '1px solid var(--border-default)' }}>
           <ArrowRight className="h-5 w-5" />
         </button>
         <div className="flex-1 min-w-0">
@@ -159,7 +151,8 @@ const ProjectDetail = () => {
         </div>
         <button
           onClick={() => navigate(`/projects/${projectId}/edit`)}
-          className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"
+          className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-secondary transition-colors"
+          style={{ border: '1px solid var(--border-default)' }}
           aria-label="ערוך פרויקט"
         >
           <Pencil className="h-4 w-4 text-muted-foreground" />
@@ -176,8 +169,8 @@ const ProjectDetail = () => {
           changeOrders.map((co) => <ChangeOrderCard key={co.id} changeOrder={co} />)
         ) : (
           <div className="flex flex-col items-center py-12 text-center space-y-3">
-            <div className="rounded-full bg-muted p-3">
-              <FolderOpen className="h-8 w-8 text-muted-foreground" />
+            <div className="rounded-full p-3" style={{ background: 'rgba(212,168,67,0.10)' }}>
+              <FolderOpen className="h-8 w-8 text-primary" />
             </div>
             <p className="text-muted-foreground text-sm">אין שינויים עדיין — צור את הראשון</p>
           </div>
@@ -191,7 +184,8 @@ const ProjectDetail = () => {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted/80 disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors hover:bg-secondary disabled:opacity-50"
+              style={{ border: '1px solid var(--border-default)' }}
             >
               {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
               העלאה
@@ -211,7 +205,8 @@ const ProjectDetail = () => {
 
       <button
         onClick={() => navigate(`/projects/${projectId}/changes/new`)}
-        className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform active:scale-95"
+        className="fixed bottom-20 left-4 z-40 flex h-[60px] w-[60px] items-center justify-center rounded-full shadow-gold-md transition-all hover:scale-110 active:scale-95 animate-fab-appear"
+        style={{ background: 'var(--gold-gradient)', color: '#1A1200' }}
         aria-label="שינוי חדש"
       >
         <Plus className="h-7 w-7" />

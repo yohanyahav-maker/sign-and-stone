@@ -25,7 +25,6 @@ const NewChange = () => {
   const createCO = useCreateChangeOrder();
   const [isSaving, setIsSaving] = useState(false);
 
-  // Check if project has client portal enabled
   const { data: project } = useQuery({
     queryKey: ["project", projectId],
     enabled: !!projectId,
@@ -109,12 +108,10 @@ const NewChange = () => {
       await uploadFiles(co.id);
 
       if (status === "sent" || status === "priced") {
-        // If sent, navigate to send page to generate portal link
         if (status === "priced") {
           toast.success("השינוי נשמר בהצלחה");
           navigate(`/projects/${projectId}`, { replace: true });
         } else {
-          // For "sent" we first save as priced, then redirect to send flow
           navigate(`/projects/${projectId}/changes/${co.id}/send`, { replace: true });
         }
       } else {
@@ -133,7 +130,6 @@ const NewChange = () => {
     setIsSaving(true);
 
     try {
-      // Save as priced first
       const co = await createCO.mutateAsync({
         project_id: projectId,
         title: details.title,
@@ -147,8 +143,6 @@ const NewChange = () => {
       });
 
       await uploadFiles(co.id);
-
-      // Navigate to send page
       navigate(`/projects/${projectId}/changes/${co.id}/send`, { replace: true });
     } catch (err: any) {
       toast.error(parseChangeOrderError(err));
@@ -170,6 +164,7 @@ const NewChange = () => {
         <button
           onClick={goBack}
           className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-secondary transition-colors"
+          style={{ border: '1px solid var(--border-default)' }}
         >
           <ArrowRight className="h-5 w-5" />
         </button>
@@ -181,13 +176,13 @@ const NewChange = () => {
         </div>
       </div>
 
-      {/* Progress */}
+      {/* Progress — gold dots */}
       <div className="flex gap-2">
         {[1, 2, 3].map((s) => (
           <div
             key={s}
             className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
-              s <= step ? "bg-foreground" : "bg-border"
+              s <= step ? "bg-primary" : "bg-border"
             }`}
           />
         ))}

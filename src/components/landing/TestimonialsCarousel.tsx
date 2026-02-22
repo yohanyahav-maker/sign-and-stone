@@ -111,16 +111,16 @@ const TestimonialsSection = () => {
                   key={t.name}
                   className="pl-4 basis-full md:basis-1/3"
                 >
-                  <div className="rounded-[14px] border border-border bg-card p-6 space-y-4 h-full">
+                  <div className="rounded-2xl bg-card p-6 space-y-4 h-full relative overflow-hidden card-shimmer" style={{ border: '1px solid var(--border-default)' }}>
                     <div className="flex gap-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <Star key={i} className="h-4 w-4 fill-primary text-primary" />
                       ))}
                     </div>
-                    <p className="text-sm text-foreground leading-relaxed min-h-[4.5rem]">
+                    <p className="text-[15px] text-foreground/80 leading-relaxed min-h-[4.5rem]">
                       &ldquo;{t.text}&rdquo;
                     </p>
-                    <div className="flex items-center gap-3 pt-2 border-t border-border">
+                    <div className="flex items-center gap-3 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                       <Avatar className="w-10 h-10">
                         <AvatarImage src={t.image} alt={t.name} />
                         <AvatarFallback className="bg-secondary text-foreground text-sm font-bold">

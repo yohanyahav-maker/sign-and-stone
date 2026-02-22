@@ -2,16 +2,16 @@ import { cn } from "@/lib/utils";
 
 type StatusVariant = "draft" | "priced" | "sent" | "approved" | "rejected" | "canceled" | "trial" | "active" | "past_due";
 
-const variantStyles: Record<StatusVariant, string> = {
-  draft: "bg-muted text-muted-foreground",
-  priced: "bg-info/15 text-info",
-  sent: "bg-amber-50 text-amber-800",
-  approved: "bg-success/15 text-success",
-  rejected: "bg-destructive/15 text-destructive",
-  canceled: "bg-muted text-muted-foreground line-through",
-  trial: "bg-info/15 text-info",
-  active: "bg-success/15 text-success",
-  past_due: "bg-destructive/15 text-destructive",
+const variantStyles: Record<StatusVariant, { bg: string; text: string; border: string }> = {
+  draft:    { bg: "rgba(168,164,156,0.12)", text: "hsl(var(--muted-foreground))", border: "rgba(168,164,156,0.20)" },
+  priced:   { bg: "rgba(59,130,246,0.12)",  text: "#60A5FA",                     border: "rgba(59,130,246,0.25)" },
+  sent:     { bg: "rgba(212,168,67,0.12)",   text: "hsl(var(--gold-300))",        border: "rgba(212,168,67,0.25)" },
+  approved: { bg: "rgba(34,197,94,0.12)",    text: "hsl(var(--success))",         border: "rgba(34,197,94,0.25)" },
+  rejected: { bg: "rgba(239,68,68,0.12)",    text: "hsl(var(--destructive))",     border: "rgba(239,68,68,0.25)" },
+  canceled: { bg: "rgba(255,255,255,0.04)",  text: "hsl(var(--muted-foreground))", border: "rgba(255,255,255,0.06)" },
+  trial:    { bg: "rgba(59,130,246,0.12)",   text: "#60A5FA",                     border: "rgba(59,130,246,0.25)" },
+  active:   { bg: "rgba(34,197,94,0.12)",    text: "hsl(var(--success))",         border: "rgba(34,197,94,0.25)" },
+  past_due: { bg: "rgba(239,68,68,0.12)",    text: "hsl(var(--destructive))",     border: "rgba(239,68,68,0.25)" },
 };
 
 const variantLabels: Record<StatusVariant, string> = {
@@ -33,13 +33,18 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ variant, label, className }: StatusBadgeProps) {
+  const style = variantStyles[variant];
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold",
-        variantStyles[variant],
+        "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold tracking-wide",
         className
       )}
+      style={{
+        background: style.bg,
+        color: style.text,
+        border: `1px solid ${style.border}`,
+      }}
     >
       {label ?? variantLabels[variant]}
     </span>

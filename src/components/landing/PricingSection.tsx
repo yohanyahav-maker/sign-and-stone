@@ -40,7 +40,7 @@ const PricingSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section id="pricing" className="py-24 bg-background">
+    <section id="pricing" className="py-24 bg-card">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -55,37 +55,46 @@ const PricingSection = () => {
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`rounded-[14px] border p-8 space-y-6 relative ${
-                plan.popular ? "border-foreground bg-card shadow-soft" : "border-border bg-card"
+              className={`rounded-2xl p-8 space-y-6 relative overflow-hidden card-shimmer ${
+                plan.popular
+                  ? "card-gold"
+                  : ""
               }`}
+              style={{
+                border: plan.popular ? '1px solid var(--border-gold)' : '1px solid var(--border-default)',
+                background: plan.popular
+                  ? 'linear-gradient(135deg, rgba(212,168,67,0.08) 0%, rgba(168,112,32,0.04) 100%)'
+                  : 'hsl(240 17% 8%)',
+              }}
             >
               {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-foreground text-primary-foreground text-xs font-bold px-4 py-1 rounded-full">
+                <span className="absolute -top-0 left-1/2 -translate-x-1/2 translate-y-0 text-xs font-extrabold px-4 py-1 rounded-b-lg"
+                      style={{ background: 'var(--gold-gradient)', color: '#1A1200' }}>
                   הכי פופולרי
                 </span>
               )}
 
-              <div>
+              <div className="pt-4">
                 <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{plan.description}</p>
               </div>
 
               <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-black text-foreground">{plan.price}</span>
+                <span className="font-display text-[52px] text-foreground">{plan.price}</span>
                 <span className="text-muted-foreground text-sm">{plan.period}</span>
               </div>
 
               <ul className="space-y-3">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-center gap-2.5 text-sm text-foreground">
-                    <Check className="h-4 w-4 text-accent flex-shrink-0" />
+                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
                     {f}
                   </li>
                 ))}
               </ul>
 
               <Button
-                className="w-full h-12 font-semibold"
+                className={`w-full h-12 font-bold ${plan.popular ? 'shadow-gold-sm' : ''}`}
                 variant={plan.popular ? "default" : "outline"}
                 onClick={() => navigate("/login")}
               >

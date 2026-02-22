@@ -29,7 +29,6 @@ const Settings = () => {
   const [companyName, setCompanyName] = useState(profile?.company_name ?? "");
   const [saving, setSaving] = useState(false);
 
-  // Sync state when profile loads
   useEffect(() => {
     if (profile) {
       setFullName(profile.full_name ?? "");
@@ -99,7 +98,7 @@ const Settings = () => {
 
           <div className="space-y-1.5">
             <Label>אימייל</Label>
-            <Input value={user?.email ?? ""} disabled className="bg-muted" />
+            <Input value={user?.email ?? ""} disabled className="opacity-50" />
           </div>
 
           <Button
@@ -142,7 +141,7 @@ const Settings = () => {
             </div>
 
             {subscription.status === "trial" && subscription.trial_ends_at && (
-              <p className="text-sm text-accent font-medium">
+              <p className="text-sm text-primary font-medium">
                 ניסיון מסתיים ב-{new Date(subscription.trial_ends_at).toLocaleDateString("he-IL")}
               </p>
             )}
@@ -153,7 +152,8 @@ const Settings = () => {
       {/* Logout */}
       <Button
         variant="outline"
-        className="w-full text-destructive border-destructive/30 hover:bg-destructive/5 gap-2"
+        className="w-full gap-2"
+        style={{ background: 'var(--danger-bg)', color: 'hsl(var(--destructive))', borderColor: 'var(--danger-border)' }}
         onClick={handleLogout}
       >
         <LogOut className="h-4 w-4" />
