@@ -17,12 +17,13 @@ export type ChangeOrderPricing = z.infer<typeof pricingSchema>;
 
 interface PricingStepProps {
   initial?: Partial<ChangeOrderPricing>;
-  onSubmit: (data: ChangeOrderPricing, asDraft: boolean) => void;
+  onNext: (data: ChangeOrderPricing) => void;
+  onSaveDraft: () => void;
   onBack: () => void;
   loading: boolean;
 }
 
-export function PricingStep({ initial, onSubmit, onBack, loading }: PricingStepProps) {
+export function PricingStep({ initial, onNext, onSaveDraft, onBack, loading }: PricingStepProps) {
   const [priceStr, setPriceStr] = useState(initial?.price_amount?.toString() ?? "");
   const [includeVat, setIncludeVat] = useState(initial?.include_vat ?? true);
   const [impactDays, setImpactDays] = useState(initial?.impact_days ?? 0);
@@ -36,7 +37,7 @@ export function PricingStep({ initial, onSubmit, onBack, loading }: PricingStepP
     return Math.round(priceNum * (1 + vatRate / 100) * 100) / 100;
   }, [priceNum, includeVat, vatRate]);
 
-  const handleSubmit = (asDraft: boolean) => {
+  const validate = (): ChangeOrderPricing | null => {
     setErrors({});
     const parsed = pricingSchema.safeParse({
       price_amount: priceNum,
@@ -50,30 +51,34 @@ export function PricingStep({ initial, onSubmit, onBack, loading }: PricingStepP
         if (e.path[0]) fieldErrors[e.path[0] as string] = e.message;
       });
       setErrors(fieldErrors);
-      return;
+      return null;
     }
-    onSubmit(parsed.data, asDraft);
+    return parsed.data;
+  };
+
+  const handleNext = () => {
+    const data = validate();
+    if (data) onNext(data);
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Price */}
       <div className="space-y-2">
-        <Label htmlFor="co-price">מחיר (₪)</Label>
+        <Label className="text-xs text-muted-foreground">מחיר (₪)</Label>
         <div className="relative">
           <Input
-            id="co-price"
             type="number"
             inputMode="decimal"
             dir="ltr"
             value={priceStr}
             onChange={(e) => { setPriceStr(e.target.value); setErrors({}); }}
-            placeholder="0.00"
-            className="text-center text-[40px] font-black h-20 pr-12"
+            placeholder="0"
+            className="text-center text-[44px] font-black h-24 rounded-[14px] pr-14"
             min={0}
             step="0.01"
           />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-muted-foreground">
+          <span className="absolute right-5 top-1/2 -translate-y-1/2 text-2xl font-bold text-muted-foreground">
             ₪
           </span>
         </div>
@@ -81,44 +86,38 @@ export function PricingStep({ initial, onSubmit, onBack, loading }: PricingStepP
       </div>
 
       {/* VAT toggle */}
-      <div className="flex items-center justify-between rounded-lg border p-3">
+      <div className="flex items-center justify-between rounded-[14px] bg-card p-4">
         <div className="space-y-0.5">
           <Label htmlFor="vat-toggle" className="text-sm font-medium cursor-pointer">
             כולל מע״מ ({vatRate}%)
           </Label>
           {includeVat && priceNum > 0 && (
             <p className="text-xs text-muted-foreground">
-              סה״כ כולל מע״מ: ₪{totalWithVat.toLocaleString("he-IL")}
+              סה״כ: ₪{totalWithVat.toLocaleString("he-IL")}
             </p>
           )}
         </div>
-        <Switch
-          id="vat-toggle"
-          checked={includeVat}
-          onCheckedChange={setIncludeVat}
-        />
+        <Switch id="vat-toggle" checked={includeVat} onCheckedChange={setIncludeVat} />
       </div>
 
       {/* Impact days */}
-      <div className="space-y-2">
-        <Label>ימי השפעה על לוח זמנים</Label>
-        <div className="flex items-center justify-center gap-4">
+      <div className="space-y-3">
+        <Label className="text-xs text-muted-foreground">ימי השפעה</Label>
+        <div className="flex items-center justify-center gap-6">
           <button
             type="button"
             onClick={() => setImpactDays((d) => Math.max(-365, d - 1))}
-            className="flex h-11 w-11 items-center justify-center rounded-full border bg-card
-                       transition-colors active:bg-muted"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-card transition-colors active:bg-secondary"
           >
             <Minus className="h-5 w-5" />
           </button>
-          <span className="text-3xl font-bold w-20 text-center tabular-nums">
+          <span className="text-4xl font-black w-24 text-center tabular-nums">
             {impactDays > 0 ? `+${impactDays}` : impactDays}
           </span>
           <button
             type="button"
             onClick={() => setImpactDays((d) => Math.min(365, d + 1))}
-            className="flex h-11 w-11 items-center justify-center rounded-full border bg-card
-                       transition-colors active:bg-muted"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-card transition-colors active:bg-secondary"
           >
             <Plus className="h-5 w-5" />
           </button>
@@ -128,28 +127,27 @@ export function PricingStep({ initial, onSubmit, onBack, loading }: PricingStepP
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col gap-3 pt-2">
+      <div className="flex flex-col gap-3 pt-4">
         <Button
           type="button"
           size="lg"
-          className="w-full text-base font-semibold"
-          onClick={() => handleSubmit(false)}
-          disabled={loading || priceNum <= 0}
+          className="w-full text-base font-semibold h-14"
+          onClick={handleNext}
         >
-          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "שמור ותמחר"}
+          המשך לסיכום
         </Button>
         <Button
           type="button"
           variant="outline"
           size="lg"
-          className="w-full"
-          onClick={() => handleSubmit(true)}
+          className="w-full h-14"
+          onClick={onSaveDraft}
           disabled={loading}
         >
-          שמור כטיוטה
+          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "שמור כטיוטה"}
         </Button>
         <Button type="button" variant="ghost" onClick={onBack} disabled={loading}>
-          חזור לפרטים
+          חזור
         </Button>
       </div>
     </div>
