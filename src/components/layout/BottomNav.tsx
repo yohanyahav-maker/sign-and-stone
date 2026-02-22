@@ -22,7 +22,7 @@ export function BottomNav() {
               onClick={() => navigate(item.path)}
               className={cn(
                 "flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors",
-                isActive ? "text-primary" : "text-muted-foreground"
+                isActive ? "text-foreground" : "text-muted-foreground"
               )}
             >
               <item.icon className="h-5 w-5" />

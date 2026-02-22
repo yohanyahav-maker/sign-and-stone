@@ -4,8 +4,8 @@ type StatusVariant = "draft" | "priced" | "sent" | "approved" | "rejected" | "ca
 
 const variantStyles: Record<StatusVariant, string> = {
   draft: "bg-muted text-muted-foreground",
-  priced: "bg-primary/15 text-primary",
-  sent: "bg-warning/15 text-warning-foreground",
+  priced: "bg-info/15 text-info",
+  sent: "bg-amber-50 text-amber-800",
   approved: "bg-success/15 text-success",
   rejected: "bg-destructive/15 text-destructive",
   canceled: "bg-muted text-muted-foreground line-through",

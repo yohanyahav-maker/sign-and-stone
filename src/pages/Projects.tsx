@@ -59,7 +59,7 @@ const Projects = () => {
         <div className="space-y-1">
           <h1 className="text-2xl font-bold">שלום, קבלן 👋</h1>
           <p className="text-sm text-muted-foreground">
-            יש לך <span className="text-primary font-semibold">4</span> שינויים ממתינים לאישור
+            יש לך <span className="text-accent font-semibold">4</span> שינויים ממתינים לאישור
           </p>
         </div>
 
@@ -88,7 +88,7 @@ const Projects = () => {
               </div>
               <div className="flex items-center gap-4 text-sm">
                 {p.pending > 0 && (
-                  <span className="flex items-center gap-1 text-primary font-medium">
+                  <span className="flex items-center gap-1 text-accent font-medium">
                     <Clock className="h-4 w-4" />
                     {p.pending} ממתינים
                   </span>
@@ -106,7 +106,7 @@ const Projects = () => {
 
         <button
           onClick={() => navigate("/login")}
-          className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform active:scale-95"
+          className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform active:scale-95"
           aria-label="פרויקט חדש"
         >
           <Plus className="h-7 w-7" />
@@ -125,14 +125,14 @@ const Projects = () => {
         <h1 className="text-2xl font-bold">שלום, {displayName} 👋</h1>
         {totalPending > 0 && (
           <p className="text-sm text-muted-foreground">
-            יש לך <span className="text-primary font-semibold">{totalPending}</span> שינויים ממתינים לאישור
+            יש לך <span className="text-accent font-semibold">{totalPending}</span> שינויים ממתינים לאישור
           </p>
         )}
       </div>
       <SubscriptionBanner />
       {isLoading ? (
         <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-foreground border-t-transparent" />
         </div>
       ) : projects && projects.length > 0 ? (
         <div className="space-y-3">
@@ -150,7 +150,7 @@ const Projects = () => {
       <button
         onClick={() => { if (!atLimit) setSheetOpen(true); }}
         disabled={atLimit}
-        className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="פרויקט חדש"
       >
         <Plus className="h-7 w-7" />

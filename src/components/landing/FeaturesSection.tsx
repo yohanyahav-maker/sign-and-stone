@@ -40,8 +40,8 @@ const FeaturesSection = () => {
               key={f.title}
               className="rounded-2xl border border-border bg-card p-6 space-y-4 hover:shadow-md transition-shadow"
             >
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
-                <f.icon className="h-7 w-7 text-primary" />
+              <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center">
+                <f.icon className="h-7 w-7 text-accent" />
               </div>
               <h3 className="font-bold text-lg text-foreground">{f.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">

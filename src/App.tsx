@@ -14,6 +14,7 @@ import NewChange from "./pages/NewChange";
 import SendChange from "./pages/SendChange";
 import ChangeOrderDetail from "./pages/ChangeOrderDetail";
 import ClientPortal from "./pages/ClientPortal";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="/projects/:projectId/changes/new" element={<NewChange />} />
               <Route path="/projects/:projectId/changes/:changeId" element={<ChangeOrderDetail />} />
               <Route path="/projects/:projectId/changes/:changeId/send" element={<SendChange />} />
+              <Route path="/settings" element={<Settings />} />
             </Route>
             <Route path="/portal/:token" element={<ClientPortal />} />
             <Route path="*" element={<NotFound />} />

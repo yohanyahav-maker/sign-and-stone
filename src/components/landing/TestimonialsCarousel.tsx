@@ -43,7 +43,7 @@ const TestimonialsSection = () => {
               {/* Stars */}
               <div className="flex gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                  <Star key={i} className="h-4 w-4 fill-accent text-accent" />
                 ))}
               </div>
 
@@ -52,7 +52,7 @@ const TestimonialsSection = () => {
               </p>
 
               <div className="flex items-center gap-3 pt-2 border-t border-border">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">
+                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-sm font-bold text-accent">
                   {t.initials}
                 </div>
                 <div>

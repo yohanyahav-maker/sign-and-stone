@@ -79,7 +79,7 @@ const PricingSection = () => {
               <ul className="space-y-2">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-foreground">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    <Check className="h-4 w-4 text-accent flex-shrink-0" />
                     {f}
                   </li>
                 ))}

@@ -128,7 +128,7 @@ const ChangeOrderDetail = () => {
             </div>
             <div className="text-center">
               <p className="text-sm text-muted-foreground">השפעה</p>
-              <p className="text-lg font-bold text-primary">+{demoCo.impact_days} ימים</p>
+              <p className="text-lg font-bold text-accent">+{demoCo.impact_days} ימים</p>
             </div>
           </CardContent>
         </Card>
@@ -233,7 +233,7 @@ const ChangeOrderDetail = () => {
             {(co.impact_days ?? 0) !== 0 && (
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">השפעה</p>
-                <p className="text-lg font-bold text-primary">{co.impact_days! > 0 ? "+" : ""}{co.impact_days} ימים</p>
+                <p className="text-lg font-bold text-accent">{co.impact_days! > 0 ? "+" : ""}{co.impact_days} ימים</p>
               </div>
             )}
           </CardContent>

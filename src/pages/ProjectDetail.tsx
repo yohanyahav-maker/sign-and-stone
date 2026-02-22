@@ -121,7 +121,7 @@ const ProjectDetail = () => {
 
         <button
           onClick={() => navigate("/login")}
-          className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform active:scale-95"
+          className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform active:scale-95"
           aria-label="שינוי חדש"
         >
           <Plus className="h-7 w-7" />
@@ -179,7 +179,7 @@ const ProjectDetail = () => {
 
       <button
         onClick={() => navigate(`/projects/${projectId}/changes/new`)}
-        className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform active:scale-95"
+        className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform active:scale-95"
         aria-label="שינוי חדש"
       >
         <Plus className="h-7 w-7" />

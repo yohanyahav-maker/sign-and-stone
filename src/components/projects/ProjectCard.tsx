@@ -43,7 +43,7 @@ export function ProjectCard({ project, counts }: ProjectCardProps) {
 
       <div className="flex items-center gap-4 text-sm">
         {pending > 0 && (
-          <span className="flex items-center gap-1 text-primary font-medium">
+          <span className="flex items-center gap-1 text-accent font-medium">
             <Clock className="h-4 w-4" />
             {pending} ממתינים
           </span>

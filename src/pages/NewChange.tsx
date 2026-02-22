@@ -55,8 +55,8 @@ const NewChange = () => {
 
       {/* Progress */}
       <div className="flex gap-2">
-        <div className="h-1 flex-1 rounded-full bg-primary" />
-        <div className={`h-1 flex-1 rounded-full ${step === 2 ? "bg-primary" : "bg-muted"}`} />
+        <div className="h-1 flex-1 rounded-full bg-foreground" />
+        <div className={`h-1 flex-1 rounded-full ${step === 2 ? "bg-foreground" : "bg-muted"}`} />
       </div>
 
       {/* Steps */}
