@@ -368,6 +368,10 @@ export type Database = {
         | "landscaping"
         | "safety"
         | "other"
+        | "aluminum"
+        | "kitchen"
+        | "insulation"
+        | "concrete"
       change_order_status:
         | "draft"
         | "priced"
@@ -381,6 +385,10 @@ export type Database = {
         | "renovation"
         | "infrastructure"
         | "other"
+        | "villa"
+        | "ground_attached"
+        | "advanced"
+        | "addition"
       subscription_plan: "basic" | "pro"
       subscription_status:
         | "trial"
@@ -528,6 +536,10 @@ export const Constants = {
         "landscaping",
         "safety",
         "other",
+        "aluminum",
+        "kitchen",
+        "insulation",
+        "concrete",
       ],
       change_order_status: [
         "draft",
@@ -543,6 +555,10 @@ export const Constants = {
         "renovation",
         "infrastructure",
         "other",
+        "villa",
+        "ground_attached",
+        "advanced",
+        "addition",
       ],
       subscription_plan: ["basic", "pro"],
       subscription_status: [

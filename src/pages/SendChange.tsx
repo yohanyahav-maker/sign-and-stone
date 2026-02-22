@@ -8,9 +8,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
 const categoryLabels: Record<string, string> = {
-  structural: "מבנה", electrical: "חשמל", plumbing: "אינסטלציה",
-  finishing: "גמרים", hvac: "מיזוג", flooring: "ריצוף",
-  painting: "צביעה", landscaping: "גינון", safety: "בטיחות", other: "אחר",
+  structural: "שלד ובטון", concrete: "יציקות", electrical: "חשמל",
+  plumbing: "אינסטלציה", aluminum: "אלומיניום", kitchen: "מטבח",
+  finishing: "גמרים", flooring: "ריצוף", painting: "צביעה",
+  insulation: "איטום", hvac: "מיזוג", landscaping: "פיתוח חוץ",
+  safety: "בטיחות", other: "אחר",
 };
 
 const SendChange = () => {

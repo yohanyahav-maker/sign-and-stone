@@ -11,11 +11,11 @@ const CtaSection = () => {
           שינוי אחד חתום שווה יותר מאלף שיחות
         </h2>
         <p className="text-background/70 text-lg">
-          הצטרף לקבלנים שכבר חוסכים זמן, כסף ועצבים.
+          הצטרף לקבלני בנייה שכבר חוסכים זמן, כסף ועצבים בכל פרויקט.
         </p>
         <Button
           size="lg"
-          className="h-14 px-10 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+          className="h-14 px-10 text-base font-semibold bg-background text-foreground hover:bg-background/90"
           onClick={() => navigate("/login")}
         >
           התחל חינם — 14 יום ניסיון

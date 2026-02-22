@@ -7,28 +7,29 @@ const plans = [
     name: "קבלן יחיד",
     price: "149",
     period: "ש״ח / חודש",
-    description: "לקבלן עצמאי שמנהל פרויקטים בעצמו",
+    description: "לקבלן בנייה שמנהל פרויקטים בעצמו",
     features: [
       "עד 3 פרויקטים פעילים",
-      "שינויים ללא הגבלה",
-      "חתימה דיגיטלית",
+      "שינויי בנייה ללא הגבלה",
+      "חתימה דיגיטלית מחייבת",
       "שליחה בוואטסאפ",
+      "העלאת תמונות ומסמכים",
       "תמיכה בוואטסאפ",
     ],
     popular: false,
   },
   {
-    name: "קבוצת קבלנים",
+    name: "קבלן מקצועי",
     price: "349",
     period: "ש״ח / חודש",
-    description: "לחברות עם צוות קבלנים ומנהלי פרויקטים",
+    description: "לקבלנים עם מספר פרויקטים במקביל",
     features: [
       "פרויקטים ללא הגבלה",
-      "שינויים ללא הגבלה",
-      "חתימה דיגיטלית",
+      "שינויי בנייה ללא הגבלה",
+      "חתימה דיגיטלית מחייבת",
       "שליחה בוואטסאפ",
-      "דוחות מתקדמים",
-      "ניהול צוות",
+      "דוחות פרויקט מתקדמים",
+      "הפקת PDF חתום",
       "תמיכה עדיפה",
     ],
     popular: true,
@@ -55,13 +56,11 @@ const PricingSection = () => {
             <div
               key={plan.name}
               className={`rounded-2xl border-2 p-6 space-y-5 relative ${
-                plan.popular
-                  ? "border-primary bg-card shadow-lg"
-                  : "border-border bg-card"
+                plan.popular ? "border-foreground bg-card shadow-lg" : "border-border bg-card"
               }`}
             >
               {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-4 py-1 rounded-full">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-foreground text-background text-xs font-bold px-4 py-1 rounded-full">
                   הכי פופולרי
                 </span>
               )}
@@ -87,9 +86,7 @@ const PricingSection = () => {
 
               <Button
                 className={`w-full h-12 font-semibold ${
-                  plan.popular
-                    ? "bg-foreground text-background hover:bg-foreground/90"
-                    : ""
+                  plan.popular ? "bg-foreground text-background hover:bg-foreground/90" : ""
                 }`}
                 variant={plan.popular ? "default" : "outline"}
                 onClick={() => navigate("/login")}
