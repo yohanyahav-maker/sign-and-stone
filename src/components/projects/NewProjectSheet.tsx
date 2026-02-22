@@ -88,7 +88,7 @@ export function NewProjectSheet({ open, onOpenChange }: NewProjectSheetProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] overflow-y-auto">
+      <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] overflow-y-auto" aria-describedby={undefined}>
         <SheetHeader>
           <SheetTitle>פרויקט בנייה חדש</SheetTitle>
         </SheetHeader>

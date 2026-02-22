@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, Loader2, User, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,12 +30,12 @@ const Settings = () => {
   const [saving, setSaving] = useState(false);
 
   // Sync state when profile loads
-  useState(() => {
+  useEffect(() => {
     if (profile) {
       setFullName(profile.full_name ?? "");
       setCompanyName(profile.company_name ?? "");
     }
-  });
+  }, [profile]);
 
   const handleSaveProfile = async () => {
     if (!user) return;
@@ -64,7 +64,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="px-4 py-6 space-y-6">
+    <div dir="rtl" className="px-4 py-6 space-y-6">
       <h1 className="text-2xl font-bold">הגדרות</h1>
 
       {/* Profile */}

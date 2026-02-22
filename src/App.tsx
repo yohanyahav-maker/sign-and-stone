@@ -12,6 +12,9 @@ import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import NewProject from "./pages/NewProject";
 import EditProject from "./pages/EditProject";
+import NewChange from "./pages/NewChange";
+import ChangeOrderDetail from "./pages/ChangeOrderDetail";
+import SendChange from "./pages/SendChange";
 import ClientPortal from "./pages/ClientPortal";
 import Settings from "./pages/Settings";
 import ResetPassword from "./pages/ResetPassword";
@@ -41,6 +44,9 @@ const App = () => (
               <Route path="/projects/new" element={<NewProject />} />
               <Route path="/projects/:id" element={<ProjectDetail />} />
               <Route path="/projects/:id/edit" element={<EditProject />} />
+              <Route path="/projects/:projectId/changes/new" element={<NewChange />} />
+              <Route path="/projects/:projectId/changes/:changeId" element={<ChangeOrderDetail />} />
+              <Route path="/projects/:projectId/changes/:changeId/send" element={<SendChange />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
             <Route path="/portal/:token" element={<ClientPortal />} />

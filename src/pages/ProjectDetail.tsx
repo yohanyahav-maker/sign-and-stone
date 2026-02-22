@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Plus, Loader2, FolderOpen } from "lucide-react";
+import { ArrowRight, Plus, Pencil, Loader2, FolderOpen } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useChangeOrders } from "@/hooks/useChangeOrders";
@@ -134,7 +134,7 @@ const ProjectDetail = () => {
   }
 
   return (
-    <div className="px-4 py-6 space-y-5">
+    <div dir="rtl" className="px-4 py-6 space-y-5">
       <div className="flex items-center gap-3">
         <button onClick={() => navigate("/projects")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
           <ArrowRight className="h-5 w-5" />
@@ -143,6 +143,13 @@ const ProjectDetail = () => {
           <h1 className="text-xl font-bold truncate">{project.name}</h1>
           {project.address && <p className="text-sm text-muted-foreground truncate">{project.address}</p>}
         </div>
+        <button
+          onClick={() => navigate(`/projects/${projectId}/edit`)}
+          className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"
+          aria-label="ערוך פרויקט"
+        >
+          <Pencil className="h-4 w-4 text-muted-foreground" />
+        </button>
       </div>
 
       <div className="space-y-3">
@@ -164,9 +171,9 @@ const ProjectDetail = () => {
       </div>
 
       <button
-        onClick={() => navigate(`/projects/${projectId}/edit`)}
+        onClick={() => navigate(`/projects/${projectId}/changes/new`)}
         className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform active:scale-95"
-        aria-label="ערוך פרויקט"
+        aria-label="שינוי חדש"
       >
         <Plus className="h-7 w-7" />
       </button>
