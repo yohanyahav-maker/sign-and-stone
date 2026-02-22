@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,7 +7,6 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { SubscriptionBanner } from "@/components/projects/SubscriptionBanner";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { EmptyProjects } from "@/components/projects/EmptyProjects";
-import { NewProjectSheet } from "@/components/projects/NewProjectSheet";
 
 // Demo data
 const demoProjects = [
@@ -32,7 +30,6 @@ function KpiCard({ value, label }: { value: string; label: string }) {
 }
 
 const Projects = () => {
-  const [sheetOpen, setSheetOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
   const isDemo = !user;
@@ -126,16 +123,14 @@ const Projects = () => {
       <button
         onClick={() => {
           if (isDemo) navigate("/login");
-          else if (!atLimit) setSheetOpen(true);
+          else if (!atLimit) navigate("/projects/new");
         }}
         disabled={!isDemo && atLimit}
         className="fixed bottom-24 left-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-primary-foreground shadow-soft transition-transform active:scale-95 disabled:opacity-40"
-        aria-label="שינוי חדש"
+        aria-label="פרויקט חדש"
       >
         <Plus className="h-6 w-6" />
       </button>
-
-      <NewProjectSheet open={sheetOpen} onOpenChange={setSheetOpen} />
     </div>
   );
 };

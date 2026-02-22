@@ -48,7 +48,7 @@ const categoryLabels: Record<string, string> = {
 const isValidUuid = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
 
 const ProjectDetail = () => {
-  const { projectId } = useParams<{ projectId: string }>();
+  const { id: projectId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const isDemo = !user;
@@ -89,10 +89,9 @@ const ProjectDetail = () => {
         <div className="space-y-3">
           <h2 className="text-lg font-bold">שינויים</h2>
           {demoChangeOrders.map((co) => (
-            <button
+            <div
               key={co.id}
-              onClick={() => navigate(`/projects/${projectId}/changes/${co.id}`)}
-              className="w-full text-right rounded-lg border bg-card p-4 space-y-2 transition-colors hover:border-primary/40 active:bg-muted"
+              className="w-full text-right rounded-lg border bg-card p-4 space-y-2"
             >
               <div className="flex items-start justify-between gap-2">
                 <h3 className="font-bold text-base">{co.title}</h3>
@@ -102,7 +101,7 @@ const ProjectDetail = () => {
                 <span>{categoryLabels[co.category]}</span>
                 <span>₪{co.price_amount.toLocaleString("he-IL")}</span>
               </div>
-            </button>
+            </div>
           ))}
         </div>
 
@@ -165,9 +164,9 @@ const ProjectDetail = () => {
       </div>
 
       <button
-        onClick={() => navigate(`/projects/${projectId}/changes/new`)}
+        onClick={() => navigate(`/projects/${projectId}/edit`)}
         className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform active:scale-95"
-        aria-label="שינוי חדש"
+        aria-label="ערוך פרויקט"
       >
         <Plus className="h-7 w-7" />
       </button>
