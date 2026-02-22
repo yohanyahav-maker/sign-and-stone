@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { LocalFile } from "@/components/changes/FileUploadZone";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
+import { parseChangeOrderError } from "@/lib/supabase-errors";
 
 const stepLabels = ["פרטים", "תמחור", "סיכום ושליחה"];
 
@@ -118,8 +119,8 @@ const NewChange = () => {
         toast.success("הטיוטה נשמרה");
         navigate(`/projects/${projectId}`, { replace: true });
       }
-    } catch (err) {
-      toast.error("שגיאה ביצירת השינוי");
+    } catch (err: any) {
+      toast.error(parseChangeOrderError(err));
     }
   };
 
@@ -144,8 +145,8 @@ const NewChange = () => {
 
       // Navigate to send page
       navigate(`/projects/${projectId}/changes/${co.id}/send`, { replace: true });
-    } catch (err) {
-      toast.error("שגיאה ביצירת השינוי");
+    } catch (err: any) {
+      toast.error(parseChangeOrderError(err));
     }
   };
 
