@@ -8,7 +8,7 @@ const companies = [
 
 const LogosSection = () => {
   return (
-    <section className="py-10 border-y border-border bg-secondary/20">
+    <section className="py-12 border-y border-border bg-secondary">
       <div className="container mx-auto px-6">
         <p className="text-center text-sm text-muted-foreground mb-6">
           סומכים עלינו
@@ -17,7 +17,7 @@ const LogosSection = () => {
           {companies.map((name) => (
             <div
               key={name}
-              className="rounded-full border border-border bg-card px-5 py-2 text-sm font-medium text-muted-foreground"
+              className="rounded-full border border-border bg-background px-5 py-2 text-sm font-medium text-muted-foreground"
             >
               {name}
             </div>
