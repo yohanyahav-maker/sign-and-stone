@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 export function EmailAuthForm() {
   const [isSignUp, setIsSignUp] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -63,17 +64,28 @@ export function EmailAuthForm() {
 
       <div className="space-y-2">
         <label htmlFor="password" className="text-sm font-medium">סיסמה</label>
-        <Input
-          id="password"
-          type="password"
-          dir="ltr"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => { setPassword(e.target.value); setError(""); }}
-          className="text-center text-lg h-12"
-          autoComplete={isSignUp ? "new-password" : "current-password"}
-          minLength={6}
-        />
+        <div className="relative">
+          <Input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            dir="ltr"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => { setPassword(e.target.value); setError(""); }}
+            className="text-center text-lg h-12"
+            autoComplete={isSignUp ? "new-password" : "current-password"}
+            minLength={6}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors min-h-0 min-w-0 p-1"
+            tabIndex={-1}
+            aria-label={showPassword ? "הסתר סיסמה" : "הצג סיסמה"}
+          >
+            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {error && (
