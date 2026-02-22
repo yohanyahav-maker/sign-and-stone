@@ -12,6 +12,7 @@ import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import NewChange from "./pages/NewChange";
 import SendChange from "./pages/SendChange";
+import ChangeOrderDetail from "./pages/ChangeOrderDetail";
 import ClientPortal from "./pages/ClientPortal";
 import NotFound from "./pages/NotFound";
 
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="/projects" element={<Projects />} />
               <Route path="/projects/:projectId" element={<ProjectDetail />} />
               <Route path="/projects/:projectId/changes/new" element={<NewChange />} />
+              <Route path="/projects/:projectId/changes/:changeId" element={<ChangeOrderDetail />} />
               <Route path="/projects/:projectId/changes/:changeId/send" element={<SendChange />} />
             </Route>
             <Route path="/portal/:token" element={<ClientPortal />} />
