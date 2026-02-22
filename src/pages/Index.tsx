@@ -22,10 +22,10 @@ const Index = () => {
         </div>
 
         <div className="flex flex-col gap-3 pt-4">
-          <Button size="lg" className="w-full text-base font-semibold">
+          <Button size="lg" className="w-full text-base font-semibold" onClick={() => navigate("/login")}>
             התחל ניסיון חינם — 14 יום
           </Button>
-          <Button variant="outline" size="lg" className="w-full text-base">
+          <Button variant="outline" size="lg" className="w-full text-base" onClick={() => navigate("/login")}>
             התחברות
           </Button>
         </div>
