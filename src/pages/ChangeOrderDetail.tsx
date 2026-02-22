@@ -13,6 +13,7 @@ import {
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { toast } from "sonner";
+import { parseChangeOrderError } from "@/lib/supabase-errors";
 
 const categoryLabels: Record<string, string> = {
   structural: "שלד ובטון", concrete: "יציקות", electrical: "חשמל",
@@ -191,7 +192,7 @@ const ChangeOrderDetail = () => {
     try {
       await updateCO.mutateAsync({ id: co.id, status: "canceled" });
       toast.success("השינוי בוטל");
-    } catch { toast.error("שגיאה בביטול"); }
+    } catch (err: any) { toast.error(parseChangeOrderError(err)); }
   };
 
   if (isLoading) {
