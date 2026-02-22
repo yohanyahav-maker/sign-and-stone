@@ -15,6 +15,7 @@ import SendChange from "./pages/SendChange";
 import ChangeOrderDetail from "./pages/ChangeOrderDetail";
 import ClientPortal from "./pages/ClientPortal";
 import Settings from "./pages/Settings";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route
               element={
                 <ProtectedRoute>

@@ -103,6 +103,32 @@ export function EmailAuthForm() {
         ) : isSignUp ? "הרשמה" : "כניסה"}
       </Button>
 
+      {!isSignUp && (
+        <button
+          type="button"
+          onClick={async () => {
+            if (!email) {
+              setError("הזן אימייל תחילה");
+              return;
+            }
+            setLoading(true);
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+              redirectTo: `${window.location.origin}/reset-password`,
+            });
+            setLoading(false);
+            if (error) {
+              setError(error.message);
+            } else {
+              const { toast } = await import("sonner");
+              toast.success("קישור לאיפוס סיסמה נשלח לאימייל שלך");
+            }
+          }}
+          className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          שכחת סיסמה?
+        </button>
+      )}
+
       <button
         type="button"
         onClick={() => { setIsSignUp(!isSignUp); setError(""); }}
