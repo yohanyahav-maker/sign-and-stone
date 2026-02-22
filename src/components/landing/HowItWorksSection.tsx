@@ -37,8 +37,8 @@ const HowItWorksSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {steps.map((step) => (
             <div key={step.num} className="text-center space-y-4">
-              <div className="mx-auto w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center relative">
-                <step.icon className="h-9 w-9 text-primary" />
+              <div className="mx-auto w-20 h-20 rounded-2xl bg-accent/10 flex items-center justify-center relative">
+                <step.icon className="h-9 w-9 text-accent" />
                 <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold">
                   {step.num}
                 </span>

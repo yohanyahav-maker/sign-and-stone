@@ -126,7 +126,7 @@ const SendChange = () => {
           </div>
           {(co.impact_days ?? 0) !== 0 && (
             <div className="text-center">
-              <p className="text-2xl font-black text-primary">
+              <p className="text-2xl font-black text-accent">
                 {co.impact_days! > 0 ? "+" : ""}{co.impact_days}
               </p>
               <p className="text-xs text-muted-foreground">ימי השפעה</p>

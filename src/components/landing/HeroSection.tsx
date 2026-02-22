@@ -25,14 +25,14 @@ const HeroSection = () => {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Right side — text */}
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/5 px-4 py-1.5 text-sm font-medium text-accent">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
               חדש לענף הבנייה הישראלי
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-foreground">
               כל שינוי בוילה —{" "}
-              <span className="text-primary">חתום ומתועד</span> תוך דקות
+              <span className="text-accent">חתום ומתועד</span> תוך דקות
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
