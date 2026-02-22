@@ -4,35 +4,78 @@ import { ArrowRight } from "lucide-react";
 import { DetailsStep, type ChangeOrderDetails } from "@/components/changes/DetailsStep";
 import { PricingStep, type ChangeOrderPricing } from "@/components/changes/PricingStep";
 import { useCreateChangeOrder } from "@/hooks/useChangeOrders";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import type { LocalFile } from "@/components/changes/FileUploadZone";
+import { toast } from "sonner";
 
 const NewChange = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState<1 | 2>(1);
   const [details, setDetails] = useState<ChangeOrderDetails | null>(null);
+  const [files, setFiles] = useState<LocalFile[]>([]);
   const createCO = useCreateChangeOrder();
 
-  const handleDetailsNext = (data: ChangeOrderDetails) => {
+  const handleDetailsNext = (data: ChangeOrderDetails, localFiles: LocalFile[]) => {
     setDetails(data);
+    setFiles(localFiles);
     setStep(2);
+  };
+
+  const uploadFiles = async (changeOrderId: string) => {
+    if (!user || files.length === 0) return;
+
+    for (const f of files) {
+      const ext = f.file.name.split(".").pop() ?? "bin";
+      const storagePath = `${user.id}/${changeOrderId}/${f.id}.${ext}`;
+
+      const { error: uploadErr } = await supabase.storage
+        .from("attachments")
+        .upload(storagePath, f.file, { upsert: false });
+
+      if (uploadErr) {
+        console.error("Upload error:", uploadErr);
+        continue;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from("attachments")
+        .getPublicUrl(storagePath);
+
+      await supabase.from("attachments").insert({
+        change_order_id: changeOrderId,
+        user_id: user.id,
+        file_name: f.file.name,
+        file_url: urlData.publicUrl,
+        file_type: f.type as any,
+        file_size_bytes: f.file.size,
+      });
+    }
   };
 
   const handlePricingSubmit = async (pricing: ChangeOrderPricing, asDraft: boolean) => {
     if (!details || !projectId) return;
 
-    await createCO.mutateAsync({
-      project_id: projectId,
-      title: details.title,
-      category: details.category as any,
-      description: details.description,
-      status: asDraft ? "draft" : "priced",
-      price_amount: pricing.price_amount,
-      include_vat: pricing.include_vat,
-      vat_rate: pricing.vat_rate,
-      impact_days: pricing.impact_days,
-    });
+    try {
+      const co = await createCO.mutateAsync({
+        project_id: projectId,
+        title: details.title,
+        category: details.category as any,
+        description: details.description,
+        status: asDraft ? "draft" : "priced",
+        price_amount: pricing.price_amount,
+        include_vat: pricing.include_vat,
+        vat_rate: pricing.vat_rate,
+        impact_days: pricing.impact_days,
+      });
 
-    navigate(`/projects/${projectId}`, { replace: true });
+      await uploadFiles(co.id);
+      navigate(`/projects/${projectId}`, { replace: true });
+    } catch (err) {
+      toast.error("שגיאה ביצירת השינוי");
+    }
   };
 
   return (
@@ -63,6 +106,7 @@ const NewChange = () => {
       {step === 1 ? (
         <DetailsStep
           initial={details ?? undefined}
+          initialFiles={files}
           onNext={handleDetailsNext}
           onCancel={() => navigate(-1)}
         />
