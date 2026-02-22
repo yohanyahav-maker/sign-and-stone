@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FileUploadZone, type LocalFile } from "@/components/changes/FileUploadZone";
 import type { Database } from "@/integrations/supabase/types";
 
 type Category = Database["public"]["Enums"]["change_order_category"];
@@ -36,14 +37,16 @@ export type ChangeOrderDetails = z.infer<typeof detailsSchema>;
 
 interface DetailsStepProps {
   initial?: Partial<ChangeOrderDetails>;
-  onNext: (data: ChangeOrderDetails) => void;
+  initialFiles?: LocalFile[];
+  onNext: (data: ChangeOrderDetails, files: LocalFile[]) => void;
   onCancel: () => void;
 }
 
-export function DetailsStep({ initial, onNext, onCancel }: DetailsStepProps) {
+export function DetailsStep({ initial, initialFiles, onNext, onCancel }: DetailsStepProps) {
   const [title, setTitle] = useState(initial?.title ?? "");
   const [category, setCategory] = useState<Category>((initial?.category as Category) ?? "structural");
   const [description, setDescription] = useState(initial?.description ?? "");
+  const [files, setFiles] = useState<LocalFile[]>(initialFiles ?? []);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleNext = () => {
@@ -55,7 +58,7 @@ export function DetailsStep({ initial, onNext, onCancel }: DetailsStepProps) {
       setErrors(fieldErrors);
       return;
     }
-    onNext(parsed.data);
+    onNext(parsed.data, files);
   };
 
   return (
@@ -84,6 +87,11 @@ export function DetailsStep({ initial, onNext, onCancel }: DetailsStepProps) {
         <Textarea id="co-desc" value={description} onChange={(e) => setDescription(e.target.value)}
           placeholder="פרט מה משתנה, היכן באתר, וכל פרט רלוונטי..." rows={4} maxLength={2000} />
         <p className="text-xs text-muted-foreground text-left" dir="ltr">{description.length}/2000</p>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label>קבצים מצורפים</Label>
+        <FileUploadZone files={files} onChange={setFiles} />
       </div>
 
       <div className="flex gap-3 pt-2">
