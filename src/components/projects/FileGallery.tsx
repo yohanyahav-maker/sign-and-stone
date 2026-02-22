@@ -43,7 +43,9 @@ export function FileGallery({ projectId }: FileGalleryProps) {
     );
   }
 
-  if (!files.length) return null;
+  if (!files.length) {
+    return <p className="text-sm text-muted-foreground">אין קבצים עדיין</p>;
+  }
 
   const handleDownload = (url: string, name: string | null) => {
     const a = document.createElement("a");
@@ -55,9 +57,7 @@ export function FileGallery({ projectId }: FileGalleryProps) {
   };
 
   return (
-    <div className="space-y-3">
-      <h2 className="text-lg font-bold">קבצים ({files.length})</h2>
-      <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-3 gap-2">
         {files.map((file) => {
           const url = signedUrls[file.id];
           const image = isImage(file.mime_type);
@@ -96,8 +96,7 @@ export function FileGallery({ projectId }: FileGalleryProps) {
               </div>
             </button>
           );
-        })}
-      </div>
+      })}
     </div>
   );
 }

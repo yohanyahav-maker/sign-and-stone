@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Plus, Pencil, Loader2, FolderOpen } from "lucide-react";
+import { ArrowRight, Plus, Pencil, Loader2, FolderOpen, Upload } from "lucide-react";
+import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useChangeOrders } from "@/hooks/useChangeOrders";
@@ -7,6 +8,7 @@ import { ChangeOrderCard } from "@/components/changes/ChangeOrderCard";
 import { useAuth } from "@/hooks/useAuth";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { FileGallery } from "@/components/projects/FileGallery";
+import { useFiles } from "@/hooks/useFiles";
 
 // Demo data
 const demoProjectsMap: Record<string, { name: string; address: string }> = {
@@ -54,6 +56,17 @@ const ProjectDetail = () => {
   const { user } = useAuth();
   const isDemo = !user;
   const validProjectId = projectId && isValidUuid(projectId) ? projectId : undefined;
+  const { uploadFile, isUploading } = useFiles("project", validProjectId);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files?.length || !validProjectId) return;
+    for (const file of Array.from(files)) {
+      await uploadFile({ projectId: validProjectId, entityType: "project", entityId: validProjectId, file });
+    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const { data: project, isLoading: projLoading } = useQuery({
     queryKey: ["project", validProjectId],
@@ -171,7 +184,30 @@ const ProjectDetail = () => {
         )}
       </div>
 
-      {validProjectId && <FileGallery projectId={validProjectId} />}
+      {validProjectId && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold">קבצים</h2>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted/80 disabled:opacity-50"
+            >
+              {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+              העלאה
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="image/*,video/*,.pdf"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+          </div>
+          <FileGallery projectId={validProjectId} />
+        </div>
+      )}
 
       <button
         onClick={() => navigate(`/projects/${projectId}/changes/new`)}
