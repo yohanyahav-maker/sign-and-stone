@@ -295,7 +295,7 @@ const ChangeOrderDetail = () => {
           <div className="flex gap-2">
             {co.status === "draft" && (
               <>
-                <Button className="flex-1" onClick={() => navigate(`/projects/${projectId}/changes/${co.id}/edit`)}><Edit className="h-4 w-4" />עריכה ותמחור</Button>
+                <Button className="flex-1" onClick={() => navigate(`/projects/${projectId}/changes/new`, { state: { editId: co.id } })}><Edit className="h-4 w-4" />עריכה ותמחור</Button>
                 <Button variant="outline" size="icon" onClick={handleCancel}><Ban className="h-4 w-4" /></Button>
               </>
             )}
