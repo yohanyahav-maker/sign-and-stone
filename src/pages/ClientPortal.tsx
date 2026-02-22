@@ -42,7 +42,6 @@ const ClientPortal = () => {
   const [data, setData] = useState<PortalData | null>(null);
   const [existingStatus, setExistingStatus] = useState<string>("");
 
-  // Form state
   const [clientName, setClientName] = useState("");
   const [consent, setConsent] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -206,16 +205,19 @@ const ClientPortal = () => {
         </div>
 
         {/* Change Order Card */}
-        <div className="rounded-xl border bg-card p-6 space-y-5">
+        <div className="rounded-2xl bg-card p-6 space-y-5 relative overflow-hidden card-shimmer" style={{ border: '1px solid var(--border-gold)' }}>
+          {/* Gold shimmer top line */}
+          <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(var(--gold-500)), transparent)' }} />
+
           <h1 className="text-xl font-bold text-center">{co.title}</h1>
 
           <p className="text-sm text-muted-foreground text-center">
             {categoryLabels[co.category] ?? co.category}
           </p>
 
-          {/* Price — decision point */}
+          {/* Price — gold shimmer */}
           <div className="text-center py-4">
-            <p className="text-[42px] font-black leading-none tabular-nums">
+            <p className="text-[42px] font-black leading-none tabular-nums text-gold-shimmer font-display">
               ₪{totalPrice.toLocaleString("he-IL")}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
@@ -226,7 +228,8 @@ const ClientPortal = () => {
           {/* Impact days */}
           {(co.impact_days ?? 0) !== 0 && (
             <div className="text-center">
-              <span className="inline-flex items-center gap-1 rounded-full bg-accent/10 px-4 py-2 text-lg font-bold text-accent">
+              <span className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-lg font-bold text-primary"
+                    style={{ background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.25)' }}>
                 {co.impact_days! > 0 ? "+" : ""}{co.impact_days} ימים
               </span>
               <p className="text-xs text-muted-foreground mt-1">השפעה על לוח זמנים</p>
@@ -235,17 +238,19 @@ const ClientPortal = () => {
 
           {/* Description */}
           {co.description && (
-            <div className="border-t pt-4">
-              <p className="text-sm leading-relaxed">{co.description}</p>
+            <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+              <p className="text-[15px] leading-relaxed">{co.description}</p>
             </div>
           )}
         </div>
 
         {/* Legal text */}
-        <p className="text-xs text-muted-foreground leading-relaxed text-center px-4">
-          באישור שינוי זה, אני מאשר/ת כי קראתי והבנתי את פרטי השינוי, המחיר וההשפעה על לוח הזמנים,
-          ואני מסכים/ה לתנאים המפורטים לעיל. אישור זה מהווה חתימה דיגיטלית מחייבת.
-        </p>
+        <div className="rounded-xl p-4" style={{ background: 'hsl(240 17% 8%)', border: '1px solid var(--border-subtle)' }}>
+          <p className="text-xs text-muted-foreground leading-relaxed text-center">
+            באישור שינוי זה, אני מאשר/ת כי קראתי והבנתי את פרטי השינוי, המחיר וההשפעה על לוח הזמנים,
+            ואני מסכים/ה לתנאים המפורטים לעיל. אישור זה מהווה חתימה דיגיטלית מחייבת.
+          </p>
+        </div>
 
         {/* Approve form */}
         <div className="space-y-4">
@@ -278,7 +283,8 @@ const ClientPortal = () => {
 
           <Button
             size="lg"
-            className="w-full text-base font-semibold bg-success hover:bg-success/90 text-success-foreground"
+            className="w-full text-base font-extrabold h-[60px]"
+            style={{ background: 'hsl(var(--success))', color: '#fff' }}
             onClick={handleApprove}
             disabled={!clientName.trim() || !consent || state === "submitting"}
           >
@@ -292,7 +298,8 @@ const ClientPortal = () => {
           <Button
             variant="outline"
             size="lg"
-            className="w-full text-destructive border-destructive/30 hover:bg-destructive/5"
+            className="w-full"
+            style={{ background: 'var(--danger-bg)', color: 'hsl(var(--destructive))', borderColor: 'var(--danger-border)' }}
             onClick={() => setShowRejectModal(true)}
             disabled={state === "submitting"}
           >
@@ -302,9 +309,11 @@ const ClientPortal = () => {
 
         {/* Reject Modal */}
         {showRejectModal && (
-          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center">
-            <div className="w-full max-w-lg rounded-t-2xl sm:rounded-2xl bg-background p-6 space-y-4 animate-in slide-in-from-bottom">
-              <h2 className="text-lg font-bold">דחיית שינוי</h2>
+          <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" style={{ background: 'rgba(0,0,0,0.70)', backdropFilter: 'blur(6px)' }}>
+            <div className="w-full max-w-lg rounded-t-3xl sm:rounded-3xl bg-card p-6 space-y-4 animate-in slide-in-from-bottom"
+                 style={{ borderTop: '1px solid var(--border-default)', boxShadow: '0 -8px 60px rgba(0,0,0,0.6)' }}>
+              <div className="w-9 h-1 rounded-full mx-auto mb-2" style={{ background: 'var(--border-strong)' }} />
+              <h2 className="text-lg font-extrabold">דחיית שינוי</h2>
               <div className="space-y-1.5">
                 <Label htmlFor="reject-reason">סיבת הדחייה *</Label>
                 <Textarea
@@ -345,9 +354,9 @@ const ClientPortal = () => {
         )}
 
         {/* Footer */}
-        <div className="text-center pt-4 pb-8 border-t">
+        <div className="text-center pt-4 pb-8" style={{ borderTop: '1px solid var(--border-subtle)' }}>
           <p className="text-xs text-muted-foreground">
-            מופעל ע״י <span className="font-semibold">שינוי חתום</span>
+            מופעל ע״י <span className="font-display">שינוי <span className="text-primary">חתום</span></span>
           </p>
         </div>
       </div>
@@ -362,9 +371,9 @@ function StatusScreen({ icon, title, message }: { icon: React.ReactNode; title: 
         <div className="flex justify-center">{icon}</div>
         <h1 className="text-2xl font-bold">{title}</h1>
         <p className="text-muted-foreground">{message}</p>
-        <div className="pt-4 border-t">
+        <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
           <p className="text-xs text-muted-foreground">
-            מופעל ע״י <span className="font-semibold">שינוי חתום</span>
+            מופעל ע״י <span className="font-display">שינוי <span className="text-primary">חתום</span></span>
           </p>
         </div>
       </div>

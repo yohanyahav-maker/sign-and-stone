@@ -9,10 +9,12 @@ const LandingNav = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <nav className="sticky top-0 z-50 border-b bg-background/85 backdrop-blur-xl" style={{ borderColor: 'var(--border-subtle)' }}>
       <div className="container mx-auto px-6 flex items-center justify-between h-16">
         <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-          <span className="font-black text-lg text-foreground tracking-tight">שינוי חתום</span>
+          <span className="font-display text-[22px] text-foreground tracking-tight">
+            שינוי <span className="text-primary">חתום</span>
+          </span>
         </div>
 
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">

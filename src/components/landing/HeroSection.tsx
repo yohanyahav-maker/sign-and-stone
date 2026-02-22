@@ -18,14 +18,18 @@ const HeroSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="bg-background py-24 md:py-32">
-      <div className="container mx-auto px-6">
+    <section className="relative bg-background py-24 md:py-32 overflow-hidden hero-grid gold-glow">
+      <div className="container mx-auto px-6 relative z-10">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Right side — text */}
           <div className="space-y-8">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-foreground">
+            <span className="inline-block text-[11px] font-bold tracking-[2px] uppercase text-primary px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10">
+              ניהול שינויי בנייה מקצועי
+            </span>
+
+            <h1 className="font-display text-[42px] md:text-[52px] leading-[1.08] text-foreground">
               כל שינוי בבנייה —{" "}
-              <span className="text-accent">חתום ומתועד</span> תוך דקות
+              <span className="text-primary">חתום ומתועד</span> תוך דקות
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
@@ -35,7 +39,7 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Button
                 size="lg"
-                className="text-base font-semibold px-8 h-14"
+                className="text-base font-extrabold px-8 h-14 shadow-gold-md hover:shadow-gold-lg transition-all"
                 onClick={() => navigate("/login")}
               >
                 התחל ניסיון חינם 14 יום
@@ -51,41 +55,44 @@ const HeroSection = () => {
               </Button>
             </div>
 
-            <p className="text-sm text-muted-foreground">
-              ✓ ללא כרטיס אשראי &nbsp; ✓ התקנה תוך דקות
-            </p>
+            <div className="flex gap-5 text-[13px] text-muted-foreground font-semibold">
+              <span><span className="text-success">✓</span> ללא כרטיס אשראי</span>
+              <span><span className="text-success">✓</span> התקנה תוך דקות</span>
+            </div>
           </div>
 
           {/* Left side — phone mockup */}
           <div className="flex justify-center">
             <div className="w-72 md:w-80">
-              <div className="rounded-[22px] border border-border bg-card shadow-soft overflow-hidden">
+              <div className="rounded-[22px] border bg-card overflow-hidden relative card-shimmer" style={{ borderColor: 'var(--border-default)' }}>
                 <div className="h-8 bg-secondary flex items-center justify-center">
                   <div className="w-20 h-1.5 rounded-full bg-foreground/10" />
                 </div>
 
-                <div className="px-4 py-3 border-b border-border">
+                <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
                   <p className="text-xs text-muted-foreground">וילה כהן — קיסריה</p>
                   <p className="text-sm font-bold">שינויי בנייה</p>
                 </div>
 
                 <div className="px-3 py-2 space-y-2">
                   {mockChanges.map((c, i) => (
-                    <div key={i} className="flex items-center justify-between rounded-[14px] border border-border p-3">
+                    <div key={i} className="flex items-center justify-between rounded-xl p-3" style={{ border: '1px solid var(--border-default)', background: 'hsl(240 16% 12%)' }}>
                       <div className="space-y-0.5">
                         <p className="text-sm font-semibold">{c.title}</p>
                         <p className="text-xs text-muted-foreground">{c.price}</p>
                       </div>
-                      <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${
-                        c.status === "approved" ? "bg-success/10 text-success" : "bg-accent/10 text-accent"
-                      }`}>
+                      <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
+                        c.status === "approved"
+                          ? "text-success"
+                          : "text-primary"
+                      }`} style={{ background: c.status === "approved" ? 'var(--success-bg)' : 'rgba(212,168,67,0.12)' }}>
                         {c.statusLabel}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="px-3 py-3 border-t border-border bg-secondary/50">
+                <div className="px-3 py-3" style={{ borderTop: '1px solid var(--border-subtle)', background: 'hsl(240 16% 12% / 0.5)' }}>
                   <div className="grid grid-cols-3 gap-2 text-center">
                     {stats.map((s, i) => (
                       <div key={i}>

@@ -21,7 +21,7 @@ const problems = [
 
 const ProblemSection = () => {
   return (
-    <section className="py-24 bg-secondary">
+    <section className="py-24 bg-card">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -34,12 +34,12 @@ const ProblemSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {problems.map((p) => (
-            <div key={p.num} className="rounded-[14px] bg-background p-7 space-y-3 shadow-soft">
-              <span className="text-xs font-bold text-muted-foreground">
+            <div key={p.num} className="rounded-2xl bg-background p-7 space-y-3 relative overflow-hidden card-shimmer" style={{ border: '1px solid var(--border-default)' }}>
+              <span className="font-display text-5xl text-primary/30">
                 {p.num}
               </span>
-              <h3 className="font-bold text-lg text-foreground">{p.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{p.description}</p>
+              <h3 className="font-bold text-[17px] text-foreground">{p.title}</h3>
+              <p className="text-[15px] text-muted-foreground leading-relaxed">{p.description}</p>
             </div>
           ))}
         </div>

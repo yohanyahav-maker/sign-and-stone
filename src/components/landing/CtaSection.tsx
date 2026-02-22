@@ -5,23 +5,23 @@ const CtaSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-24 bg-foreground">
-      <div className="container mx-auto px-6 text-center space-y-8 max-w-2xl">
-        <h2 className="text-3xl md:text-4xl font-black text-primary-foreground">
-          שינוי אחד חתום שווה יותר מאלף שיחות
+    <section className="py-24 bg-background relative overflow-hidden hero-grid gold-glow">
+      <div className="container mx-auto px-6 text-center space-y-8 max-w-2xl relative z-10">
+        <h2 className="font-display text-3xl md:text-4xl text-foreground">
+          שינוי אחד <span className="text-primary">חתום</span> שווה יותר מאלף שיחות
         </h2>
-        <p className="text-primary-foreground/60 text-lg">
+        <p className="text-muted-foreground text-lg">
           הצטרף לקבלני בנייה שכבר חוסכים זמן, כסף ועצבים בכל פרויקט.
         </p>
         <Button
           size="lg"
-          className="h-14 px-10 text-base font-semibold bg-background text-foreground hover:bg-background/90"
+          className="h-14 px-10 text-base font-extrabold shadow-gold-md hover:shadow-gold-lg transition-all"
           onClick={() => navigate("/login")}
         >
           התחל חינם — 14 יום ניסיון
         </Button>
-        <p className="text-sm text-primary-foreground/40">
-          ✓ ללא כרטיס אשראי &nbsp; ✓ ביטול בכל עת
+        <p className="text-sm text-muted-foreground">
+          <span className="text-success">✓</span> ללא כרטיס אשראי &nbsp; <span className="text-success">✓</span> ביטול בכל עת
         </p>
       </div>
     </section>

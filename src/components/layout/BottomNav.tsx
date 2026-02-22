@@ -12,7 +12,10 @@ export function BottomNav() {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 border-t border-border bg-background pb-[env(safe-area-inset-bottom)]">
+    <nav
+      className="fixed bottom-0 inset-x-0 z-50 bg-card/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
+      style={{ borderTop: '1px solid var(--border-subtle)' }}
+    >
       <div className="flex items-center justify-around h-16">
         {navItems.map((item) => {
           const isActive = location.pathname.startsWith(item.path);
@@ -22,11 +25,11 @@ export function BottomNav() {
               onClick={() => navigate(item.path)}
               className={cn(
                 "flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors",
-                isActive ? "text-foreground" : "text-muted-foreground"
+                isActive ? "text-primary" : "text-muted-foreground"
               )}
             >
               <item.icon className="h-5 w-5" />
-              <span className="text-[11px] font-medium">{item.label}</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider">{item.label}</span>
             </button>
           );
         })}

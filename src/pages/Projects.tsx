@@ -20,11 +20,14 @@ const projectTypeLabels: Record<string, string> = {
   residential: "מגורים", commercial: "מסחרי", infrastructure: "תשתיות", other: "אחר",
 };
 
-function KpiCard({ value, label }: { value: string; label: string }) {
+function KpiCard({ value, label, variant }: { value: string; label: string; variant?: "gold" | "green" }) {
   return (
-    <div className="flex-1 rounded-[14px] bg-card p-5 text-center space-y-1">
-      <p className="text-3xl font-black text-foreground tracking-tight">{value}</p>
-      <p className="text-xs text-muted-foreground font-medium">{label}</p>
+    <div className="flex-1 rounded-2xl bg-card p-5 text-center space-y-1 relative overflow-hidden card-shimmer"
+         style={{ border: '1px solid var(--border-default)' }}>
+      <p className={`text-3xl font-black tracking-tight ${
+        variant === "gold" ? "text-primary" : variant === "green" ? "text-success" : "text-foreground"
+      }`}>{value}</p>
+      <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider">{label}</p>
     </div>
   );
 }
@@ -51,7 +54,7 @@ const Projects = () => {
     ? 12
     : projectIds.reduce((s, id) => {
         const c = counts?.[id];
-        return s + (c ? (c.approvedSum > 0 ? 1 : 0) : 0); // count projects with approvals
+        return s + (c ? (c.approvedSum > 0 ? 1 : 0) : 0);
       }, 0);
 
   const totalSum = isDemo
@@ -66,7 +69,8 @@ const Projects = () => {
         <button
           key={p.id}
           onClick={() => navigate(`/projects/${p.id}`)}
-          className="w-full text-right rounded-[14px] bg-card p-5 space-y-2 transition-colors active:bg-secondary"
+          className="w-full text-right rounded-2xl bg-card p-5 space-y-2 transition-all hover:bg-secondary active:scale-[0.985]"
+          style={{ border: '1px solid var(--border-default)' }}
         >
           <div className="flex items-center justify-between gap-2">
             <h3 className="font-bold text-base truncate">{p.name}</h3>
@@ -82,7 +86,7 @@ const Projects = () => {
     if (isLoading) {
       return (
         <div className="flex justify-center py-16">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       );
     }
@@ -99,8 +103,8 @@ const Projects = () => {
   return (
     <div dir="rtl" className="px-5 py-8 space-y-8 max-w-2xl mx-auto">
       {/* Greeting */}
-      <h1 className="text-2xl font-bold text-foreground">
-        שלום, {displayName}
+      <h1 className="font-display text-[32px] text-foreground">
+        שלום, {displayName} 👋
       </h1>
 
       {/* Subscription banner */}
@@ -108,28 +112,29 @@ const Projects = () => {
 
       {/* KPI Cards */}
       <div className="flex gap-3">
-        <KpiCard value={String(totalPending)} label="ממתינים לאישור" />
+        <KpiCard value={String(totalPending)} label="ממתינים לאישור" variant="gold" />
         <KpiCard value={String(totalApproved)} label="שינויים מאושרים" />
-        <KpiCard value={`₪${totalSum.toLocaleString("he-IL")}`} label="סה״כ תוספות" />
+        <KpiCard value={`₪${totalSum.toLocaleString("he-IL")}`} label="סה״כ תוספות" variant="green" />
       </div>
 
       {/* Project List */}
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold text-muted-foreground">פרויקטים</h2>
+        <h2 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">פרויקטים</h2>
         {renderProjects()}
       </div>
 
-      {/* FAB */}
+      {/* FAB — Gold gradient */}
       <button
         onClick={() => {
           if (isDemo) navigate("/login");
           else if (!atLimit) navigate("/projects/new");
         }}
         disabled={!isDemo && atLimit}
-        className="fixed bottom-24 left-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-primary-foreground shadow-soft transition-transform active:scale-95 disabled:opacity-40"
+        className="fixed bottom-24 left-5 z-40 flex h-[60px] w-[60px] items-center justify-center rounded-full text-2xl font-light shadow-gold-md transition-all hover:scale-110 hover:shadow-gold-lg active:scale-95 disabled:opacity-40 animate-fab-appear"
+        style={{ background: 'var(--gold-gradient)', color: '#1A1200' }}
         aria-label="פרויקט חדש"
       >
-        <Plus className="h-6 w-6" />
+        <Plus className="h-7 w-7" />
       </button>
     </div>
   );

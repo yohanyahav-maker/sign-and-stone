@@ -1,9 +1,11 @@
 const FooterSection = () => {
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="bg-card" style={{ borderTop: '1px solid var(--border-subtle)' }}>
       <div className="container mx-auto px-6 py-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="font-bold text-foreground tracking-tight">שינוי חתום</span>
+          <span className="font-display text-lg text-foreground">
+            שינוי <span className="text-primary">חתום</span>
+          </span>
 
           <div className="flex gap-6 text-sm text-muted-foreground">
             <a href="mailto:info@shinui-hatum.co.il" className="hover:text-foreground transition-colors">יצירת קשר</a>
