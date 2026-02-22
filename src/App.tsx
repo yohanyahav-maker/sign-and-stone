@@ -9,6 +9,8 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Projects from "./pages/Projects";
+import ProjectDetail from "./pages/ProjectDetail";
+import NewChange from "./pages/NewChange";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,8 @@ const App = () => (
               }
             >
               <Route path="/projects" element={<Projects />} />
+              <Route path="/projects/:projectId" element={<ProjectDetail />} />
+              <Route path="/projects/:projectId/changes/new" element={<NewChange />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
