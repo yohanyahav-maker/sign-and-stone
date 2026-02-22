@@ -6,46 +6,81 @@ import { Input } from "@/components/ui/input";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
+const RECOVERY_TIMEOUT_MS = 10000;
+
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
+  const [timedOut, setTimedOut] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Supabase sets the session automatically from the recovery link hash
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
         setReady(true);
       }
     });
-    return () => subscription.unsubscribe();
+
+    const timer = setTimeout(() => {
+      setTimedOut(true);
+    }, RECOVERY_TIMEOUT_MS);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password.length < 6) {
+      toast.error("הסיסמה חייבת להכיל לפחות 6 תווים");
+      return;
+    }
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password });
-    setLoading(false);
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("הסיסמה עודכנה בהצלחה");
-      navigate("/projects", { replace: true });
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("הסיסמה עודכנה בהצלחה");
+        navigate("/projects", { replace: true });
+      }
+    } catch {
+      toast.error("שגיאה בעדכון הסיסמה, נסה שוב");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!ready) {
+  if (!ready && !timedOut) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-6">
-        <p className="text-muted-foreground text-sm">מאמת קישור...</p>
+      <div dir="rtl" className="flex min-h-screen items-center justify-center bg-background px-6">
+        <div className="text-center space-y-2">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground mx-auto" />
+          <p className="text-muted-foreground text-sm">מאמת קישור...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!ready && timedOut) {
+    return (
+      <div dir="rtl" className="flex min-h-screen flex-col items-center justify-center bg-background px-6 gap-4">
+        <p className="text-muted-foreground text-sm text-center">
+          הקישור לא תקין או שפג תוקפו. נסה לבקש איפוס סיסמה מחדש.
+        </p>
+        <Button variant="outline" onClick={() => navigate("/login", { replace: true })}>
+          חזרה לכניסה
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
+    <div dir="rtl" className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
       <div className="w-full max-w-sm space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-black tracking-tight">איפוס סיסמה</h1>

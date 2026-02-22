@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
+
+const GOOGLE_TIMEOUT_MS = 10000;
 
 export function EmailAuthForm() {
-  const [isSignUp, setIsSignUp] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,11 +23,25 @@ export function EmailAuthForm() {
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     setError("");
-    const { error } = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (error) {
-      setError(error.message || "שגיאה בהתחברות עם Google");
+
+    const timeout = setTimeout(() => {
+      setGoogleLoading(false);
+      setError("הזמן הקצוב לכניסה עם Google עבר. נסה שוב.");
+    }, GOOGLE_TIMEOUT_MS);
+
+    try {
+      const { error } = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (error) {
+        clearTimeout(timeout);
+        setError(error.message || "שגיאה בהתחברות עם Google");
+        setGoogleLoading(false);
+      }
+      // If no error, page will redirect — keep loading state
+    } catch {
+      clearTimeout(timeout);
+      setError("שגיאה בהתחברות עם Google");
       setGoogleLoading(false);
     }
   };
@@ -34,30 +51,51 @@ export function EmailAuthForm() {
     setError("");
     setLoading(true);
 
-    if (isSignUp) {
-      const { error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-      if (signUpError) {
-        setError(signUpError.message);
-        setLoading(false);
-        return;
+    try {
+      if (isSignUp) {
+        const { error: signUpError } = await supabase.auth.signUp({ email, password });
+        if (signUpError) {
+          setError(signUpError.message);
+          setLoading(false);
+          return;
+        }
+        toast.success("נרשמת בהצלחה! בדוק את האימייל לאימות.");
+      } else {
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) {
+          setError(signInError.message);
+          setLoading(false);
+          return;
+        }
       }
-    } else {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (signInError) {
-        setError(signInError.message);
-        setLoading(false);
-        return;
-      }
+      setLoading(false);
+      navigate("/projects");
+    } catch {
+      setError("שגיאה בהתחברות, נסה שוב");
+      setLoading(false);
     }
+  };
 
-    setLoading(false);
-    navigate("/projects");
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("הזן אימייל תחילה");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) {
+        setError(error.message);
+      } else {
+        toast.success("קישור לאיפוס סיסמה נשלח לאימייל שלך");
+      }
+    } catch {
+      setError("שגיאה בשליחת קישור, נסה שוב");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -149,23 +187,8 @@ export function EmailAuthForm() {
         {!isSignUp && (
           <button
             type="button"
-            onClick={async () => {
-              if (!email) {
-                setError("הזן אימייל תחילה");
-                return;
-              }
-              setLoading(true);
-              const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/reset-password`,
-              });
-              setLoading(false);
-              if (error) {
-                setError(error.message);
-              } else {
-                const { toast } = await import("sonner");
-                toast.success("קישור לאיפוס סיסמה נשלח לאימייל שלך");
-              }
-            }}
+            onClick={handleForgotPassword}
+            disabled={loading}
             className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             שכחת סיסמה?
