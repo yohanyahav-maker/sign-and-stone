@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 const mockChanges = [
   { title: "שינוי שלד קומה ב׳", price: "₪45,000", status: "approved" as const, statusLabel: "אושר" },
-  { title: "תוספת קומה", price: "₪28,000", status: "pending" as const, statusLabel: "ממתין" },
+  { title: "תוספת קומה", price: "₪400,000", status: "pending" as const, statusLabel: "ממתין" },
   { title: "ריצוף פורצלן סלון", price: "₪9,200", status: "approved" as const, statusLabel: "אושר" },
 ];
 
