@@ -16,26 +16,20 @@ const demoProjects = [
     id: "demo-1",
     name: "וילה כהן",
     address: "רחוב האלון 12, קיסריה",
-    project_type: "residential" as const,
+    project_type: "villa" as const,
     pending: 3,
     approvedSum: 82000,
   },
   {
-    id: "demo-2",
-    name: "דירת לוי",
-    address: "שד' רוטשילד 45, תל אביב",
-    project_type: "renovation" as const,
-    pending: 1,
-    approvedSum: 24000,
+    id: "demo-2", name: "תוספת קומה — לוי", address: "הרצליה",
+    project_type: "addition" as const, pending: 1, approvedSum: 24000,
   },
 ];
 
 const projectTypeLabels: Record<string, string> = {
-  residential: "מגורים",
-  commercial: "מסחרי",
-  renovation: "שיפוץ",
-  infrastructure: "תשתיות",
-  other: "אחר",
+  villa: "וילה", ground_attached: "צמוד קרקע", advanced: "בנייה מתקדמת",
+  addition: "תוספת קומה", renovation: "שיפוץ מקיף",
+  residential: "מגורים", commercial: "מסחרי", infrastructure: "תשתיות", other: "אחר",
 };
 
 const Projects = () => {

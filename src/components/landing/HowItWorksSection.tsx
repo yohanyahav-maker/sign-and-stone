@@ -4,20 +4,20 @@ const steps = [
   {
     num: 1,
     icon: ClipboardEdit,
-    title: "יוצרים שינוי",
-    description: "מתארים את השינוי, מוסיפים מחיר ותמונות — תוך דקה.",
+    title: "יוצרים שינוי בנייה",
+    description: "מתארים את השינוי, מצלמים, בוחרים קטגוריה (שלד, חשמל, מטבח...) ומתמחרים — תוך דקה.",
   },
   {
     num: 2,
     icon: MessageCircle,
-    title: "שולחים בוואטסאפ",
-    description: "הלקוח מקבל לינק, רואה את הפרטים ומאשר ישירות מהנייד.",
+    title: "שולחים לבעל הבית",
+    description: "בעל הבית מקבל לינק בוואטסאפ, רואה את כל הפרטים עם תמונות ומחיר, ומחליט.",
   },
   {
     num: 3,
     icon: FileCheck,
-    title: "הלקוח חותם",
-    description: "חתימה דיגיטלית מחייבת — המסמך נשמר בענן עם תוקף משפטי.",
+    title: "חתימה דיגיטלית",
+    description: "חתימה מחייבת — השינוי ננעל, נשמר בענן, ומוכן להפקת PDF חתום.",
   },
 ];
 
@@ -30,7 +30,7 @@ const HowItWorksSection = () => {
             איך זה עובד?
           </h2>
           <p className="text-muted-foreground text-lg">
-            תהליך פשוט ב-3 שלבים — מהשינוי ועד לחתימה.
+            תהליך פשוט ב-3 שלבים — מהשינוי באתר ועד לחתימה.
           </p>
         </div>
 
@@ -44,9 +44,7 @@ const HowItWorksSection = () => {
                 </span>
               </div>
               <h3 className="font-bold text-xl text-foreground">{step.title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mx-auto">
-                {step.description}
-              </p>
+              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mx-auto">{step.description}</p>
             </div>
           ))}
         </div>

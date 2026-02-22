@@ -15,9 +15,11 @@ import { he } from "date-fns/locale";
 import { toast } from "sonner";
 
 const categoryLabels: Record<string, string> = {
-  structural: "מבנה", electrical: "חשמל", plumbing: "אינסטלציה",
-  finishing: "גמרים", hvac: "מיזוג", flooring: "ריצוף",
-  painting: "צביעה", landscaping: "גינון", safety: "בטיחות", other: "אחר",
+  structural: "שלד ובטון", concrete: "יציקות", electrical: "חשמל",
+  plumbing: "אינסטלציה", aluminum: "אלומיניום", kitchen: "מטבח",
+  finishing: "גמרים", flooring: "ריצוף", painting: "צביעה",
+  insulation: "איטום", hvac: "מיזוג", landscaping: "פיתוח חוץ",
+  safety: "בטיחות", other: "אחר",
 };
 
 function formatDate(dateStr: string) {
@@ -27,19 +29,19 @@ function formatDate(dateStr: string) {
 // Demo data
 const demoChangeOrdersMap: Record<string, any> = {
   "demo-co-1": {
-    id: "demo-co-1", title: "תוספת חדר ממ״ד", status: "approved",
-    category: "structural", description: "תוספת חדר ממ\"ד בקומת הקרקע בהתאם לתקן. כולל: יציקת בטון, ברזל, טפסנות, איטום ותשתיות חשמל ואינסטלציה.",
+    id: "demo-co-1", title: "שינוי שלד קומה ב׳", status: "approved",
+    category: "structural", description: "שינוי במבנה השלד בקומה השנייה. כולל: הזזת קיר פנימי, תוספת תמיכה, ויציקת בטון נוספת.",
     price_amount: 45000, include_vat: true, vat_rate: 17, impact_days: 14,
     created_at: "2024-12-15T10:00:00Z", updated_at: "2025-01-10T12:00:00Z",
   },
   "demo-co-2": {
-    id: "demo-co-2", title: "שדרוג מטבח", status: "sent",
-    category: "finishing", description: "החלפת ארונות מטבח, שיש קיסר, כיור כפול נירוסטה וברז מסתובב. כולל פירוק הישן והתקנה מלאה.",
+    id: "demo-co-2", title: "שדרוג מטבח אלון", status: "sent",
+    category: "kitchen", description: "החלפת ארונות מטבח לאלון מלא, שיש קיסר, כיור כפול נירוסטה וברז מסתובב. כולל פירוק הישן והתקנה מלאה.",
     price_amount: 28000, include_vat: true, vat_rate: 17, impact_days: 7,
     created_at: "2025-01-03T14:30:00Z", updated_at: "2025-01-20T09:00:00Z",
   },
   "demo-co-3": {
-    id: "demo-co-3", title: "ריצוף סלון", status: "draft",
+    id: "demo-co-3", title: "ריצוף פורצלן סלון", status: "draft",
     category: "flooring", description: "ריצוף פורצלן 60x120 בגוון אפור בהיר. כולל חיפוי קירות חלקי, פנלים וניקיון סופי.",
     price_amount: 9200, include_vat: false, vat_rate: 17, impact_days: 3,
     created_at: "2025-02-01T09:00:00Z", updated_at: "2025-02-01T09:00:00Z",

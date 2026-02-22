@@ -3,11 +3,9 @@ import { MapPin, Clock, CheckCircle } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 
 const projectTypeLabels: Record<string, string> = {
-  residential: "מגורים",
-  commercial: "מסחרי",
-  renovation: "שיפוץ",
-  infrastructure: "תשתיות",
-  other: "אחר",
+  villa: "וילה", ground_attached: "צמוד קרקע", advanced: "בנייה מתקדמת",
+  addition: "תוספת קומה", renovation: "שיפוץ מקיף",
+  residential: "מגורים", commercial: "מסחרי", infrastructure: "תשתיות", other: "אחר",
 };
 
 interface ProjectCardProps {

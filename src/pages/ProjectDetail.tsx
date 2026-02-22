@@ -10,33 +10,21 @@ import { StatusBadge } from "@/components/ui/status-badge";
 // Demo data
 const demoProjectsMap: Record<string, { name: string; address: string }> = {
   "demo-1": { name: "וילה כהן", address: "רחוב האלון 12, קיסריה" },
-  "demo-2": { name: "דירת לוי", address: "שד' רוטשילד 45, תל אביב" },
+  "demo-2": { name: "תוספת קומה — לוי", address: "שד' רוטשילד 45, הרצליה" },
 };
 
 const demoChangeOrders = [
   {
-    id: "demo-co-1",
-    title: "תוספת חדר ממ״ד",
-    status: "approved",
-    price_amount: 45000,
-    category: "structural",
-    created_at: "2024-12-15T10:00:00Z",
+    id: "demo-co-1", title: "שינוי שלד קומה ב׳", status: "approved",
+    price_amount: 45000, category: "structural", created_at: "2024-12-15T10:00:00Z",
   },
   {
-    id: "demo-co-2",
-    title: "שדרוג מטבח",
-    status: "sent",
-    price_amount: 28000,
-    category: "finishing",
-    created_at: "2025-01-03T14:30:00Z",
+    id: "demo-co-2", title: "שדרוג מטבח אלון", status: "sent",
+    price_amount: 28000, category: "kitchen", created_at: "2025-01-03T14:30:00Z",
   },
   {
-    id: "demo-co-3",
-    title: "ריצוף סלון",
-    status: "draft",
-    price_amount: 9200,
-    category: "flooring",
-    created_at: "2025-02-01T09:00:00Z",
+    id: "demo-co-3", title: "ריצוף פורצלן סלון", status: "draft",
+    price_amount: 9200, category: "flooring", created_at: "2025-02-01T09:00:00Z",
   },
 ];
 
@@ -50,12 +38,11 @@ const statusLabels: Record<string, string> = {
 };
 
 const categoryLabels: Record<string, string> = {
-  structural: "מבנה",
-  electrical: "חשמל",
-  plumbing: "אינסטלציה",
-  finishing: "גמרים",
-  flooring: "ריצוף",
-  other: "אחר",
+  structural: "שלד ובטון", concrete: "יציקות", electrical: "חשמל",
+  plumbing: "אינסטלציה", aluminum: "אלומיניום", kitchen: "מטבח",
+  finishing: "גמרים", flooring: "ריצוף", painting: "צביעה",
+  insulation: "איטום", hvac: "מיזוג", landscaping: "פיתוח חוץ",
+  safety: "בטיחות", other: "אחר",
 };
 
 const isValidUuid = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);

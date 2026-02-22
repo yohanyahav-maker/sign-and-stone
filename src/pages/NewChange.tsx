@@ -23,7 +23,7 @@ const NewChange = () => {
     await createCO.mutateAsync({
       project_id: projectId,
       title: details.title,
-      category: details.category,
+      category: details.category as any,
       description: details.description,
       status: asDraft ? "draft" : "priced",
       price_amount: pricing.price_amount,
