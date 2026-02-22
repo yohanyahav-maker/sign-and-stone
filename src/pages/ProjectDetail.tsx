@@ -58,27 +58,30 @@ const categoryLabels: Record<string, string> = {
   other: "אחר",
 };
 
+const isValidUuid = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+
 const ProjectDetail = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const isDemo = !user;
+  const validProjectId = projectId && isValidUuid(projectId) ? projectId : undefined;
 
   const { data: project, isLoading: projLoading } = useQuery({
-    queryKey: ["project", projectId],
-    enabled: !!projectId && !isDemo,
+    queryKey: ["project", validProjectId],
+    enabled: !!validProjectId && !isDemo,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("projects")
         .select("*")
-        .eq("id", projectId!)
+        .eq("id", validProjectId!)
         .single();
       if (error) throw error;
       return data;
     },
   });
 
-  const { data: changeOrders, isLoading: coLoading } = useChangeOrders(isDemo ? undefined : projectId!);
+  const { data: changeOrders, isLoading: coLoading } = useChangeOrders(isDemo ? "" : (validProjectId ?? ""));
 
   // Demo mode
   if (isDemo) {
