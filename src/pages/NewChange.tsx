@@ -23,6 +23,7 @@ const NewChange = () => {
   const [pricing, setPricing] = useState<ChangeOrderPricing | null>(null);
   const [files, setFiles] = useState<LocalFile[]>([]);
   const createCO = useCreateChangeOrder();
+  const [isSaving, setIsSaving] = useState(false);
 
   // Check if project has client portal enabled
   const { data: project } = useQuery({
@@ -82,7 +83,8 @@ const NewChange = () => {
   };
 
   const handleSave = async (status: "draft" | "priced" | "sent") => {
-    if (!details || !projectId) return;
+    if (!details || !projectId || isSaving) return;
+    setIsSaving(true);
 
     const pricingData = pricing ?? {
       price_amount: 0,
@@ -121,11 +123,14 @@ const NewChange = () => {
       }
     } catch (err: any) {
       toast.error(parseChangeOrderError(err));
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleSlideToSend = async () => {
-    if (!details || !projectId || !pricing) return;
+    if (!details || !projectId || !pricing || isSaving) return;
+    setIsSaving(true);
 
     try {
       // Save as priced first
@@ -147,6 +152,8 @@ const NewChange = () => {
       navigate(`/projects/${projectId}/changes/${co.id}/send`, { replace: true });
     } catch (err: any) {
       toast.error(parseChangeOrderError(err));
+    } finally {
+      setIsSaving(false);
     }
   };
 

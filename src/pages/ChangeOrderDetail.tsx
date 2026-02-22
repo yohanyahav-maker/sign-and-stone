@@ -3,12 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useChangeOrder, useUpdateChangeOrder } from "@/hooks/useChangeOrders";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   ArrowRight, Loader2, Send, Ban, Clock, FileText, Calendar,
-  CheckCircle2, XCircle, DollarSign, Edit,
+  CheckCircle2, XCircle, DollarSign, Edit, Download,
 } from "lucide-react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
@@ -209,7 +210,7 @@ const ChangeOrderDetail = () => {
     : null;
 
   return (
-    <div className="px-4 py-6 space-y-5 pb-28">
+    <div dir="rtl" className="px-4 py-6 space-y-5 pb-28">
       <div className="flex items-center gap-3">
         <button onClick={() => navigate(`/projects/${projectId}`)} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
           <ArrowRight className="h-5 w-5" />
@@ -291,6 +292,11 @@ const ChangeOrderDetail = () => {
         </div>
       </div>
 
+      {/* PDF Download for terminal states */}
+      {(co.status === "approved" || co.status === "rejected") && (
+        <PdfDownloadButton changeOrderId={co.id} />
+      )}
+
       {!isTerminal && (
         <div className="fixed bottom-20 left-0 right-0 z-40 px-4 pb-2 bg-gradient-to-t from-background via-background to-transparent pt-6">
           <div className="flex gap-2">
@@ -315,5 +321,36 @@ const ChangeOrderDetail = () => {
     </div>
   );
 };
+
+function PdfDownloadButton({ changeOrderId }: { changeOrderId: string }) {
+  const [loading, setLoading] = useState(false);
+
+  const handleDownload = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-pdf", {
+        body: { change_order_id: changeOrderId },
+      });
+      if (error || data?.error) {
+        toast.error(data?.error || "שגיאה בהפקת PDF");
+        return;
+      }
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch {
+      toast.error("שגיאה בהפקת PDF");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button variant="outline" className="w-full" onClick={handleDownload} disabled={loading}>
+      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+      הורד PDF
+    </Button>
+  );
+}
 
 export default ChangeOrderDetail;

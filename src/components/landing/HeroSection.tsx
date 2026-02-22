@@ -41,6 +41,14 @@ const HeroSection = () => {
                 התחל ניסיון חינם 14 יום
                 <ArrowLeft className="h-5 w-5 mr-2" />
               </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="text-base font-semibold px-8 h-14"
+                onClick={() => window.location.href = "mailto:info@shinui-hatum.co.il?subject=בקשת הדגמה"}
+              >
+                בקש הדגמה
+              </Button>
             </div>
 
             <p className="text-sm text-muted-foreground">
