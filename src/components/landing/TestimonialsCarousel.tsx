@@ -114,7 +114,7 @@ const TestimonialsSection = () => {
                   <div className="rounded-2xl border border-border bg-card p-6 space-y-4 h-full">
                     <div className="flex gap-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-accent text-accent" />
+                        <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       ))}
                     </div>
                     <p className="text-sm text-foreground leading-relaxed min-h-[4.5rem]">
