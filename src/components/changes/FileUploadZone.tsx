@@ -14,7 +14,7 @@ const ACCEPTED_TYPES = [
   "video/mp4", "video/quicktime", "video/webm",
   "application/pdf",
 ];
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
 const MAX_FILES = 10;
 
 function getFileType(file: File): LocalFile["type"] {
@@ -101,9 +101,9 @@ export function FileUploadZone({ files, onChange, disabled }: FileUploadZoneProp
   );
 
   const FileIcon = ({ type }: { type: LocalFile["type"] }) => {
-    if (type === "video") return <Film className="h-6 w-6 text-muted-foreground" />;
-    if (type === "pdf") return <FileText className="h-6 w-6 text-destructive/70" />;
-    return <ImageIcon className="h-6 w-6 text-muted-foreground" />;
+    if (type === "video") return <Film className="h-5 w-5 text-muted-foreground" />;
+    if (type === "pdf") return <FileText className="h-5 w-5 text-muted-foreground" />;
+    return <ImageIcon className="h-5 w-5 text-muted-foreground" />;
   };
 
   return (
@@ -117,99 +117,67 @@ export function FileUploadZone({ files, onChange, disabled }: FileUploadZoneProp
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={cn(
-          "flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center transition-colors",
+          "flex w-full flex-col items-center justify-center gap-2 rounded-[14px] border-2 border-dashed p-8 text-center transition-colors",
           dragOver
-            ? "border-accent bg-accent/5"
-            : "border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-muted/50",
+            ? "border-foreground/30 bg-secondary"
+            : "border-border hover:border-foreground/20 hover:bg-secondary/50",
           disabled && "pointer-events-none opacity-50",
         )}
       >
-        <Upload className="h-7 w-7 text-muted-foreground" />
-        <p className="text-sm font-medium text-muted-foreground">
-          גרור קבצים לכאן או לחץ להעלאה
+        <Upload className="h-6 w-6 text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">
+          גרור או לחץ להעלאה
         </p>
-        <p className="text-xs text-muted-foreground/70">
-          תמונות, וידאו או PDF · עד 20MB · עד {MAX_FILES} קבצים
+        <p className="text-xs text-muted-foreground/60">
+          תמונות, וידאו, PDF · עד 20MB
         </p>
       </button>
 
-      {/* Camera capture buttons */}
+      {/* Camera buttons */}
       <div className="flex gap-2">
         <button
           type="button"
           disabled={disabled || files.length >= MAX_FILES}
           onClick={() => cameraRef.current?.click()}
           className={cn(
-            "flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted/50",
+            "flex flex-1 items-center justify-center gap-2 rounded-[14px] bg-card px-3 py-3 text-sm font-medium transition-colors active:bg-secondary",
             disabled && "pointer-events-none opacity-50",
           )}
         >
           <Camera className="h-5 w-5 text-muted-foreground" />
-          <span>צלם תמונה</span>
+          <span>צלם</span>
         </button>
         <button
           type="button"
           disabled={disabled || files.length >= MAX_FILES}
           onClick={() => videoRef.current?.click()}
           className={cn(
-            "flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted/50",
+            "flex flex-1 items-center justify-center gap-2 rounded-[14px] bg-card px-3 py-3 text-sm font-medium transition-colors active:bg-secondary",
             disabled && "pointer-events-none opacity-50",
           )}
         >
           <Video className="h-5 w-5 text-muted-foreground" />
-          <span>צלם סרטון</span>
+          <span>סרטון</span>
         </button>
       </div>
 
-      <input
-        ref={inputRef}
-        type="file"
-        multiple
-        accept={ACCEPTED_TYPES.join(",")}
-        onChange={handleInputChange}
-        className="hidden"
-      />
-      <input
-        ref={cameraRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        onChange={handleInputChange}
-        className="hidden"
-      />
-      <input
-        ref={videoRef}
-        type="file"
-        accept="video/*"
-        capture="environment"
-        onChange={handleInputChange}
-        className="hidden"
-      />
+      <input ref={inputRef} type="file" multiple accept={ACCEPTED_TYPES.join(",")} onChange={handleInputChange} className="hidden" />
+      <input ref={cameraRef} type="file" accept="image/*" capture="environment" onChange={handleInputChange} className="hidden" />
+      <input ref={videoRef} type="file" accept="video/*" capture="environment" onChange={handleInputChange} className="hidden" />
 
       {/* Preview grid */}
       {files.length > 0 && (
         <div className="grid grid-cols-3 gap-2">
           {files.map((f) => (
-            <div
-              key={f.id}
-              className="group relative aspect-square overflow-hidden rounded-lg border bg-muted"
-            >
+            <div key={f.id} className="group relative aspect-square overflow-hidden rounded-[10px] bg-secondary">
               {f.type === "image" && f.preview ? (
-                <img
-                  src={f.preview}
-                  alt={f.file.name}
-                  className="h-full w-full object-cover"
-                />
+                <img src={f.preview} alt={f.file.name} className="h-full w-full object-cover" />
               ) : (
                 <div className="flex h-full flex-col items-center justify-center gap-1 p-2">
                   <FileIcon type={f.type} />
-                  <p className="max-w-full truncate text-[10px] text-muted-foreground">
-                    {f.file.name}
-                  </p>
+                  <p className="max-w-full truncate text-[10px] text-muted-foreground">{f.file.name}</p>
                 </div>
               )}
-
-              {/* Delete button */}
               <button
                 type="button"
                 onClick={() => removeFile(f.id)}

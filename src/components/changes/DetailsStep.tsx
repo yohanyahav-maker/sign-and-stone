@@ -62,18 +62,19 @@ export function DetailsStep({ initial, initialFiles, onNext, onCancel }: Details
   };
 
   return (
-    <div className="space-y-5">
-      <div className="space-y-1.5">
-        <Label htmlFor="co-title">כותרת השינוי *</Label>
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="co-title" className="text-xs text-muted-foreground">כותרת</Label>
         <Input id="co-title" value={title} onChange={(e) => { setTitle(e.target.value); setErrors({}); }}
-          placeholder="למשל: תוספת נקודת חשמל בסלון" autoFocus maxLength={150} />
+          placeholder="למשל: תוספת נקודת חשמל בסלון" autoFocus maxLength={150}
+          className="h-12 text-base rounded-[14px]" />
         {errors.title && <p className="text-sm text-destructive">{errors.title}</p>}
       </div>
 
-      <div className="space-y-1.5">
-        <Label>קטגוריה *</Label>
+      <div className="space-y-2">
+        <Label className="text-xs text-muted-foreground">קטגוריה</Label>
         <Select value={category} onValueChange={(v) => setCategory(v as Category)}>
-          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-12 rounded-[14px]"><SelectValue /></SelectTrigger>
           <SelectContent>
             {categoryOptions.map((opt) => (
               <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
@@ -82,23 +83,25 @@ export function DetailsStep({ initial, initialFiles, onNext, onCancel }: Details
         </Select>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="co-desc">תיאור השינוי</Label>
+      <div className="space-y-2">
+        <Label htmlFor="co-desc" className="text-xs text-muted-foreground">תיאור</Label>
         <Textarea id="co-desc" value={description} onChange={(e) => setDescription(e.target.value)}
-          placeholder="פרט מה משתנה, היכן באתר, וכל פרט רלוונטי..." rows={4} maxLength={2000} />
-        <p className="text-xs text-muted-foreground text-left" dir="ltr">{description.length}/2000</p>
+          placeholder="מה משתנה, היכן באתר..." rows={3} maxLength={2000}
+          className="rounded-[14px] text-base" />
       </div>
 
-      <div className="space-y-1.5">
-        <Label>קבצים מצורפים</Label>
+      <div className="space-y-2">
+        <Label className="text-xs text-muted-foreground">קבצים</Label>
         <FileUploadZone files={files} onChange={setFiles} />
       </div>
 
-      <div className="flex gap-3 pt-2">
-        <Button type="button" size="lg" className="flex-1 font-semibold" onClick={handleNext}>
-          המשך לתמחור
+      <div className="flex gap-3 pt-4">
+        <Button type="button" size="lg" className="flex-1 font-semibold h-14 text-base" onClick={handleNext}>
+          המשך
         </Button>
-        <Button type="button" variant="outline" size="lg" onClick={onCancel}>ביטול</Button>
+        <Button type="button" variant="ghost" size="lg" onClick={onCancel} className="h-14">
+          ביטול
+        </Button>
       </div>
     </div>
   );

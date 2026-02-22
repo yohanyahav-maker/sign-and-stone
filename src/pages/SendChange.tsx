@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Send, Copy, Check, Loader2, MessageCircle } from "lucide-react";
+import { ArrowRight, Copy, Check, Loader2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "@/components/ui/status-badge";
 import { useChangeOrder } from "@/hooks/useChangeOrders";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { SlideToSend } from "@/components/changes/SlideToSend";
 
 const categoryLabels: Record<string, string> = {
   structural: "שלד ובטון", concrete: "יציקות", electrical: "חשמל",
@@ -24,7 +24,6 @@ const SendChange = () => {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
 
-  // Fetch project for client info
   const { data: project } = useQuery({
     queryKey: ["project", projectId],
     enabled: !!projectId,
@@ -85,7 +84,7 @@ const SendChange = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-6 w-6 animate-spin" />
       </div>
     );
   }
@@ -95,12 +94,12 @@ const SendChange = () => {
   }
 
   return (
-    <div className="px-4 py-6 space-y-6">
+    <div dir="rtl" className="px-5 py-8 space-y-8 max-w-2xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted"
+          className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-secondary transition-colors"
         >
           <ArrowRight className="h-5 w-5" />
         </button>
@@ -108,30 +107,27 @@ const SendChange = () => {
       </div>
 
       {/* Summary Card */}
-      <div className="rounded-xl border bg-card p-5 space-y-4">
-        <div className="flex items-start justify-between">
-          <h2 className="font-bold text-lg">{co.title}</h2>
-          <StatusBadge variant={co.status as any} />
-        </div>
+      <div className="rounded-[14px] bg-card p-6 space-y-4">
+        <h2 className="font-bold text-lg">{co.title}</h2>
 
         <div className="text-sm text-muted-foreground space-y-1">
-          <p>קטגוריה: {categoryLabels[co.category] ?? co.category}</p>
+          <p>{categoryLabels[co.category] ?? co.category}</p>
           {co.description && <p className="line-clamp-2">{co.description}</p>}
         </div>
 
-        <div className="flex gap-6 pt-2">
-          <div className="text-center">
-            <p className="text-2xl font-black">₪{Number(co.price_amount ?? 0).toLocaleString("he-IL")}</p>
+        <div className="flex gap-8 pt-2">
+          <div>
+            <p className="text-3xl font-black">₪{Number(co.price_amount ?? 0).toLocaleString("he-IL")}</p>
             <p className="text-xs text-muted-foreground">
               {co.include_vat ? "כולל מע״מ" : "לפני מע״מ"}
             </p>
           </div>
           {(co.impact_days ?? 0) !== 0 && (
-            <div className="text-center">
-              <p className="text-2xl font-black text-accent">
+            <div>
+              <p className="text-3xl font-black">
                 {co.impact_days! > 0 ? "+" : ""}{co.impact_days}
               </p>
-              <p className="text-xs text-muted-foreground">ימי השפעה</p>
+              <p className="text-xs text-muted-foreground">ימים</p>
             </div>
           )}
         </div>
@@ -139,33 +135,28 @@ const SendChange = () => {
 
       {/* Actions */}
       {!portalToken ? (
-        <div className="space-y-3">
-          {co.status !== "priced" && co.status !== "draft" && (
+        <div className="space-y-4">
+          {co.status === "priced" ? (
+            <SlideToSend
+              onComplete={handleSend}
+              loading={sending}
+              label="החלק לשליחה ללקוח"
+            />
+          ) : co.status === "draft" ? (
             <p className="text-sm text-muted-foreground text-center">
-              שינוי זה כבר נשלח — ניתן לשלוח שוב רק מסטטוס "תומחר"
+              יש לתמחר את השינוי לפני שליחה
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground text-center">
+              שינוי זה כבר נשלח
             </p>
           )}
-          <Button
-            size="lg"
-            className="w-full text-base font-semibold gap-2"
-            onClick={handleSend}
-            disabled={sending || co.status !== "priced"}
-          >
-            {sending ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <>
-                <Send className="h-5 w-5" />
-                שלח לאישור לקוח
-              </>
-            )}
-          </Button>
           {error && <p className="text-sm text-destructive text-center">{error}</p>}
         </div>
       ) : (
-        <div className="space-y-3">
-          <div className="rounded-lg bg-success/10 border border-success/20 p-4 text-center space-y-1">
-            <p className="font-semibold text-success">✓ קישור נוצר בהצלחה</p>
+        <div className="space-y-4">
+          <div className="rounded-[14px] bg-card border border-border p-5 text-center space-y-1">
+            <p className="font-semibold text-foreground">✓ קישור נוצר בהצלחה</p>
             <p className="text-xs text-muted-foreground">הקישור תקף ל-7 ימים</p>
           </div>
 
@@ -173,7 +164,7 @@ const SendChange = () => {
             href={whatsappUrl!}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full h-12 rounded-md
+            className="flex items-center justify-center gap-2 w-full h-14 rounded-[14px]
                        bg-[#25D366] text-white font-semibold text-base
                        transition-colors hover:bg-[#1DA851] active:bg-[#1A9648]"
           >
@@ -184,12 +175,12 @@ const SendChange = () => {
           <Button
             variant="outline"
             size="lg"
-            className="w-full gap-2"
+            className="w-full h-14 gap-2"
             onClick={handleCopy}
           >
             {copied ? (
               <>
-                <Check className="h-5 w-5 text-success" />
+                <Check className="h-5 w-5" />
                 הועתק!
               </>
             ) : (
