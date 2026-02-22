@@ -6,6 +6,7 @@ import { useChangeOrders } from "@/hooks/useChangeOrders";
 import { ChangeOrderCard } from "@/components/changes/ChangeOrderCard";
 import { useAuth } from "@/hooks/useAuth";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { FileGallery } from "@/components/projects/FileGallery";
 
 // Demo data
 const demoProjectsMap: Record<string, { name: string; address: string }> = {
@@ -169,6 +170,8 @@ const ProjectDetail = () => {
           </div>
         )}
       </div>
+
+      {validProjectId && <FileGallery projectId={validProjectId} />}
 
       <button
         onClick={() => navigate(`/projects/${projectId}/changes/new`)}
