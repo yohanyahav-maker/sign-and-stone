@@ -188,7 +188,7 @@ const ClientPortal = () => {
     : Number(co.price_amount ?? 0);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div dir="rtl" className="min-h-screen bg-background">
       <div className="mx-auto max-w-lg px-4 py-8 space-y-6">
         {/* Header */}
         {data!.contractor_logo && (

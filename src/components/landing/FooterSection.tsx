@@ -6,9 +6,7 @@ const FooterSection = () => {
           <span className="font-bold text-foreground tracking-tight">שינוי חתום</span>
 
           <div className="flex gap-6 text-sm text-muted-foreground">
-            <a href="#" className="hover:text-foreground transition-colors">יצירת קשר</a>
-            <a href="#" className="hover:text-foreground transition-colors">תנאי שימוש</a>
-            <a href="#" className="hover:text-foreground transition-colors">פרטיות</a>
+            <a href="mailto:info@shinui-hatum.co.il" className="hover:text-foreground transition-colors">יצירת קשר</a>
           </div>
         </div>
 
