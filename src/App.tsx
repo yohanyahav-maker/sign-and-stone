@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import NewChange from "./pages/NewChange";
+import SendChange from "./pages/SendChange";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
               <Route path="/projects" element={<Projects />} />
               <Route path="/projects/:projectId" element={<ProjectDetail />} />
               <Route path="/projects/:projectId/changes/new" element={<NewChange />} />
+              <Route path="/projects/:projectId/changes/:changeId/send" element={<SendChange />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
