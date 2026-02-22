@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, MapPin, Clock, CheckCircle } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useProjects, useProjectChangeOrderCounts } from "@/hooks/useProjects";
@@ -12,18 +12,8 @@ import { NewProjectSheet } from "@/components/projects/NewProjectSheet";
 
 // Demo data
 const demoProjects = [
-  {
-    id: "demo-1",
-    name: "וילה כהן",
-    address: "רחוב האלון 12, קיסריה",
-    project_type: "villa" as const,
-    pending: 3,
-    approvedSum: 82000,
-  },
-  {
-    id: "demo-2", name: "תוספת קומה — לוי", address: "הרצליה",
-    project_type: "addition" as const, pending: 1, approvedSum: 24000,
-  },
+  { id: "demo-1", name: "וילה כהן", address: "רחוב האלון 12, קיסריה", project_type: "villa" as const, pending: 3, approvedSum: 82000 },
+  { id: "demo-2", name: "תוספת קומה — לוי", address: "הרצליה", project_type: "addition" as const, pending: 1, approvedSum: 24000 },
 ];
 
 const projectTypeLabels: Record<string, string> = {
@@ -32,13 +22,21 @@ const projectTypeLabels: Record<string, string> = {
   residential: "מגורים", commercial: "מסחרי", infrastructure: "תשתיות", other: "אחר",
 };
 
+function KpiCard({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="flex-1 rounded-[14px] bg-card p-5 text-center space-y-1">
+      <p className="text-3xl font-black text-foreground tracking-tight">{value}</p>
+      <p className="text-xs text-muted-foreground font-medium">{label}</p>
+    </div>
+  );
+}
+
 const Projects = () => {
   const [sheetOpen, setSheetOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
   const isDemo = !user;
 
-  // Real data hooks (only when logged in)
   const { data: profile } = useProfile();
   const { data: projects, isLoading } = useProjects();
   const { data: subscription } = useSubscription();
@@ -47,108 +45,96 @@ const Projects = () => {
 
   const displayName = isDemo ? "קבלן" : (profile?.full_name || profile?.company_name || "קבלן");
 
-  if (isDemo) {
-    return (
-      <div dir="rtl" className="px-4 py-6 space-y-5">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold">שלום, קבלן 👋</h1>
-          <p className="text-sm text-muted-foreground">
-            יש לך <span className="text-accent font-semibold">4</span> שינויים ממתינים לאישור
-          </p>
-        </div>
+  // Compute KPIs
+  const totalPending = isDemo
+    ? demoProjects.reduce((s, p) => s + p.pending, 0)
+    : projectIds.reduce((s, id) => s + (counts?.[id]?.pending ?? 0), 0);
 
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold">הפרויקטים שלי</h2>
-            <span className="text-sm text-muted-foreground">2/3</span>
-          </div>
-          {demoProjects.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => navigate(`/projects/${p.id}`)}
-              className="w-full text-right rounded-lg border bg-card p-4 space-y-3 transition-colors hover:border-primary/40 active:bg-muted"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <div className="space-y-1 flex-1 min-w-0">
-                  <h3 className="font-bold text-base truncate">{p.name}</h3>
-                  <p className="text-sm text-muted-foreground flex items-center gap-1">
-                    <MapPin className="h-3.5 w-3.5 shrink-0" />
-                    <span className="truncate">{p.address}</span>
-                  </p>
-                </div>
-                <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full shrink-0">
-                  {projectTypeLabels[p.project_type]}
-                </span>
-              </div>
-              <div className="flex items-center gap-4 text-sm">
-                {p.pending > 0 && (
-                  <span className="flex items-center gap-1 text-accent font-medium">
-                    <Clock className="h-4 w-4" />
-                    {p.pending} ממתינים
-                  </span>
-                )}
-                {p.approvedSum > 0 && (
-                  <span className="flex items-center gap-1 text-success font-medium">
-                    <CheckCircle className="h-4 w-4" />
-                    ₪{p.approvedSum.toLocaleString("he-IL")}
-                  </span>
-                )}
-              </div>
-            </button>
-          ))}
-        </div>
+  const totalApproved = isDemo
+    ? 12
+    : projectIds.reduce((s, id) => {
+        const c = counts?.[id];
+        return s + (c ? (c.approvedSum > 0 ? 1 : 0) : 0); // count projects with approvals
+      }, 0);
 
-        <button
-          onClick={() => navigate("/login")}
-          className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform active:scale-95"
-          aria-label="פרויקט חדש"
-        >
-          <Plus className="h-7 w-7" />
-        </button>
-      </div>
-    );
-  }
+  const totalSum = isDemo
+    ? 106000
+    : projectIds.reduce((s, id) => s + (counts?.[id]?.approvedSum ?? 0), 0);
 
-  // Real data rendering
-  const totalPending = projectIds.reduce((sum, id) => sum + (counts?.[id]?.pending ?? 0), 0);
   const atLimit = subscription && projects ? projects.length >= subscription.project_limit : false;
 
-  return (
-    <div className="px-4 py-6 space-y-5">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold">שלום, {displayName} 👋</h1>
-        {totalPending > 0 && (
-          <p className="text-sm text-muted-foreground">
-            יש לך <span className="text-accent font-semibold">{totalPending}</span> שינויים ממתינים לאישור
-          </p>
-        )}
-      </div>
-      <SubscriptionBanner />
-      {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-foreground border-t-transparent" />
-        </div>
-      ) : projects && projects.length > 0 ? (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold">הפרויקטים שלי</h2>
-            <span className="text-sm text-muted-foreground">{projects.length}/{subscription?.project_limit ?? "∞"}</span>
+  const renderProjects = () => {
+    if (isDemo) {
+      return demoProjects.map((p) => (
+        <button
+          key={p.id}
+          onClick={() => navigate(`/projects/${p.id}`)}
+          className="w-full text-right rounded-[14px] bg-card p-5 space-y-2 transition-colors active:bg-secondary"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="font-bold text-base truncate">{p.name}</h3>
+            <span className="text-xs text-muted-foreground shrink-0">
+              {projectTypeLabels[p.project_type]}
+            </span>
           </div>
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} counts={counts?.[project.id]} />
-          ))}
+          <p className="text-sm text-muted-foreground truncate">{p.address}</p>
+        </button>
+      ));
+    }
+
+    if (isLoading) {
+      return (
+        <div className="flex justify-center py-16">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
         </div>
-      ) : (
-        <EmptyProjects />
-      )}
+      );
+    }
+
+    if (!projects || projects.length === 0) {
+      return <EmptyProjects />;
+    }
+
+    return projects.map((project) => (
+      <ProjectCard key={project.id} project={project} counts={counts?.[project.id]} />
+    ));
+  };
+
+  return (
+    <div dir="rtl" className="px-5 py-8 space-y-8 max-w-2xl mx-auto">
+      {/* Greeting */}
+      <h1 className="text-2xl font-bold text-foreground">
+        שלום, {displayName}
+      </h1>
+
+      {/* Subscription banner */}
+      {!isDemo && <SubscriptionBanner />}
+
+      {/* KPI Cards */}
+      <div className="flex gap-3">
+        <KpiCard value={String(totalPending)} label="ממתינים לאישור" />
+        <KpiCard value={String(totalApproved)} label="שינויים מאושרים" />
+        <KpiCard value={`₪${totalSum.toLocaleString("he-IL")}`} label="סה״כ תוספות" />
+      </div>
+
+      {/* Project List */}
+      <div className="space-y-3">
+        <h2 className="text-sm font-semibold text-muted-foreground">פרויקטים</h2>
+        {renderProjects()}
+      </div>
+
+      {/* FAB */}
       <button
-        onClick={() => { if (!atLimit) setSheetOpen(true); }}
-        disabled={atLimit}
-        className="fixed bottom-20 left-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-        aria-label="פרויקט חדש"
+        onClick={() => {
+          if (isDemo) navigate("/login");
+          else if (!atLimit) setSheetOpen(true);
+        }}
+        disabled={!isDemo && atLimit}
+        className="fixed bottom-24 left-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-foreground text-primary-foreground shadow-soft transition-transform active:scale-95 disabled:opacity-40"
+        aria-label="שינוי חדש"
       >
-        <Plus className="h-7 w-7" />
+        <Plus className="h-6 w-6" />
       </button>
+
       <NewProjectSheet open={sheetOpen} onOpenChange={setSheetOpen} />
     </div>
   );
