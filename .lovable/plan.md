@@ -1,56 +1,52 @@
 
 
-# בדיקת End-to-End ותיקונים לפרסום
+# מה חסר לאפליקציה מושלמת
 
-## בעיות שנמצאו
+## סיכום בעיות שנמצאו
 
-### 1. נתיבים (Routes) חסרים - קריטי
-דפי שינויים קיימים בקוד אך לא מחוברים לניתוב (Router):
-- `ChangeOrderDetail` - דף פרטי שינוי (`/projects/:projectId/changes/:changeId`)
-- `NewChange` - דף יצירת שינוי חדש (`/projects/:projectId/changes/new`)
-- `SendChange` - דף שליחת שינוי (`/projects/:projectId/changes/:changeId/send`)
+### דף הנחיתה
 
-**השפעה**: לחיצה על כרטיס שינוי מובילה לדף 404. לא ניתן ליצור או לשלוח שינויים.
+1. **LogosSection לא מופיע** - הקומפוננטה קיימת אבל לא נכללת ב-`Index.tsx` (מיובאת אך לא בשימוש).
 
-### 2. כפתור FAB בדף פרויקט - בעיה לוגית
-הכפתור `+` בדף פרטי פרויקט מוביל לעריכת פרויקט במקום ליצירת שינוי חדש. צריך להוביל ליצירת שינוי חדש, ולהוסיף כפתור עריכה נפרד.
+2. **קישורי Footer לא פונקציונליים** - כל הקישורים (יצירת קשר, תנאי שימוש, פרטיות) מצביעים על `href="#"` ולא מובילים לשום מקום. לפי הכלל "אין כפתורי דמה" - צריך להסיר אותם או לחבר לדפים אמיתיים.
 
-### 3. באג בדף הגדרות - `useState` במקום `useEffect`
-בשורה 33 של `Settings.tsx` נעשה שימוש ב-`useState` כאילו הוא `useEffect` לסנכרון נתוני פרופיל. זה לא עובד כמצופה - השדות נשארים ריקים גם כשהפרופיל נטען.
+3. **כפתור "בקש הדגמה" חסר** - לפי הזיכרון, ב-Hero Section צריך להיות גם כפתור "בקש הדגמה" אבל הוא לא מופיע.
 
-### 4. חוסר `dir="rtl"` בדפים
-- `ProjectDetail.tsx` - החלק של הנתונים האמיתיים (לא דמו) חסר `dir="rtl"`
-- `Settings.tsx` - חסר `dir="rtl"` בדף
+### האפליקציה הפנימית
 
-### 5. אזהרת DialogContent
-אזהרת `Missing Description` ב-console עבור `DialogContent` - צריך להוסיף `aria-describedby` או `DialogDescription` לרכיבי Sheet/Dialog.
+4. **דף עריכת פרויקט לא פונקציונלי** - `EditProject.tsx` מציג רק "בקרוב" ללא טופס עריכה אמיתי. זו הפרה של הכלל "אין כפתורי דמה".
+
+5. **`ChangeOrderDetail` - חסר `dir="rtl"` בחלק הנתונים האמיתיים** - שורה 212, ה-div הראשי לא כולל `dir="rtl"` (בניגוד לחלק הדמו שכולל).
+
+6. **`ClientPortal` - חסר `dir="rtl"`** - כל הפורטל מוצג בלי כיוון RTL מפורש.
+
+7. **הפקת PDF** - הפונקציה `generate-pdf` קיימת אך אין כפתור בממשק להפעלה (ב-`ChangeOrderDetail` כשהשינוי "approved").
+
+8. **אין מניעת שליחה כפולה** - ב-`NewChange`, המשתמש יכול ליצור שינוי כפול אם לוחץ פעמיים מהר.
 
 ---
 
 ## תוכנית תיקון
 
-### שלב 1: הוספת נתיבים חסרים ב-`App.tsx`
-הוספת שלושה נתיבים חדשים תחת ProtectedRoute:
-- `/projects/:projectId/changes/new` -> `NewChange`
-- `/projects/:projectId/changes/:changeId` -> `ChangeOrderDetail`
-- `/projects/:projectId/changes/:changeId/send` -> `SendChange`
+### שלב 1: דף הנחיתה
+- הוסף את `LogosSection` ל-`Index.tsx` (בין Hero ל-Problem)
+- תקן קישורי Footer: הסר קישורי דמה או החלף ב-`mailto:` ליצירת קשר
+- הוסף כפתור "בקש הדגמה" ל-HeroSection (כ-mailto או scroll ל-CTA)
 
-### שלב 2: תיקון כפתור FAB בדף פרויקט
-- שינוי הכפתור `+` כך שיוביל ליצירת שינוי חדש (`/projects/:id/changes/new`)
-- הוספת כפתור עריכה נפרד (אייקון עיפרון) שיוביל לעריכת פרויקט
+### שלב 2: דף עריכת פרויקט פונקציונלי
+- בנה טופס עריכה אמיתי ב-`EditProject.tsx` עם שדות: שם, כתובת, סוג, פרטי לקוח, פורטל
+- הוסף שמירה למסד נתונים עם toast הצלחה
 
-### שלב 3: תיקון באג useState בהגדרות
-- החלפת `useState(() => {...})` בשורה 33 ל-`useEffect` עם dependency על `profile`
+### שלב 3: תיקוני RTL חסרים
+- הוסף `dir="rtl"` ל-`ChangeOrderDetail` (חלק הנתונים האמיתיים, שורה 212)
+- הוסף `dir="rtl"` ל-`ClientPortal` (ה-div הראשי)
 
-### שלב 4: הוספת `dir="rtl"` לדפים
-- הוספת `dir="rtl"` ל-div הראשי של ProjectDetail (מצב נתונים אמיתיים)
-- הוספת `dir="rtl"` ל-div הראשי של Settings
+### שלב 4: כפתור הפקת PDF
+- הוסף כפתור "הורד PDF" ב-`ChangeOrderDetail` כשהשינוי approved/rejected
+- קרא לפונקציית `generate-pdf` ופתח את הקובץ להורדה
 
-### שלב 5: תיקון אזהרת DialogContent
-- הוספת `aria-describedby={undefined}` ל-`SheetContent` ב-`NewProjectSheet`
-
-### שלב 6: בדיקה סופית
-- ניווט בכל הדפים ובדיקה שהכל עובד
+### שלב 5: בדיקה סופית
+- ניווט בכל הדפים ווידוא עבודה תקינה
 
 ---
 
@@ -58,9 +54,11 @@
 
 ```text
 קבצים שישתנו:
-1. src/App.tsx - הוספת 3 routes + imports
-2. src/pages/ProjectDetail.tsx - תיקון FAB + dir="rtl"
-3. src/pages/Settings.tsx - תיקון useState -> useEffect + dir="rtl"
-4. src/components/projects/NewProjectSheet.tsx - aria-describedby
+1. src/pages/Index.tsx - הוספת LogosSection
+2. src/components/landing/HeroSection.tsx - כפתור "בקש הדגמה"
+3. src/components/landing/FooterSection.tsx - תיקון קישורי דמה
+4. src/pages/EditProject.tsx - טופס עריכה פונקציונלי מלא
+5. src/pages/ChangeOrderDetail.tsx - dir="rtl" + כפתור PDF
+6. src/pages/ClientPortal.tsx - dir="rtl"
 ```
 
