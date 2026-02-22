@@ -1,36 +1,25 @@
 const companies = [
-  "בנייה מתקדמת",
-  "אלומיניום פלוס",
-  "מטבחי הגליל",
-  "שיפוצי אליטה",
-  "בנייה קלה ישראל",
-  "יזמות נדל\"ן מרכז",
-  "קבוצת בנייני העתיד",
-  "אדריכלות ובנייה דרום",
-  "מטבחי השרון",
-  "אלומיניום מקצועי",
+  "קבוצת שרון בנייה",
+  "א. לוי קבלנות",
+  "יונתן פרויקטים",
+  "כרמל שיפוצים",
+  "ב.ר. בנייה ירוקה",
 ];
 
 const LogosSection = () => {
   return (
-    <section className="py-16 bg-secondary/30 overflow-hidden">
+    <section className="py-10 border-y border-border bg-secondary/20">
       <div className="container mx-auto px-6">
-        <p className="text-center text-muted-foreground text-sm font-medium mb-10">
-          מהימנים על ידי אנשי מקצוע מובילים בענף
+        <p className="text-center text-sm text-muted-foreground mb-6">
+          סומכים עלינו
         </p>
-      </div>
-
-      {/* Scrolling logos */}
-      <div className="relative">
-        <div className="flex animate-scroll-logos gap-8">
-          {[...companies, ...companies].map((name, i) => (
+        <div className="flex flex-wrap justify-center gap-3">
+          {companies.map((name) => (
             <div
-              key={i}
-              className="flex-shrink-0 h-14 px-8 rounded-lg border border-border bg-card flex items-center justify-center"
+              key={name}
+              className="rounded-full border border-border bg-card px-5 py-2 text-sm font-medium text-muted-foreground"
             >
-              <span className="text-sm font-semibold text-muted-foreground whitespace-nowrap">
-                {name}
-              </span>
+              {name}
             </div>
           ))}
         </div>

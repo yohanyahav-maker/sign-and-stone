@@ -1,59 +1,114 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Shield, FileCheck } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock, FileCheck } from "lucide-react";
+
+const mockChanges = [
+  { title: "תוספת חדר ממ״ד", price: "₪45,000", status: "approved" as const, statusLabel: "אושר" },
+  { title: "שדרוג מטבח", price: "₪28,000", status: "pending" as const, statusLabel: "ממתין" },
+  { title: "ריצוף סלון", price: "₪9,200", status: "approved" as const, statusLabel: "אושר" },
+];
+
+const stats = [
+  { value: "₪82K", label: "מאושר" },
+  { value: "3", label: "ממתינים" },
+  { value: "12", label: "חתומים" },
+];
 
 const HeroSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative overflow-hidden bg-background py-20 md:py-32">
-      {/* Subtle gradient overlay */}
+    <section className="relative overflow-hidden bg-background py-16 md:py-24">
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-3xl mx-auto text-center space-y-8">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground">
-            <Shield className="h-4 w-4 text-primary" />
-            <span>הגנה משפטית לקבלנים</span>
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          {/* Right side — text */}
+          <div className="space-y-6">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              חדש לענף הבנייה הישראלי
+            </div>
+
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-foreground">
+              כל שינוי בוילה —{" "}
+              <span className="text-primary">חתום ומתועד</span> תוך דקות
+            </h1>
+
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
+              שלח שינוי → הלקוח חותם בנייד → מסמך משפטי מוכן. בלי אקסלים, בלי ויכוחים, בלי הפתעות בסוף הפרויקט.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <Button
+                size="lg"
+                className="text-base font-semibold px-8 h-14 bg-foreground text-background hover:bg-foreground/90"
+                onClick={() => navigate("/login")}
+              >
+                התחל ניסיון חינם 14 יום
+                <ArrowLeft className="h-5 w-5 mr-2" />
+              </Button>
+            </div>
+
+            <p className="text-sm text-muted-foreground">
+              ✓ ללא כרטיס אשראי &nbsp; ✓ התקנה תוך דקות
+            </p>
           </div>
 
-          {/* Main heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-foreground">
-            כל שינוי בפרויקט –{" "}
-            <span className="text-primary">מתועד, מאושר ומוגן משפטית.</span>
-          </h1>
+          {/* Left side — phone mockup */}
+          <div className="flex justify-center">
+            <div className="w-72 md:w-80">
+              {/* Phone frame */}
+              <div className="rounded-3xl border-2 border-border bg-card shadow-2xl overflow-hidden">
+                {/* Status bar */}
+                <div className="h-8 bg-foreground/5 flex items-center justify-center">
+                  <div className="w-20 h-1.5 rounded-full bg-foreground/20" />
+                </div>
 
-          {/* Subtitle */}
-          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            מערכת ניהול שינויי חוזה שמונעת סכסוכים, מתעדת כל שינוי עם חתימה
-            דיגיטלית, ומגנה על הקבלן מרגע ההסכמה ועד סיום הפרויקט.
-          </p>
+                {/* App header */}
+                <div className="px-4 py-3 border-b border-border">
+                  <p className="text-xs text-muted-foreground">וילה כהן — קיסריה</p>
+                  <p className="text-sm font-bold">שינויים</p>
+                </div>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Button
-              size="lg"
-              className="text-base font-semibold px-8 h-14"
-              onClick={() => navigate("/login")}
-            >
-              <FileCheck className="h-5 w-5" />
-              התחל ניסיון חינם — 14 יום
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="text-base px-8 h-14"
-              onClick={() => navigate("/login")}
-            >
-              בקש הדגמה
-            </Button>
+                {/* Change orders list */}
+                <div className="px-3 py-2 space-y-2">
+                  {mockChanges.map((c, i) => (
+                    <div key={i} className="flex items-center justify-between rounded-lg border border-border p-3">
+                      <div className="space-y-0.5">
+                        <p className="text-sm font-semibold">{c.title}</p>
+                        <p className="text-xs text-muted-foreground">{c.price}</p>
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                        c.status === "approved"
+                          ? "bg-success/10 text-success"
+                          : "bg-warning/10 text-warning"
+                      }`}>
+                        {c.statusLabel}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bottom stats */}
+                <div className="px-3 py-3 border-t border-border bg-secondary/30">
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    {stats.map((s, i) => (
+                      <div key={i}>
+                        <p className="text-sm font-bold">{s.value}</p>
+                        <p className="text-xs text-muted-foreground">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Home indicator */}
+                <div className="h-6 flex items-center justify-center">
+                  <div className="w-24 h-1 rounded-full bg-foreground/20" />
+                </div>
+              </div>
+            </div>
           </div>
-
-          {/* Trust line */}
-          <p className="text-sm text-muted-foreground pt-2">
-            ✓ ללא כרטיס אשראי &nbsp; ✓ התקנה תוך דקות &nbsp; ✓ תמיכה בעברית
-          </p>
         </div>
       </div>
     </section>
