@@ -1,28 +1,18 @@
 
-# החזרת הגנת ההתחברות ב-ProtectedRoute
 
-## מה ישתנה
-קובץ אחד בלבד: `src/components/auth/ProtectedRoute.tsx`
+# תיקון חוויית ההתחברות
 
-## מה יקרה
-- הקומפוננטה תבדוק אם יש משתמש מחובר (session)
-- אם כן — תציג את הדף המבוקש
-- אם לא — תפנה אוטומטית לדף `/login`
-- בזמן הטעינה (בדיקת session) יוצג אייקון טעינה
+## הבעיה
+אין עדיין משתמשים במערכת. הטופס מתחיל במצב "כניסה" ולכן מקבלים שגיאה "Invalid login credentials" — כי אין חשבון להיכנס אליו.
 
-## מה נשאר פתוח לכולם
-- דף נחיתה (`/`)
-- דף התחברות (`/login`)
-- פורטל לקוח (`/portal/:token`)
+## הפתרון
+שינוי קטן בקובץ `src/components/auth/EmailAuthForm.tsx`:
+- הטופס יתחיל במצב **"הרשמה"** במקום "כניסה" (שינוי `useState(false)` ל-`useState(true)`)
+- כך המשתמש הראשון יוכל ליצור חשבון ישר ולהיכנס
 
 ## פרטים טכניים
 
-**קובץ: `src/components/auth/ProtectedRoute.tsx`**
+**קובץ: `src/components/auth/EmailAuthForm.tsx`**
+- שורה 10: שינוי `useState(false)` ל-`useState(true)` בשביל `isSignUp`
 
-נחזיר את הלוגיקה המקורית:
-- שימוש ב-`useAuth()` לקבלת `session` ו-`loading`
-- אם `loading` — מציגים spinner
-- אם אין `session` — מפנים ל-`/login` באמצעות `Navigate`
-- אם יש `session` — מציגים את `children`
-
-שינוי יחיד, קובץ אחד, בלי שינויים בשום דף אחר.
+שינוי של שורה אחת בלבד.
