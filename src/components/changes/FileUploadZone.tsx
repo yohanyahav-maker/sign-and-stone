@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { Upload, X, FileText, Film, ImageIcon, Loader2 } from "lucide-react";
+import { Upload, X, FileText, Film, ImageIcon, Camera, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface LocalFile {
@@ -32,6 +32,8 @@ interface FileUploadZoneProps {
 
 export function FileUploadZone({ files, onChange, disabled }: FileUploadZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
   const addFiles = useCallback(
@@ -131,11 +133,55 @@ export function FileUploadZone({ files, onChange, disabled }: FileUploadZoneProp
         </p>
       </button>
 
+      {/* Camera capture buttons */}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          disabled={disabled || files.length >= MAX_FILES}
+          onClick={() => cameraRef.current?.click()}
+          className={cn(
+            "flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted/50",
+            disabled && "pointer-events-none opacity-50",
+          )}
+        >
+          <Camera className="h-5 w-5 text-muted-foreground" />
+          <span>צלם תמונה</span>
+        </button>
+        <button
+          type="button"
+          disabled={disabled || files.length >= MAX_FILES}
+          onClick={() => videoRef.current?.click()}
+          className={cn(
+            "flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted/50",
+            disabled && "pointer-events-none opacity-50",
+          )}
+        >
+          <Video className="h-5 w-5 text-muted-foreground" />
+          <span>צלם סרטון</span>
+        </button>
+      </div>
+
       <input
         ref={inputRef}
         type="file"
         multiple
         accept={ACCEPTED_TYPES.join(",")}
+        onChange={handleInputChange}
+        className="hidden"
+      />
+      <input
+        ref={cameraRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleInputChange}
+        className="hidden"
+      />
+      <input
+        ref={videoRef}
+        type="file"
+        accept="video/*"
+        capture="environment"
         onChange={handleInputChange}
         className="hidden"
       />
