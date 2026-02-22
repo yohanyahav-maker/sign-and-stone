@@ -1,26 +1,24 @@
-import { MessageCircleOff, FileX, Banknote, Gavel } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-
 const problems = [
   {
-    icon: MessageCircleOff,
-    title: "שינויים בעל פה",
-    description: "סיכומים שנעשים בשטח בלי תיעוד הופכים למילה נגד מילה.",
+    num: "01",
+    emoji: "😤",
+    title: "רודפים אחרי לקוח לאישור",
+    description:
+      "שולחים הודעות, מתקשרים, מחכים ימים — ובסוף הלקוח אומר 'לא זוכר שסיכמנו'. בזבוז זמן, אנרגיה וכסף.",
   },
   {
-    icon: FileX,
-    title: "חוסר תיעוד",
-    description: "בלי מסמך חתום, אין הוכחה שהלקוח אישר את השינוי.",
+    num: "02",
+    emoji: "🤝",
+    title: "אישור בעל-פה = ויכוח בסוף",
+    description:
+      "סיכמתם בשטח? מעולה. אבל בלי חתימה — זה מילה מול מילה. וכשמגיעים לחשבון, הלקוח 'לא זוכר'.",
   },
   {
-    icon: Banknote,
-    title: "מחלוקות כספיות",
-    description: 'לקוח שטוען "לא סיכמנו על המחיר הזה" — וזה קורה שוב ושוב.',
-  },
-  {
-    icon: Gavel,
-    title: "סכסוכים משפטיים",
-    description: "כשאין תיעוד, הקבלן הוא תמיד הצד המפסיד בבית המשפט.",
+    num: "03",
+    emoji: "📋",
+    title: "אקסל ופתקים זה לא ניהול",
+    description:
+      "טבלאות ישנות, פתקים בכיס, הודעות בוואטסאפ — כשצריך למצוא שינוי ספציפי, הכל מתפורר.",
   },
 ];
 
@@ -37,24 +35,23 @@ const ProblemSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-          {problems.map((problem) => (
-            <Card
-              key={problem.title}
-              className="border border-border bg-card hover:shadow-md transition-shadow"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {problems.map((p) => (
+            <div
+              key={p.num}
+              className="rounded-2xl border border-border bg-card p-6 space-y-3 hover:shadow-md transition-shadow"
             >
-              <CardContent className="p-6 text-center space-y-4">
-                <div className="mx-auto w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center">
-                  <problem.icon className="h-7 w-7 text-destructive" />
-                </div>
-                <h3 className="font-bold text-lg text-foreground">
-                  {problem.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {problem.description}
-                </p>
-              </CardContent>
-            </Card>
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold text-muted-foreground bg-secondary rounded-full w-8 h-8 flex items-center justify-center">
+                  {p.num}
+                </span>
+                <span className="text-2xl">{p.emoji}</span>
+              </div>
+              <h3 className="font-bold text-lg text-foreground">{p.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {p.description}
+              </p>
+            </div>
           ))}
         </div>
       </div>
