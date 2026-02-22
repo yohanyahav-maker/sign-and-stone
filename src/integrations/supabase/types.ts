@@ -197,6 +197,56 @@ export type Database = {
           },
         ]
       }
+      files: {
+        Row: {
+          bucket: string
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          mime_type: string | null
+          original_name: string | null
+          owner_user_id: string
+          path: string
+          project_id: string
+          size: number | null
+        }
+        Insert: {
+          bucket?: string
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          mime_type?: string | null
+          original_name?: string | null
+          owner_user_id: string
+          path: string
+          project_id: string
+          size?: number | null
+        }
+        Update: {
+          bucket?: string
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          mime_type?: string | null
+          original_name?: string | null
+          owner_user_id?: string
+          path?: string
+          project_id?: string
+          size?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           company_name: string | null
@@ -351,6 +401,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_project_member: {
+        Args: { _project_id: string; _user_id: string }
         Returns: boolean
       }
     }
