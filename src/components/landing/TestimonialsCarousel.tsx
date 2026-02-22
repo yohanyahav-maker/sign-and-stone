@@ -78,9 +78,9 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   return (
-    <section id="testimonials" className="py-20 bg-background">
+    <section id="testimonials" className="py-24 bg-background">
       <div className="container mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             קבלני בנייה סומכים על שינוי חתום
           </h2>
@@ -111,7 +111,7 @@ const TestimonialsSection = () => {
                   key={t.name}
                   className="pl-4 basis-full md:basis-1/3"
                 >
-                  <div className="rounded-2xl border border-border bg-card p-6 space-y-4 h-full">
+                  <div className="rounded-[14px] border border-border bg-card p-6 space-y-4 h-full">
                     <div className="flex gap-1">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -123,7 +123,7 @@ const TestimonialsSection = () => {
                     <div className="flex items-center gap-3 pt-2 border-t border-border">
                       <Avatar className="w-10 h-10">
                         <AvatarImage src={t.image} alt={t.name} />
-                        <AvatarFallback className="bg-accent/10 text-accent text-sm font-bold">
+                        <AvatarFallback className="bg-secondary text-foreground text-sm font-bold">
                           {t.initials}
                         </AvatarFallback>
                       </Avatar>
