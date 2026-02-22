@@ -32,7 +32,7 @@ const HeroSection = () => {
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-foreground">
               כל שינוי בבנייה —{" "}
-              <span style={{ color: 'hsl(30, 55%, 42%)' }}>חתום ומתועד</span> תוך דקות
+              <span style={{ color: 'hsl(220, 50%, 25%)' }}>חתום ומתועד</span> תוך דקות
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
