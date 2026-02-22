@@ -3,10 +3,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import type { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 
+const isValidUuid = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+
 export function useChangeOrders(projectId: string) {
   return useQuery({
     queryKey: ["change_orders", projectId],
-    enabled: !!projectId,
+    enabled: !!projectId && isValidUuid(projectId),
     queryFn: async () => {
       const { data, error } = await supabase
         .from("change_orders")
@@ -22,7 +24,7 @@ export function useChangeOrders(projectId: string) {
 export function useChangeOrder(id: string) {
   return useQuery({
     queryKey: ["change_order", id],
-    enabled: !!id,
+    enabled: !!id && isValidUuid(id),
     queryFn: async () => {
       const { data, error } = await supabase
         .from("change_orders")

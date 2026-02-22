@@ -53,22 +53,25 @@ const demoTimeline = [
   { id: "4", action: "אושר", performed_at: "2025-01-10T12:00:00Z", old_value: { status: "sent" }, new_value: { status: "approved" } },
 ];
 
+const isValidUuid = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+
 const ChangeOrderDetail = () => {
   const { projectId, changeId } = useParams<{ projectId: string; changeId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const isDemo = !user;
+  const validChangeId = changeId && isValidUuid(changeId) ? changeId : undefined;
 
-  const { data: co, isLoading } = useChangeOrder(isDemo ? undefined : changeId!);
+  const { data: co, isLoading } = useChangeOrder(isDemo ? "" : (validChangeId ?? ""));
   const updateCO = useUpdateChangeOrder();
 
   const { data: timeline } = useQuery({
-    queryKey: ["audit_log", changeId],
-    enabled: !!changeId && !isDemo,
+    queryKey: ["audit_log", validChangeId],
+    enabled: !!validChangeId && !isDemo,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("audit_log").select("*")
-        .eq("record_id", changeId!).eq("table_name", "change_orders")
+        .eq("record_id", validChangeId!).eq("table_name", "change_orders")
         .order("performed_at", { ascending: true });
       if (error) throw error;
       return data;
@@ -76,12 +79,12 @@ const ChangeOrderDetail = () => {
   });
 
   const { data: approval } = useQuery({
-    queryKey: ["approval", changeId],
-    enabled: !!changeId && !isDemo && (co?.status === "approved" || co?.status === "rejected"),
+    queryKey: ["approval", validChangeId],
+    enabled: !!validChangeId && !isDemo && (co?.status === "approved" || co?.status === "rejected"),
     queryFn: async () => {
       const { data, error } = await supabase
         .from("approvals").select("*")
-        .eq("change_order_id", changeId!)
+        .eq("change_order_id", validChangeId!)
         .order("signed_at", { ascending: false }).limit(1).maybeSingle();
       if (error) throw error;
       return data;
