@@ -10,7 +10,7 @@ export interface LocalFile {
 }
 
 const ACCEPTED_TYPES = [
-  "image/jpeg", "image/png", "image/webp", "image/heic",
+  "image/jpeg", "image/png", "image/webp", "image/heic", "image/heif",
   "video/mp4", "video/quicktime", "video/webm",
   "application/pdf",
 ];
@@ -43,7 +43,13 @@ export function FileUploadZone({ files, onChange, disabled }: FileUploadZoneProp
 
       for (const file of arr) {
         if (files.length + newFiles.length >= MAX_FILES) break;
-        if (!ACCEPTED_TYPES.includes(file.type)) continue;
+        
+        // More permissive type check: accept if MIME matches or if it's from camera (type may be empty)
+        const isAccepted = ACCEPTED_TYPES.includes(file.type) || 
+          file.type.startsWith("image/") || 
+          file.type.startsWith("video/") ||
+          file.type === "";
+        if (!isAccepted) continue;
         if (file.size > MAX_FILE_SIZE) continue;
 
         const preview = file.type.startsWith("image/")
@@ -161,7 +167,7 @@ export function FileUploadZone({ files, onChange, disabled }: FileUploadZoneProp
         </button>
       </div>
 
-      <input ref={inputRef} type="file" multiple accept={ACCEPTED_TYPES.join(",")} onChange={handleInputChange} className="hidden" />
+      <input ref={inputRef} type="file" multiple accept="image/*,video/*,application/pdf" onChange={handleInputChange} className="hidden" />
       <input ref={cameraRef} type="file" accept="image/*" capture="environment" onChange={handleInputChange} className="hidden" />
       <input ref={videoRef} type="file" accept="video/*" capture="environment" onChange={handleInputChange} className="hidden" />
 
@@ -181,7 +187,7 @@ export function FileUploadZone({ files, onChange, disabled }: FileUploadZoneProp
               <button
                 type="button"
                 onClick={() => removeFile(f.id)}
-                className="absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-background/80 text-destructive opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 active:opacity-100"
+                className="absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-background/80 text-destructive opacity-100 sm:opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 active:opacity-100"
                 aria-label="הסר קובץ"
               >
                 <X className="h-3.5 w-3.5" />
