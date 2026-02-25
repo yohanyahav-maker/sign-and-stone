@@ -74,6 +74,75 @@
     --sidebar-border: 240 10% 15%;
     --sidebar-ring: 42 64% 55%;
   }
+
+  .light {
+    --background: 40 20% 97%;           /* warm off-white */
+    --foreground: 240 15% 12%;          /* near-black */
+
+    --card: 0 0% 100%;                  /* white */
+    --card-foreground: 240 15% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 15% 12%;
+
+    --primary: 42 64% 45%;              /* deeper gold for light bg */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 40 15% 92%;            /* light warm grey */
+    --secondary-foreground: 240 15% 12%;
+
+    --muted: 40 10% 90%;
+    --muted-foreground: 240 8% 45%;
+
+    --accent: 41 76% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 35%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 45%;
+    --warning-foreground: 0 0% 7%;
+
+    --info: 217 91% 50%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 40 10% 85%;
+    --input: 40 10% 85%;
+    --ring: 42 64% 45%;
+
+    /* Gold system */
+    --gold-500: 42 64% 45%;
+    --gold-400: 41 76% 50%;
+    --gold-300: 41 79% 55%;
+    --gold-glow: rgba(180,140,40,0.15);
+    --gold-gradient: linear-gradient(135deg, #C9933A 0%, #A87020 50%, #8B5E1A 100%);
+
+    /* Borders */
+    --border-subtle: rgba(0,0,0,0.06);
+    --border-default: rgba(0,0,0,0.12);
+    --border-strong: rgba(0,0,0,0.20);
+    --border-gold: rgba(180,140,40,0.35);
+
+    /* Semantic backgrounds */
+    --success-bg: rgba(34,197,94,0.10);
+    --success-border: rgba(34,197,94,0.30);
+    --danger-bg: rgba(239,68,68,0.10);
+    --danger-border: rgba(239,68,68,0.30);
+    --warning-bg: rgba(245,158,11,0.10);
+    --info-bg: rgba(59,130,246,0.10);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 15% 12%;
+    --sidebar-primary: 42 64% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 40 15% 92%;
+    --sidebar-accent-foreground: 240 15% 12%;
+    --sidebar-border: 40 10% 85%;
+    --sidebar-ring: 42 64% 45%;
+  }
 }
 
 @layer base {
@@ -123,6 +192,9 @@
     left: 20%;
     right: 20%;
     height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(128,128,128,0.12), transparent);
+  }
+  :root .card-shimmer::before {
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
   }
 
