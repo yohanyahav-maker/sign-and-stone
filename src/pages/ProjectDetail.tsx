@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail } from "lucide-react";
 import { useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useChangeOrders } from "@/hooks/useChangeOrders";
@@ -122,9 +123,15 @@ const ProjectDetail = () => {
       {/* Content based on view mode */}
       {viewMode === "grid" && (
         <div className="grid grid-cols-2 gap-3">
-          {gridButtons.map((btn) => (
-            <button key={btn.label} onClick={btn.onClick}
-              className="relative flex flex-col items-center justify-center gap-2 rounded-2xl bg-card p-5 min-h-[100px] transition-all hover:bg-secondary active:scale-[0.97]"
+          {gridButtons.map((btn, i) => (
+            <motion.button
+              key={btn.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, delay: i * 0.05, ease: "easeOut" }}
+              whileTap={{ scale: 0.95 }}
+              onClick={btn.onClick}
+              className="relative flex flex-col items-center justify-center gap-2 rounded-2xl bg-card p-5 min-h-[100px] transition-colors hover:bg-secondary"
               style={{ border: '1px solid var(--border-default)' }}>
               <btn.icon className={`h-7 w-7 ${btn.color}`} />
               <span className="text-sm font-medium text-foreground text-center leading-tight">{btn.label}</span>
@@ -133,7 +140,7 @@ const ProjectDetail = () => {
                   {btn.badge}
                 </span>
               )}
-            </button>
+            </motion.button>
           ))}
         </div>
       )}
