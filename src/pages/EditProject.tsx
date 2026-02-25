@@ -89,7 +89,7 @@ const EditProject = () => {
     <div dir="rtl" className="px-4 py-6 space-y-6 max-w-2xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <button onClick={() => navigate(`/projects/${id}`)} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+        <button onClick={() => navigate(`/projects/${id}`)} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary transition-colors" style={{ border: '1px solid var(--border-default)' }}>
           <ArrowRight className="h-5 w-5" />
         </button>
         <div className="flex items-center gap-2 flex-1">
@@ -98,7 +98,7 @@ const EditProject = () => {
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-secondary" aria-label="אפשרויות">
+            <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-secondary transition-colors" style={{ border: '1px solid var(--border-default)' }} aria-label="אפשרויות">
               <MoreVertical className="h-4 w-4 text-muted-foreground" />
             </button>
           </DropdownMenuTrigger>

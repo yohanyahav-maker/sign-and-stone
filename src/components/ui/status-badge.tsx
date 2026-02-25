@@ -8,7 +8,7 @@ const variantStyles: Record<StatusVariant, { bg: string; text: string; border: s
   sent:     { bg: "rgba(212,168,67,0.12)",   text: "hsl(var(--gold-300))",        border: "rgba(212,168,67,0.25)" },
   approved: { bg: "rgba(34,197,94,0.12)",    text: "hsl(var(--success))",         border: "rgba(34,197,94,0.25)" },
   rejected: { bg: "rgba(239,68,68,0.12)",    text: "hsl(var(--destructive))",     border: "rgba(239,68,68,0.25)" },
-  canceled: { bg: "rgba(255,255,255,0.04)",  text: "hsl(var(--muted-foreground))", border: "rgba(255,255,255,0.06)" },
+  canceled: { bg: "hsl(var(--muted))",       text: "hsl(var(--muted-foreground))", border: "hsl(var(--border))" },
   trial:    { bg: "rgba(59,130,246,0.12)",   text: "#60A5FA",                     border: "rgba(59,130,246,0.25)" },
   active:   { bg: "rgba(34,197,94,0.12)",    text: "hsl(var(--success))",         border: "rgba(34,197,94,0.25)" },
   past_due: { bg: "rgba(239,68,68,0.12)",    text: "hsl(var(--destructive))",     border: "rgba(239,68,68,0.25)" },

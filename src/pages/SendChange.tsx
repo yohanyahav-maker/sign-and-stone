@@ -100,6 +100,7 @@ const SendChange = () => {
         <button
           onClick={() => navigate(-1)}
           className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-secondary transition-colors"
+          style={{ border: '1px solid var(--border-default)' }}
         >
           <ArrowRight className="h-5 w-5" />
         </button>
@@ -107,7 +108,7 @@ const SendChange = () => {
       </div>
 
       {/* Summary Card */}
-      <div className="rounded-[14px] bg-card p-6 space-y-4">
+      <div className="rounded-2xl bg-card p-6 space-y-4" style={{ border: '1px solid var(--border-default)' }}>
         <h2 className="font-bold text-lg">{co.title}</h2>
 
         <div className="text-sm text-muted-foreground space-y-1">

@@ -16,7 +16,7 @@ const NewProject = () => {
   return (
     <div dir="rtl" className="px-4 py-6">
       <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate("/projects")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+        <button onClick={() => navigate("/projects")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary transition-colors" style={{ border: '1px solid var(--border-default)' }}>
           <ArrowRight className="h-5 w-5" />
         </button>
         <h1 className="text-xl font-bold">פרויקט חדש</h1>

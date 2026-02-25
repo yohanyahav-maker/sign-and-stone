@@ -38,7 +38,7 @@ export function ChangeOrderCard({ changeOrder }: ChangeOrderCardProps) {
         <StatusBadge variant={changeOrder.status as any} />
       </div>
       <div className="flex items-center gap-3 text-sm text-muted-foreground">
-        <span className="px-2 py-0.5 rounded text-xs" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)' }}>
+        <span className="px-2 py-0.5 rounded text-xs bg-muted" style={{ border: '1px solid var(--border-subtle)' }}>
           {categoryLabels[changeOrder.category] ?? changeOrder.category}
         </span>
         {changeOrder.price_amount != null && changeOrder.price_amount > 0 && (
