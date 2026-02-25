@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { FolderOpen, Settings } from "lucide-react";
+import { FolderOpen, Settings, Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/hooks/useTheme";
 
 const navItems = [
   { path: "/projects", label: "פרויקטים", icon: FolderOpen },
@@ -10,6 +11,7 @@ const navItems = [
 export function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <nav
@@ -33,6 +35,16 @@ export function BottomNav() {
             </button>
           );
         })}
+        <button
+          onClick={toggleTheme}
+          className="flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors text-muted-foreground hover:text-primary"
+          aria-label={theme === "dark" ? "מצב בהיר" : "מצב כהה"}
+        >
+          {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          <span className="text-[10px] font-bold uppercase tracking-wider">
+            {theme === "dark" ? "בהיר" : "כהה"}
+          </span>
+        </button>
       </div>
     </nav>
   );
