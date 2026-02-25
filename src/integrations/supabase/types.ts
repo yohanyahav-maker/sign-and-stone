@@ -249,6 +249,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          business_name: string | null
           company_name: string | null
           created_at: string
           full_name: string | null
@@ -259,6 +260,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          business_name?: string | null
           company_name?: string | null
           created_at?: string
           full_name?: string | null
@@ -269,6 +271,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          business_name?: string | null
           company_name?: string | null
           created_at?: string
           full_name?: string | null
@@ -286,6 +289,7 @@ export type Database = {
           client_email: string | null
           client_name: string | null
           client_phone: string | null
+          client_phone_2: string | null
           client_portal_enabled: boolean
           created_at: string
           id: string
@@ -300,6 +304,7 @@ export type Database = {
           client_email?: string | null
           client_name?: string | null
           client_phone?: string | null
+          client_phone_2?: string | null
           client_portal_enabled?: boolean
           created_at?: string
           id?: string
@@ -314,6 +319,7 @@ export type Database = {
           client_email?: string | null
           client_name?: string | null
           client_phone?: string | null
+          client_phone_2?: string | null
           client_portal_enabled?: boolean
           created_at?: string
           id?: string

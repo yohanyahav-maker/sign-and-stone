@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { EmailAuthForm } from "@/components/auth/EmailAuthForm";
+import { SocialFooter } from "@/components/layout/SocialFooter";
 import { Loader2 } from "lucide-react";
 
 const Login = () => {
@@ -31,12 +32,15 @@ const Login = () => {
           <h1 className="font-display text-4xl text-foreground">
             שינוי <span className="text-primary">חתום</span>
           </h1>
+          <p className="text-lg font-semibold text-foreground">ברוכים הבאים!</p>
           <p className="text-muted-foreground text-sm">
-            הזן אימייל וסיסמה לכניסה
+            התחבר כדי להמשיך
           </p>
         </div>
 
         <EmailAuthForm />
+
+        <SocialFooter />
       </div>
     </div>
   );

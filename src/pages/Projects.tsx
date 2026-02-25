@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus, Crown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useProjects, useProjectChangeOrderCounts } from "@/hooks/useProjects";
@@ -7,18 +7,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { SubscriptionBanner } from "@/components/projects/SubscriptionBanner";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { EmptyProjects } from "@/components/projects/EmptyProjects";
-
-// Demo data
-const demoProjects = [
-  { id: "demo-1", name: "וילה כהן", address: "רחוב האלון 12, קיסריה", project_type: "villa" as const, pending: 3, approvedSum: 82000 },
-  { id: "demo-2", name: "תוספת קומה — לוי", address: "הרצליה", project_type: "addition" as const, pending: 1, approvedSum: 24000 },
-];
-
-const projectTypeLabels: Record<string, string> = {
-  villa: "וילה", ground_attached: "צמוד קרקע", advanced: "בנייה מתקדמת",
-  addition: "תוספת קומה", renovation: "שיפוץ מקיף",
-  residential: "מגורים", commercial: "מסחרי", infrastructure: "תשתיות", other: "אחר",
-};
+import { SocialFooter } from "@/components/layout/SocialFooter";
 
 function KpiCard({ value, label, variant }: { value: string; label: string; variant?: "gold" | "green" }) {
   return (
@@ -35,80 +24,34 @@ function KpiCard({ value, label, variant }: { value: string; label: string; vari
 const Projects = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const isDemo = !user;
-
   const { data: profile } = useProfile();
   const { data: projects, isLoading } = useProjects();
   const { data: subscription } = useSubscription();
   const projectIds = projects?.map((p) => p.id) ?? [];
   const { data: counts } = useProjectChangeOrderCounts(projectIds);
 
-  const displayName = isDemo ? "קבלן" : (profile?.full_name || profile?.company_name || "קבלן");
+  const isPro = subscription?.plan === "pro";
 
   // Compute KPIs
-  const totalPending = isDemo
-    ? demoProjects.reduce((s, p) => s + p.pending, 0)
-    : projectIds.reduce((s, id) => s + (counts?.[id]?.pending ?? 0), 0);
-
-  const totalApproved = isDemo
-    ? 12
-    : projectIds.reduce((s, id) => {
-        const c = counts?.[id];
-        return s + (c ? (c.approvedSum > 0 ? 1 : 0) : 0);
-      }, 0);
-
-  const totalSum = isDemo
-    ? 106000
-    : projectIds.reduce((s, id) => s + (counts?.[id]?.approvedSum ?? 0), 0);
+  const totalPending = projectIds.reduce((s, id) => s + (counts?.[id]?.pending ?? 0), 0);
+  const totalApproved = projectIds.reduce((s, id) => {
+    const c = counts?.[id];
+    return s + (c ? (c.approvedSum > 0 ? 1 : 0) : 0);
+  }, 0);
+  const totalSum = projectIds.reduce((s, id) => s + (counts?.[id]?.approvedSum ?? 0), 0);
 
   const atLimit = subscription && projects ? projects.length >= subscription.project_limit : false;
 
-  const renderProjects = () => {
-    if (isDemo) {
-      return demoProjects.map((p) => (
-        <button
-          key={p.id}
-          onClick={() => navigate(`/projects/${p.id}`)}
-          className="w-full text-right rounded-2xl bg-card p-5 space-y-2 transition-all hover:bg-secondary active:scale-[0.985]"
-          style={{ border: '1px solid var(--border-default)' }}
-        >
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="font-bold text-base truncate">{p.name}</h3>
-            <span className="text-xs text-muted-foreground shrink-0">
-              {projectTypeLabels[p.project_type]}
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground truncate">{p.address}</p>
-        </button>
-      ));
-    }
-
-    if (isLoading) {
-      return (
-        <div className="flex justify-center py-16">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        </div>
-      );
-    }
-
-    if (!projects || projects.length === 0) {
-      return <EmptyProjects />;
-    }
-
-    return projects.map((project) => (
-      <ProjectCard key={project.id} project={project} counts={counts?.[project.id]} />
-    ));
-  };
-
   return (
     <div dir="rtl" className="px-5 py-8 space-y-8 max-w-2xl mx-auto">
-      {/* Greeting */}
-      <h1 className="font-display text-[32px] text-foreground">
-        שלום, {displayName} 👋
-      </h1>
+      {/* Title with crown */}
+      <div className="flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-foreground">פרויקטים</h1>
+        {isPro && <Crown className="h-5 w-5 text-primary fill-primary" />}
+      </div>
 
       {/* Subscription banner */}
-      {!isDemo && <SubscriptionBanner />}
+      <SubscriptionBanner />
 
       {/* KPI Cards */}
       <div className="flex gap-3">
@@ -119,19 +62,29 @@ const Projects = () => {
 
       {/* Project List */}
       <div className="space-y-3">
-        <h2 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">פרויקטים</h2>
-        {renderProjects()}
+        {isLoading ? (
+          <div className="flex justify-center py-16">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          </div>
+        ) : !projects || projects.length === 0 ? (
+          <EmptyProjects />
+        ) : (
+          projects.map((project) => (
+            <ProjectCard key={project.id} project={project} counts={counts?.[project.id]} />
+          ))
+        )}
       </div>
 
-      {/* FAB — Gold gradient */}
+      {/* Social Footer */}
+      <SocialFooter />
+
+      {/* FAB — Blue */}
       <button
         onClick={() => {
-          if (isDemo) navigate("/login");
-          else if (!atLimit) navigate("/projects/new");
+          if (!atLimit) navigate("/projects/new");
         }}
-        disabled={!isDemo && atLimit}
-        className="fixed bottom-24 left-5 z-40 flex h-[60px] w-[60px] items-center justify-center rounded-full text-2xl font-light shadow-gold-md transition-all hover:scale-110 hover:shadow-gold-lg active:scale-95 disabled:opacity-40 animate-fab-appear"
-        style={{ background: 'var(--gold-gradient)', color: '#1A1200' }}
+        disabled={atLimit}
+        className="fixed bottom-24 left-5 z-40 flex h-[60px] w-[60px] items-center justify-center rounded-full text-2xl font-light shadow-lg transition-all hover:scale-110 active:scale-95 disabled:opacity-40 animate-fab-appear bg-info text-info-foreground"
         aria-label="פרויקט חדש"
       >
         <Plus className="h-7 w-7" />

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Loader2, User, Building2 } from "lucide-react";
+import { LogOut, Loader2, User, Building2, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { SocialFooter } from "@/components/layout/SocialFooter";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -13,10 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
-const planLabels: Record<string, string> = {
-  basic: "בסיסי",
-  pro: "מקצועי",
-};
+const planLabels: Record<string, string> = { basic: "בסיסי", pro: "מקצועי" };
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -27,12 +25,17 @@ const Settings = () => {
 
   const [fullName, setFullName] = useState(profile?.full_name ?? "");
   const [companyName, setCompanyName] = useState(profile?.company_name ?? "");
+  const [businessName, setBusinessName] = useState("");
   const [saving, setSaving] = useState(false);
+
+  const isPro = subscription?.plan === "pro";
 
   useEffect(() => {
     if (profile) {
       setFullName(profile.full_name ?? "");
       setCompanyName(profile.company_name ?? "");
+      // business_name from profile - need to fetch separately since types might not have it yet
+      setBusinessName((profile as any).business_name ?? "");
     }
   }, [profile]);
 
@@ -45,7 +48,8 @@ const Settings = () => {
         .update({
           full_name: fullName.trim() || null,
           company_name: companyName.trim() || null,
-        })
+          business_name: businessName.trim() || null,
+        } as any)
         .eq("user_id", user.id);
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["profile"] });
@@ -64,36 +68,26 @@ const Settings = () => {
 
   return (
     <div dir="rtl" className="px-4 py-6 space-y-6">
-      <h1 className="text-2xl font-bold">הגדרות</h1>
+      <h1 className="text-2xl font-bold flex items-center gap-2">
+        <User className="h-6 w-6 text-muted-foreground" />
+        פרופיל
+      </h1>
 
-      {/* Profile */}
       <Card>
         <CardContent className="p-5 space-y-4">
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            <User className="h-5 w-5 text-muted-foreground" />
-            פרופיל
-          </h2>
-
           <div className="space-y-1.5">
             <Label htmlFor="settings-name">שם מלא</Label>
-            <Input
-              id="settings-name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="השם שלך"
-              maxLength={100}
-            />
+            <Input id="settings-name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="השם שלך" maxLength={100} />
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="settings-company">שם חברה</Label>
-            <Input
-              id="settings-company"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              placeholder="שם העסק"
-              maxLength={100}
-            />
+            <Input id="settings-company" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="שם החברה" maxLength={100} />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="settings-business">שם העסק</Label>
+            <Input id="settings-business" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="שם העסק" maxLength={100} />
           </div>
 
           <div className="space-y-1.5">
@@ -101,11 +95,7 @@ const Settings = () => {
             <Input value={user?.email ?? ""} disabled className="opacity-50" />
           </div>
 
-          <Button
-            onClick={handleSaveProfile}
-            disabled={saving}
-            className="w-full"
-          >
+          <Button onClick={handleSaveProfile} disabled={saving} className="w-full">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "שמור שינויים"}
           </Button>
         </CardContent>
@@ -118,28 +108,24 @@ const Settings = () => {
             <h2 className="text-lg font-bold flex items-center gap-2">
               <Building2 className="h-5 w-5 text-muted-foreground" />
               מנוי
+              {isPro && <Crown className="h-4 w-4 text-primary fill-primary" />}
             </h2>
-
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">תוכנית</span>
               <span className="font-semibold">{planLabels[subscription.plan] ?? subscription.plan}</span>
             </div>
-
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">סטטוס</span>
               <StatusBadge variant={subscription.status as any} />
             </div>
-
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">מגבלת פרויקטים</span>
               <span className="font-semibold">{subscription.project_limit}</span>
             </div>
-
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">מגבלת שינויים חודשית</span>
               <span className="font-semibold">{subscription.monthly_change_limit}</span>
             </div>
-
             {subscription.status === "trial" && subscription.trial_ends_at && (
               <p className="text-sm text-primary font-medium">
                 ניסיון מסתיים ב-{new Date(subscription.trial_ends_at).toLocaleDateString("he-IL")}
@@ -150,15 +136,14 @@ const Settings = () => {
       )}
 
       {/* Logout */}
-      <Button
-        variant="outline"
-        className="w-full gap-2"
+      <Button variant="outline" className="w-full gap-2"
         style={{ background: 'var(--danger-bg)', color: 'hsl(var(--destructive))', borderColor: 'var(--danger-border)' }}
-        onClick={handleLogout}
-      >
+        onClick={handleLogout}>
         <LogOut className="h-4 w-4" />
         התנתקות
       </Button>
+
+      <SocialFooter />
     </div>
   );
 };
