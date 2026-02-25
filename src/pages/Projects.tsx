@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Plus, Crown } from "lucide-react";
+import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useProjects, useProjectChangeOrderCounts } from "@/hooks/useProjects";
@@ -69,8 +70,15 @@ const Projects = () => {
         ) : !projects || projects.length === 0 ? (
           <EmptyProjects />
         ) : (
-          projects.map((project) => (
-            <ProjectCard key={project.id} project={project} counts={counts?.[project.id]} />
+          projects.map((project, i) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, delay: i * 0.06, ease: "easeOut" }}
+            >
+              <ProjectCard project={project} counts={counts?.[project.id]} />
+            </motion.div>
           ))
         )}
       </div>
