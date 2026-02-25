@@ -35,15 +35,18 @@ export function ProjectCard({ project, counts }: ProjectCardProps) {
       }}
     >
       <div className="flex items-center justify-between gap-2">
-        <h3 className="font-bold text-base truncate">{project.name}</h3>
+        <div className="min-w-0">
+          <h3 className="font-bold text-base truncate">
+            {project.client_name || project.name}
+          </h3>
+          {project.address && (
+            <p className="text-sm text-muted-foreground truncate">{project.address}</p>
+          )}
+        </div>
         <span className="text-xs text-muted-foreground shrink-0">
           {projectTypeLabels[project.project_type] ?? project.project_type}
         </span>
       </div>
-
-      {project.address && (
-        <p className="text-sm text-muted-foreground truncate">{project.address}</p>
-      )}
 
       {(pending > 0 || approvedSum > 0) && (
         <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
