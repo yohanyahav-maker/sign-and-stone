@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail } from "lucide-react";
+import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail, Calculator, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -70,13 +70,18 @@ const ProjectDetail = () => {
   const approvedOrders = changeOrders?.filter(co => co.status === "approved") ?? [];
 
   const gridButtons = [
+    // Row 1: right=שינוי חדש, left=גלריה
     { icon: FilePlus, label: "שינוי חדש", color: "text-primary", onClick: () => navigate(`/projects/${projectId}/changes/new`) },
-    { icon: FileText, label: "העלאת מסמך", color: "text-info", onClick: () => docRef.current?.click() },
     { icon: Image, label: "גלריה", color: "text-accent", onClick: () => setViewMode("gallery") },
-    { icon: Camera, label: "צלם תמונה", color: "text-success", onClick: () => cameraRef.current?.click() },
+    // Row 2: right=ממתין לאישור, left=העלאת מסמך
     { icon: Clock, label: "ממתין לאישור", color: "text-warning", onClick: () => setViewMode("pending"), badge: pendingOrders.length || undefined },
+    { icon: FileText, label: "העלאת מסמך", color: "text-info", onClick: () => docRef.current?.click() },
+    // Row 3: right=שינויים מאושרים, left=צלם/העלה תמונה
     { icon: CheckCircle2, label: "שינויים מאושרים", color: "text-success", onClick: () => setViewMode("approved"), badge: approvedOrders.length || undefined },
-    { icon: Video, label: "העלאת וידאו", color: "text-info", onClick: () => videoRef.current?.click() },
+    { icon: Camera, label: "צלם/העלה תמונה", color: "text-success", onClick: () => cameraRef.current?.click() },
+    // Row 4: right=מחשבון, left=צלם/העלה וידאו
+    { icon: Calculator, label: "מחשבון", color: "text-info", onClick: () => {} },
+    { icon: Video, label: "צלם/העלה וידאו", color: "text-info", onClick: () => videoRef.current?.click() },
   ];
 
   return (
