@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Sun, Moon } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 const LandingNav = () => {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -25,6 +28,13 @@ const LandingNav = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            onClick={toggleTheme}
+            className="h-9 w-9 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            aria-label={theme === "dark" ? "מצב בהיר" : "מצב כהה"}
+          >
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
           <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="text-sm text-muted-foreground">
             כניסה
           </Button>
