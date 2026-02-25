@@ -9,6 +9,7 @@ import { ChangeOrderCard } from "@/components/changes/ChangeOrderCard";
 import { useAuth } from "@/hooks/useAuth";
 import { FileGallery } from "@/components/projects/FileGallery";
 import { useFiles } from "@/hooks/useFiles";
+import { CalculatorDialog } from "@/components/projects/CalculatorDialog";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -33,6 +34,7 @@ const ProjectDetail = () => {
   const videoRef = useRef<HTMLInputElement>(null);
   const docRef = useRef<HTMLInputElement>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [calcOpen, setCalcOpen] = useState(false);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -80,7 +82,7 @@ const ProjectDetail = () => {
     { icon: CheckCircle2, label: "שינויים מאושרים", color: "text-success", onClick: () => setViewMode("approved"), badge: approvedOrders.length || undefined },
     { icon: Camera, label: "צלם/העלה תמונה", color: "text-success", onClick: () => cameraRef.current?.click() },
     // Row 4: right=מחשבון, left=צלם/העלה וידאו
-    { icon: Calculator, label: "מחשבון", color: "text-info", onClick: () => {} },
+    { icon: Calculator, label: "מחשבון", color: "text-info", onClick: () => setCalcOpen(true) },
     { icon: Video, label: "צלם/העלה וידאו", color: "text-info", onClick: () => videoRef.current?.click() },
   ];
 
@@ -182,6 +184,8 @@ const ProjectDetail = () => {
           <FileGallery projectId={validProjectId} />
         </div>
       )}
+
+      <CalculatorDialog open={calcOpen} onOpenChange={setCalcOpen} />
 
       {/* Hidden file inputs */}
       <input ref={fileInputRef} type="file" multiple accept="image/*,video/*,.pdf" onChange={handleFileUpload} className="hidden" />
