@@ -144,13 +144,13 @@ export function EmailAuthForm() {
 
         {!isSignUp && (
           <button type="button" onClick={handleForgotPassword} disabled={loading}
-            className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors">
+            className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors min-h-0 min-w-0 py-2">
             שכחת סיסמה?
           </button>
         )}
 
         <button type="button" onClick={() => { setIsSignUp(!isSignUp); setError(""); }}
-          className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors">
+          className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors min-h-0 min-w-0 py-2">
           {isSignUp ? "כבר יש לך חשבון? כניסה" : "אין לך חשבון? הירשם עכשיו"}
         </button>
       </form>

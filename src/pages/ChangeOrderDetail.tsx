@@ -109,14 +109,14 @@ const ChangeOrderDetail = () => {
     return (
       <div dir="rtl" className="px-4 py-6 space-y-5 pb-28">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(`/projects/${projectId}`)} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+          <button onClick={() => navigate(`/projects/${projectId}`)} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary transition-colors" style={{ border: '1px solid var(--border-default)' }}>
             <ArrowRight className="h-5 w-5" />
           </button>
           <div className="flex-1 min-w-0">
             <h1 className="text-xl font-bold truncate">{demoCo.title}</h1>
             <div className="flex items-center gap-2 mt-1">
               <StatusBadge variant={demoCo.status} />
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">{categoryLabels[demoCo.category]}</span>
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded" style={{ border: '1px solid var(--border-subtle)' }}>{categoryLabels[demoCo.category]}</span>
             </div>
           </div>
         </div>
@@ -212,14 +212,14 @@ const ChangeOrderDetail = () => {
   return (
     <div dir="rtl" className="px-4 py-6 space-y-5 pb-28">
       <div className="flex items-center gap-3">
-        <button onClick={() => navigate(`/projects/${projectId}`)} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+        <button onClick={() => navigate(`/projects/${projectId}`)} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary transition-colors" style={{ border: '1px solid var(--border-default)' }}>
           <ArrowRight className="h-5 w-5" />
         </button>
         <div className="flex-1 min-w-0">
           <h1 className="text-xl font-bold truncate">{co.title}</h1>
           <div className="flex items-center gap-2 mt-1">
             <StatusBadge variant={co.status as any} />
-            <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">{categoryLabels[co.category] ?? co.category}</span>
+            <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded" style={{ border: '1px solid var(--border-subtle)' }}>{categoryLabels[co.category] ?? co.category}</span>
           </div>
         </div>
       </div>

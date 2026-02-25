@@ -161,8 +161,8 @@
     padding-right: env(safe-area-inset-right);
   }
 
-  /* Minimum touch target for mobile */
-  button, a, [role="button"] {
+  /* Minimum touch target for mobile — only standalone interactive elements */
+  button:not(.inline-link):not([class*="min-h-0"]), [role="button"] {
     min-height: 44px;
     min-width: 44px;
   }
@@ -192,10 +192,10 @@
     left: 20%;
     right: 20%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(128,128,128,0.12), transparent);
-  }
-  :root .card-shimmer::before {
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  }
+  .light .card-shimmer::before {
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
   }
 
   /* Gold card */
