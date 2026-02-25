@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Loader2, User, Building2, Crown } from "lucide-react";
+import { LogOut, Loader2, User, Building2, Crown, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTheme } from "@/hooks/useTheme";
 
 const planLabels: Record<string, string> = { basic: "בסיסי", pro: "מקצועי" };
 
@@ -22,6 +23,7 @@ const Settings = () => {
   const { data: profile } = useProfile();
   const { data: subscription } = useSubscription();
   const queryClient = useQueryClient();
+  const { theme, toggleTheme } = useTheme();
 
   const [fullName, setFullName] = useState(profile?.full_name ?? "");
   const [companyName, setCompanyName] = useState(profile?.company_name ?? "");
@@ -101,7 +103,26 @@ const Settings = () => {
         </CardContent>
       </Card>
 
-      {/* Subscription */}
+      {/* Theme Toggle */}
+      <Card>
+        <CardContent className="p-5">
+          <button
+            onClick={toggleTheme}
+            className="w-full flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3">
+              {theme === "dark" ? <Moon className="h-5 w-5 text-primary" /> : <Sun className="h-5 w-5 text-primary" />}
+              <div className="text-right">
+                <p className="font-semibold text-sm">מצב תצוגה</p>
+                <p className="text-xs text-muted-foreground">{theme === "dark" ? "כהה" : "בהיר"}</p>
+              </div>
+            </div>
+            <div className={`relative w-12 h-7 rounded-full transition-colors ${theme === "light" ? "bg-primary" : "bg-muted"}`}>
+              <div className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-md transition-transform ${theme === "light" ? "right-0.5" : "left-0.5"}`} />
+            </div>
+          </button>
+        </CardContent>
+      </Card>
       {subscription && (
         <Card>
           <CardContent className="p-5 space-y-3">
