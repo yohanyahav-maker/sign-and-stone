@@ -23,6 +23,7 @@ export type Database = {
           ip_address: string | null
           pdf_url: string | null
           rejection_reason: string | null
+          signature_url: string | null
           signed_at: string
           user_agent: string | null
         }
@@ -34,6 +35,7 @@ export type Database = {
           ip_address?: string | null
           pdf_url?: string | null
           rejection_reason?: string | null
+          signature_url?: string | null
           signed_at?: string
           user_agent?: string | null
         }
@@ -45,6 +47,7 @@ export type Database = {
           ip_address?: string | null
           pdf_url?: string | null
           rejection_reason?: string | null
+          signature_url?: string | null
           signed_at?: string
           user_agent?: string | null
         }
@@ -61,6 +64,7 @@ export type Database = {
       attachments: {
         Row: {
           change_order_id: string
+          context: string | null
           created_at: string
           file_name: string
           file_size_bytes: number | null
@@ -71,6 +75,7 @@ export type Database = {
         }
         Insert: {
           change_order_id: string
+          context?: string | null
           created_at?: string
           file_name: string
           file_size_bytes?: number | null
@@ -81,6 +86,7 @@ export type Database = {
         }
         Update: {
           change_order_id?: string
+          context?: string | null
           created_at?: string
           file_name?: string
           file_size_bytes?: number | null
