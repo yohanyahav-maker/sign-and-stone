@@ -88,13 +88,16 @@ const Projects = () => {
 
       {/* FAB — Blue */}
       {!atLimit && (
-        <button
+        <motion.button
           onClick={() => navigate("/projects/new")}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.3 }}
           className="fixed bottom-28 left-5 z-[999] flex h-[60px] w-[60px] items-center justify-center rounded-full text-2xl font-light shadow-lg transition-all duration-150 hover:scale-110 hover:shadow-xl active:scale-90 pointer-events-auto bg-primary text-primary-foreground"
           aria-label="לקוח חדש"
         >
           <Plus className="h-7 w-7" />
-        </button>
+        </motion.button>
       )}
     </div>
   );
