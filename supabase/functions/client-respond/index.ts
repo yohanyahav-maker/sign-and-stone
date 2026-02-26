@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { token, client_name, action, rejection_reason } = await req.json();
+    const { token, client_name, action, rejection_reason, signature_data } = await req.json();
 
     if (!token || !client_name || !action) {
       return new Response(
@@ -97,6 +97,29 @@ Deno.serve(async (req) => {
 
     const newStatus = action === "approved" ? "approved" : "rejected";
 
+    // Upload signature if provided (base64 PNG)
+    let signatureUrl: string | null = null;
+    if (action === "approved" && signature_data) {
+      try {
+        // signature_data is a base64 data URL: data:image/png;base64,...
+        const base64 = signature_data.replace(/^data:image\/png;base64,/, "");
+        const binaryStr = atob(base64);
+        const bytes = new Uint8Array(binaryStr.length);
+        for (let i = 0; i < binaryStr.length; i++) {
+          bytes[i] = binaryStr.charCodeAt(i);
+        }
+        const sigPath = `${co.id}/${crypto.randomUUID()}.png`;
+        const { error: sigUploadErr } = await adminClient.storage
+          .from("signatures")
+          .upload(sigPath, bytes, { contentType: "image/png", upsert: false });
+        if (!sigUploadErr) {
+          signatureUrl = sigPath;
+        }
+      } catch (sigErr) {
+        console.error("Signature upload failed:", sigErr);
+      }
+    }
+
     // Update change order
     const { error: updateError } = await adminClient
       .from("change_orders")
@@ -126,6 +149,7 @@ Deno.serve(async (req) => {
       rejection_reason: action === "rejected" ? rejection_reason?.trim().slice(0, 1000) : null,
       ip_address: ip,
       user_agent: userAgent.slice(0, 500),
+      signature_url: signatureUrl,
     });
 
     // Audit log

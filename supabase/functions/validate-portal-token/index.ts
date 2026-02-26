@@ -83,6 +83,47 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Get attachments with context (BEFORE/AFTER)
+    const { data: attachments } = await adminClient
+      .from("attachments")
+      .select("id, file_name, file_url, file_type, context")
+      .eq("change_order_id", co.id);
+
+    // Generate signed URLs for attachments from the 'attachments' bucket
+    const enrichedAttachments = [];
+    if (attachments) {
+      for (const att of attachments) {
+        // Extract storage path from the public URL
+        // file_url format: .../object/public/attachments/USER_ID/CO_ID/FILE.ext
+        const parts = att.file_url.split("/attachments/");
+        const storagePath = parts.length > 1 ? parts[parts.length - 1] : null;
+        let signedUrl = att.file_url;
+        if (storagePath) {
+          const { data: signed } = await adminClient.storage
+            .from("attachments")
+            .createSignedUrl(storagePath, 86400);
+          if (signed) signedUrl = signed.signedUrl;
+        }
+        enrichedAttachments.push({
+          id: att.id,
+          file_name: att.file_name,
+          file_type: att.file_type,
+          context: att.context,
+          signed_url: signedUrl,
+        });
+      }
+    }
+
+    // Audit: client opened portal
+    await adminClient.from("audit_log").insert({
+      table_name: "change_orders",
+      record_id: co.id,
+      action: "CLIENT_OPENED_PORTAL",
+      old_value: null,
+      new_value: null,
+      performed_by: null,
+    });
+
     return new Response(
       JSON.stringify({
         change_order: {
@@ -96,6 +137,7 @@ Deno.serve(async (req) => {
           impact_days: co.impact_days,
           status: co.status,
         },
+        attachments: enrichedAttachments,
         project_name: project?.name || "",
         contractor_name: contractorName,
         contractor_logo: logoUrl,
