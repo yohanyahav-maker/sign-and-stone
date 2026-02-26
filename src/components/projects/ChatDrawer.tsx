@@ -93,8 +93,14 @@ export function ChatDrawer({ open, onOpenChange, projectId, clientName }: ChatDr
   const handleStartRecording = async () => {
     try {
       await startRecording();
-    } catch {
-      toast.error("לא ניתן לגשת למיקרופון");
+    } catch (err: any) {
+      if (err?.name === "NotFoundError") {
+        toast.error("לא נמצא מיקרופון במכשיר זה");
+      } else if (err?.name === "NotAllowedError") {
+        toast.error("יש לאשר גישה למיקרופון בהגדרות הדפדפן");
+      } else {
+        toast.error("לא ניתן לגשת למיקרופון");
+      }
     }
   };
 
