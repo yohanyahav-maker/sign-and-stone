@@ -1,12 +1,16 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/hooks/useTheme";
 import { EmailAuthForm } from "@/components/auth/EmailAuthForm";
 import { SocialFooter } from "@/components/layout/SocialFooter";
 import { Loader2 } from "lucide-react";
+import logoLight from "@/assets/logo-clean.png";
+import logoDark from "@/assets/logo-dark.png";
 
 const Login = () => {
   const { session, loading } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,11 +32,12 @@ const Login = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
       <div className="w-full max-w-sm space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="font-display text-4xl text-foreground">
-            שינוי <span className="text-primary">חתום</span>
-          </h1>
-          <p className="text-lg font-semibold text-foreground">ברוכים הבאים!</p>
+        <div className="text-center space-y-3">
+          <img
+            src={theme === "dark" ? logoDark : logoLight}
+            alt="שינוי חתום"
+            className="h-14 w-auto object-contain mx-auto"
+          />
           <p className="text-muted-foreground text-sm">
             התחבר כדי להמשיך
           </p>
