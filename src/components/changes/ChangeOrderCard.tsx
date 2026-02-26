@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { CheckCheck } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 
 const categoryLabels: Record<string, string> = {
@@ -21,9 +22,10 @@ const categoryLabels: Record<string, string> = {
 
 interface ChangeOrderCardProps {
   changeOrder: Tables<"change_orders">;
+  viewed?: boolean;
 }
 
-export function ChangeOrderCard({ changeOrder }: ChangeOrderCardProps) {
+export function ChangeOrderCard({ changeOrder, viewed }: ChangeOrderCardProps) {
   const navigate = useNavigate();
 
   return (
@@ -35,7 +37,16 @@ export function ChangeOrderCard({ changeOrder }: ChangeOrderCardProps) {
     >
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-bold text-sm truncate flex-1">{changeOrder.title}</h3>
-        <StatusBadge variant={changeOrder.status as any} />
+        <div className="flex items-center gap-1.5">
+          {viewed && (
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold"
+                  style={{ background: 'rgba(59,130,246,0.12)', color: '#60A5FA', border: '1px solid rgba(59,130,246,0.25)' }}>
+              <CheckCheck className="h-3 w-3" />
+              נצפה
+            </span>
+          )}
+          <StatusBadge variant={changeOrder.status as any} />
+        </div>
       </div>
       <div className="flex items-center gap-3 text-sm text-muted-foreground">
         <span className="px-2 py-0.5 rounded text-xs bg-muted" style={{ border: '1px solid var(--border-subtle)' }}>

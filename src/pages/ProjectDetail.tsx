@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useChangeOrders } from "@/hooks/useChangeOrders";
 import { ChangeOrderCard } from "@/components/changes/ChangeOrderCard";
+import { useViewedChangeOrders } from "@/hooks/useViewedChangeOrders";
 import { useAuth } from "@/hooks/useAuth";
 import { FileGallery } from "@/components/projects/FileGallery";
 import { useFiles } from "@/hooks/useFiles";
@@ -56,6 +57,8 @@ const ProjectDetail = () => {
   });
 
   const { data: changeOrders, isLoading: coLoading } = useChangeOrders(validProjectId ?? "");
+  const allCoIds = (changeOrders ?? []).map((co) => co.id);
+  const { data: viewedSet } = useViewedChangeOrders(allCoIds);
 
   if (projLoading) {
     return <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
@@ -158,7 +161,7 @@ const ProjectDetail = () => {
           {coLoading ? (
             <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
           ) : pendingOrders.length > 0 ? (
-            pendingOrders.map(co => <ChangeOrderCard key={co.id} changeOrder={co} />)
+            pendingOrders.map(co => <ChangeOrderCard key={co.id} changeOrder={co} viewed={viewedSet?.has(co.id)} />)
           ) : (
             <p className="text-center text-muted-foreground py-8">אין שינויים ממתינים לאישור</p>
           )}
@@ -171,7 +174,7 @@ const ProjectDetail = () => {
           {coLoading ? (
             <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
           ) : approvedOrders.length > 0 ? (
-            approvedOrders.map(co => <ChangeOrderCard key={co.id} changeOrder={co} />)
+            approvedOrders.map(co => <ChangeOrderCard key={co.id} changeOrder={co} viewed={viewedSet?.has(co.id)} />)
           ) : (
             <p className="text-center text-muted-foreground py-8">אין שינויים מאושרים</p>
           )}
