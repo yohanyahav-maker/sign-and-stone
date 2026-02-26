@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail, Calculator, Upload } from "lucide-react";
+import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail, Calculator, Upload, MessageCircle } from "lucide-react";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { FileGallery } from "@/components/projects/FileGallery";
 import { useFiles } from "@/hooks/useFiles";
 import { CalculatorDialog } from "@/components/projects/CalculatorDialog";
+import { ChatDrawer } from "@/components/projects/ChatDrawer";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -36,6 +37,7 @@ const ProjectDetail = () => {
   const docRef = useRef<HTMLInputElement>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [calcOpen, setCalcOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -87,6 +89,8 @@ const ProjectDetail = () => {
     // Row 4: right=מחשבון, left=צלם/העלה וידאו
     { icon: Calculator, label: "מחשבון", color: "text-info", onClick: () => setCalcOpen(true) },
     { icon: Video, label: "צלם/העלה וידאו", color: "text-info", onClick: () => videoRef.current?.click() },
+    // Row 5: right=צ׳אט
+    { icon: MessageCircle, label: "צ׳אט", color: "text-primary", onClick: () => setChatOpen(true) },
   ];
 
   return (
@@ -189,6 +193,14 @@ const ProjectDetail = () => {
       )}
 
       <CalculatorDialog open={calcOpen} onOpenChange={setCalcOpen} />
+      {validProjectId && (
+        <ChatDrawer
+          open={chatOpen}
+          onOpenChange={setChatOpen}
+          projectId={validProjectId}
+          clientName={project.client_name || project.name}
+        />
+      )}
 
       {/* Hidden file inputs */}
       <input ref={fileInputRef} type="file" multiple accept="image/*,video/*,.pdf" onChange={handleFileUpload} className="hidden" />
