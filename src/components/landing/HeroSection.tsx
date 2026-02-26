@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 const mockChanges = [
-  { title: "שינוי שלד קומה ב׳", price: "₪45,000", status: "approved" as const, statusLabel: "אושר" },
-  { title: "תוספת קומה", price: "₪400,000", status: "pending" as const, statusLabel: "ממתין" },
-  { title: "ריצוף פורצלן סלון", price: "₪9,200", status: "approved" as const, statusLabel: "אושר" },
+  { title: "שינוי פריט מטבח", price: "₪12,500", status: "approved" as const, statusLabel: "אושר" },
+  { title: "תוספת נקודת חשמל", price: "₪1,800", status: "pending" as const, statusLabel: "ממתין" },
+  { title: "שדרוג חומרי גמר", price: "₪9,200", status: "approved" as const, statusLabel: "אושר" },
 ];
 
 const stats = [
@@ -24,16 +24,16 @@ const HeroSection = () => {
           {/* Right side — text */}
           <div className="space-y-8">
             <span className="inline-block text-[11px] font-bold tracking-[2px] uppercase text-primary px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10">
-              ניהול שינויי בנייה מקצועי
+              ניהול שינויים מקצועי לכל בעל מקצוע
             </span>
 
             <h1 className="font-display text-[42px] md:text-[52px] leading-[1.08] text-foreground">
-              כל שינוי בבנייה —{" "}
-              <span className="text-primary">חתום ומתועד</span> תוך דקות
+              כל שינוי בעבודה —{" "}
+              <span className="text-primary">חתום ומתועד</span> מול הלקוח תוך דקות
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
-              בונה וילה? תוספת קומה? כל שינוי מתומחר, מצולם, נשלח ללקוח ונחתם דיגיטלית — בלי אקסלים, בלי ויכוחים, בלי הפתעות.
+              קבלן? מעצב פנים? טכנאי? כל שינוי מתומחר, מצולם, נשלח ללקוח ונחתם דיגיטלית — בלי אקסלים, בלי ויכוחים, בלי הפתעות.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
@@ -70,8 +70,8 @@ const HeroSection = () => {
                 </div>
 
                 <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
-                  <p className="text-xs text-muted-foreground">וילה כהן — קיסריה</p>
-                  <p className="text-sm font-bold">שינויי בנייה</p>
+                  <p className="text-xs text-muted-foreground">דוד כהן — שיפוץ דירה</p>
+                  <p className="text-sm font-bold">שינויים בעבודה</p>
                 </div>
 
                 <div className="px-3 py-2 space-y-2">

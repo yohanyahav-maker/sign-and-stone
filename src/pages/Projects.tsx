@@ -47,7 +47,7 @@ const Projects = () => {
     <div dir="rtl" className="px-5 py-8 space-y-8 max-w-2xl mx-auto">
       {/* Title with crown */}
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-bold text-foreground">פרויקטים</h1>
+        <h1 className="text-2xl font-bold text-foreground">הלקוחות שלי</h1>
         {isPro && <Crown className="h-5 w-5 text-primary fill-primary" />}
       </div>
 
@@ -93,7 +93,7 @@ const Projects = () => {
         }}
         disabled={atLimit}
         className="fixed bottom-24 left-5 z-40 flex h-[60px] w-[60px] items-center justify-center rounded-full text-2xl font-light shadow-lg transition-all hover:scale-110 active:scale-95 disabled:opacity-40 animate-fab-appear bg-info text-info-foreground"
-        aria-label="פרויקט חדש"
+        aria-label="לקוח חדש"
       >
         <Plus className="h-7 w-7" />
       </button>

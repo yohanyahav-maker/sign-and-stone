@@ -11,7 +11,7 @@ const CtaSection = () => {
           שינוי אחד <span className="text-primary">חתום</span> שווה יותר מאלף שיחות
         </h2>
         <p className="text-muted-foreground text-lg">
-          הצטרף לקבלני בנייה שכבר חוסכים זמן, כסף ועצבים בכל פרויקט.
+          הצטרף לבעלי מקצוע שכבר חוסכים זמן, כסף ועצבים בכל עבודה.
         </p>
         <Button
           size="lg"

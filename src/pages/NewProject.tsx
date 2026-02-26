@@ -19,7 +19,7 @@ const NewProject = () => {
         <button onClick={() => navigate("/projects")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary transition-colors" style={{ border: '1px solid var(--border-default)' }}>
           <ArrowRight className="h-5 w-5" />
         </button>
-        <h1 className="text-xl font-bold">פרויקט חדש</h1>
+        <h1 className="text-xl font-bold">לקוח חדש</h1>
       </div>
       <NewProjectSheet open={open} onOpenChange={setOpen} />
     </div>
