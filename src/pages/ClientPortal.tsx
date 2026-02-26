@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { z } from "zod";
+import SignatureCanvas from "react-signature-canvas";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, CheckCircle, XCircle, AlertTriangle, Clock } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, AlertTriangle, Clock, Eraser } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const categoryLabels: Record<string, string> = {
@@ -16,6 +15,14 @@ const categoryLabels: Record<string, string> = {
   insulation: "איטום", hvac: "מיזוג", landscaping: "פיתוח חוץ",
   safety: "בטיחות", other: "אחר",
 };
+
+interface Attachment {
+  id: string;
+  file_name: string;
+  file_type: string;
+  context: string | null;
+  signed_url: string;
+}
 
 interface PortalData {
   change_order: {
@@ -29,6 +36,7 @@ interface PortalData {
     impact_days: number | null;
     status: string;
   };
+  attachments: Attachment[];
   project_name: string;
   contractor_name: string;
   contractor_logo: string;
@@ -43,7 +51,8 @@ const ClientPortal = () => {
   const [existingStatus, setExistingStatus] = useState<string>("");
 
   const [clientName, setClientName] = useState("");
-  const [consent, setConsent] = useState(false);
+  const [hasSigned, setHasSigned] = useState(false);
+  const sigRef = useRef<SignatureCanvas | null>(null);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [error, setError] = useState("");
@@ -71,15 +80,36 @@ const ClientPortal = () => {
       });
   }, [token]);
 
+  const handleClearSignature = () => {
+    sigRef.current?.clear();
+    setHasSigned(false);
+  };
+
+  const handleSignEnd = () => {
+    if (sigRef.current && !sigRef.current.isEmpty()) {
+      setHasSigned(true);
+    }
+  };
+
   const handleApprove = async () => {
     setError("");
     if (!clientName.trim()) { setError("נא להזין שם מלא"); return; }
     if (clientName.trim().length > 100) { setError("שם ארוך מדי"); return; }
-    if (!consent) { setError("נא לאשר את תנאי ההסכמה"); return; }
+    if (!hasSigned || !sigRef.current || sigRef.current.isEmpty()) {
+      setError("נא לחתום לפני האישור");
+      return;
+    }
 
     setState("submitting");
+    const signatureData = sigRef.current.toDataURL("image/png");
+
     const { data: resp, error: fnError } = await supabase.functions.invoke("client-respond", {
-      body: { token, client_name: clientName.trim(), action: "approved" },
+      body: {
+        token,
+        client_name: clientName.trim(),
+        action: "approved",
+        signature_data: signatureData,
+      },
     });
 
     if (fnError || resp?.error) {
@@ -186,6 +216,16 @@ const ClientPortal = () => {
     ? Math.round(Number(co.price_amount) * (1 + co.vat_rate / 100) * 100) / 100
     : Number(co.price_amount ?? 0);
 
+  const beforePhotos = (data!.attachments ?? []).filter(
+    (a) => a.context === "BEFORE" && a.file_type === "image"
+  );
+  const afterPhotos = (data!.attachments ?? []).filter(
+    (a) => a.context === "AFTER" && a.file_type === "image"
+  );
+  const hasComparison = beforePhotos.length > 0 || afterPhotos.length > 0;
+
+  const canApprove = clientName.trim().length > 0 && hasSigned && state !== "submitting";
+
   return (
     <div dir="rtl" className="min-h-screen bg-background">
       <div className="mx-auto max-w-lg px-4 py-8 space-y-6">
@@ -204,9 +244,55 @@ const ClientPortal = () => {
           <p className="text-xs text-muted-foreground">{data!.project_name}</p>
         </div>
 
+        {/* Before / After Comparison */}
+        {hasComparison && (
+          <div className="rounded-2xl bg-card p-4 space-y-3" style={{ border: '1px solid var(--border-default)' }}>
+            <h2 className="text-sm font-bold text-center text-muted-foreground">השוואה ויזואלית</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {/* BEFORE */}
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-center text-muted-foreground">מצב קיים (לפני)</p>
+                {beforePhotos.length > 0 ? (
+                  beforePhotos.map((photo) => (
+                    <div key={photo.id} className="aspect-[4/3] overflow-hidden rounded-xl bg-secondary">
+                      <img
+                        src={photo.signed_url}
+                        alt={photo.file_name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="aspect-[4/3] flex items-center justify-center rounded-xl bg-secondary">
+                    <p className="text-xs text-muted-foreground/50">אין תמונה</p>
+                  </div>
+                )}
+              </div>
+              {/* AFTER */}
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-center text-primary">השינוי המבוקש (אחרי)</p>
+                {afterPhotos.length > 0 ? (
+                  afterPhotos.map((photo) => (
+                    <div key={photo.id} className="aspect-[4/3] overflow-hidden rounded-xl" style={{ border: '2px solid hsl(var(--primary) / 0.4)' }}>
+                      <img
+                        src={photo.signed_url}
+                        alt={photo.file_name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="aspect-[4/3] flex items-center justify-center rounded-xl bg-secondary">
+                    <p className="text-xs text-muted-foreground/50">אין תמונה</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Change Order Card */}
         <div className="rounded-2xl bg-card p-6 space-y-5 relative overflow-hidden card-shimmer" style={{ border: '1px solid var(--border-gold)' }}>
-          {/* Gold shimmer top line */}
           <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(var(--gold-500)), transparent)' }} />
 
           <h1 className="text-xl font-bold text-center">{co.title}</h1>
@@ -215,7 +301,6 @@ const ClientPortal = () => {
             {categoryLabels[co.category] ?? co.category}
           </p>
 
-          {/* Price — gold shimmer */}
           <div className="text-center py-4">
             <p className="text-[42px] font-black leading-none tabular-nums text-gold-shimmer font-display">
               ₪{totalPrice.toLocaleString("he-IL")}
@@ -225,7 +310,6 @@ const ClientPortal = () => {
             </p>
           </div>
 
-          {/* Impact days */}
           {(co.impact_days ?? 0) !== 0 && (
             <div className="text-center">
               <span className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-lg font-bold text-primary"
@@ -236,7 +320,6 @@ const ClientPortal = () => {
             </div>
           )}
 
-          {/* Description */}
           {co.description && (
             <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
               <p className="text-[15px] leading-relaxed">{co.description}</p>
@@ -266,17 +349,37 @@ const ClientPortal = () => {
             />
           </div>
 
-          <div className="flex items-start gap-3">
-            <Checkbox
-              id="consent"
-              checked={consent}
-              onCheckedChange={(v) => { setConsent(v === true); setError(""); }}
-              disabled={state === "submitting"}
-              className="mt-0.5"
-            />
-            <Label htmlFor="consent" className="text-sm leading-relaxed cursor-pointer">
-              אני מאשר/ת שקראתי את פרטי השינוי ומסכים/ה לתנאים
-            </Label>
+          {/* Signature Canvas */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label>חתימה דיגיטלית *</Label>
+              <button
+                type="button"
+                onClick={handleClearSignature}
+                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Eraser className="h-3.5 w-3.5" />
+                נקה
+              </button>
+            </div>
+            <div
+              className="rounded-xl overflow-hidden"
+              style={{
+                border: hasSigned ? '2px solid hsl(var(--primary))' : '1px solid var(--border-default)',
+                background: '#FFFFFF',
+              }}
+            >
+              <SignatureCanvas
+                ref={sigRef}
+                penColor="#0A0A0A"
+                canvasProps={{
+                  className: "w-full",
+                  style: { width: "100%", height: 160, touchAction: "none" },
+                }}
+                onEnd={handleSignEnd}
+              />
+            </div>
+            <p className="text-[11px] text-muted-foreground text-center">חתום באמצעות האצבע או העכבר</p>
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
@@ -286,7 +389,7 @@ const ClientPortal = () => {
             className="w-full text-base font-extrabold h-[60px]"
             style={{ background: 'hsl(var(--success))', color: '#fff' }}
             onClick={handleApprove}
-            disabled={!clientName.trim() || !consent || state === "submitting"}
+            disabled={!canApprove}
           >
             {state === "submitting" ? (
               <Loader2 className="h-5 w-5 animate-spin" />
