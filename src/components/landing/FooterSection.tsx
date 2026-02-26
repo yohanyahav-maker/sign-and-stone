@@ -1,11 +1,19 @@
-import logoImg from "@/assets/logo.png";
+import { useTheme } from "@/hooks/useTheme";
+import logoLight from "@/assets/logo-clean.png";
+import logoDark from "@/assets/logo-dark.png";
 
 const FooterSection = () => {
+  const { theme } = useTheme();
+
   return (
     <footer className="bg-card border-t border-border">
       <div className="container mx-auto px-6 py-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <img src={logoImg} alt="שינוי חתום" className="h-9 w-auto object-contain dark:brightness-0 dark:invert" />
+          <img
+            src={theme === "dark" ? logoDark : logoLight}
+            alt="שינוי חתום"
+            className="h-11 w-auto object-contain"
+          />
 
           <div className="flex gap-6 text-sm text-muted-foreground">
             <a href="mailto:info@shinui-hatum.co.il" className="hover:text-foreground transition-colors">יצירת קשר</a>
