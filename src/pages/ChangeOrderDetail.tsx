@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   ArrowRight, Loader2, Send, Ban, Clock, FileText, Calendar,
-  CheckCircle2, XCircle, DollarSign, Edit, Download,
+  CheckCircle2, XCircle, DollarSign, Edit, Download, CheckCheck, ImageIcon,
 } from "lucide-react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
@@ -94,6 +94,40 @@ const ChangeOrderDetail = () => {
       return data;
     },
   });
+
+  // Attachments with context
+  const { data: attachments } = useQuery({
+    queryKey: ["attachments", validChangeId],
+    enabled: !!validChangeId && !isDemo,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("attachments")
+        .select("id, file_name, file_url, file_type, context")
+        .eq("change_order_id", validChangeId!);
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Check if client viewed
+  const { data: viewedEntries } = useQuery({
+    queryKey: ["viewed_co", validChangeId],
+    enabled: !!validChangeId && !isDemo,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("audit_log")
+        .select("id")
+        .eq("record_id", validChangeId!)
+        .eq("action", "CLIENT_OPENED_PORTAL")
+        .limit(1);
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const isViewed = (viewedEntries ?? []).length > 0;
+  const beforePhotos = (attachments ?? []).filter((a) => a.context === "BEFORE" && a.file_type === "image");
+  const afterPhotos = (attachments ?? []).filter((a) => a.context === "AFTER" && a.file_type === "image");
 
   // Demo mode
   if (isDemo) {
@@ -219,10 +253,55 @@ const ChangeOrderDetail = () => {
           <h1 className="text-xl font-bold truncate">{co.title}</h1>
           <div className="flex items-center gap-2 mt-1">
             <StatusBadge variant={co.status as any} />
+            {isViewed && (
+              <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold"
+                    style={{ background: 'rgba(59,130,246,0.12)', color: '#60A5FA', border: '1px solid rgba(59,130,246,0.25)' }}>
+                <CheckCheck className="h-3 w-3" />
+                נצפה
+              </span>
+            )}
             <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded" style={{ border: '1px solid var(--border-subtle)' }}>{categoryLabels[co.category] ?? co.category}</span>
           </div>
         </div>
       </div>
+
+      {/* Before / After Comparison */}
+      {(beforePhotos.length > 0 || afterPhotos.length > 0) && (
+        <Card>
+          <CardContent className="p-4 space-y-3">
+            <h2 className="text-sm font-bold flex items-center gap-2">
+              <ImageIcon className="h-4 w-4 text-muted-foreground" />
+              השוואה ויזואלית
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <p className="text-xs font-semibold text-center text-muted-foreground">לפני</p>
+                {beforePhotos.length > 0 ? beforePhotos.map((p) => (
+                  <div key={p.id} className="aspect-[4/3] overflow-hidden rounded-xl bg-secondary">
+                    <img src={p.file_url} alt={p.file_name} className="h-full w-full object-cover" />
+                  </div>
+                )) : (
+                  <div className="aspect-[4/3] flex items-center justify-center rounded-xl bg-secondary">
+                    <p className="text-xs text-muted-foreground/50">אין תמונה</p>
+                  </div>
+                )}
+              </div>
+              <div className="space-y-1.5">
+                <p className="text-xs font-semibold text-center text-primary">אחרי</p>
+                {afterPhotos.length > 0 ? afterPhotos.map((p) => (
+                  <div key={p.id} className="aspect-[4/3] overflow-hidden rounded-xl" style={{ border: '2px solid hsl(var(--primary) / 0.4)' }}>
+                    <img src={p.file_url} alt={p.file_name} className="h-full w-full object-cover" />
+                  </div>
+                )) : (
+                  <div className="aspect-[4/3] flex items-center justify-center rounded-xl bg-secondary">
+                    <p className="text-xs text-muted-foreground/50">אין תמונה</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {totalPrice != null && totalPrice > 0 && (
         <Card>
