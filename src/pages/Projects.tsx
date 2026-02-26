@@ -87,16 +87,15 @@ const Projects = () => {
       <SocialFooter />
 
       {/* FAB — Blue */}
-      <button
-        onClick={() => {
-          if (!atLimit) navigate("/projects/new");
-        }}
-        disabled={atLimit}
-        className="fixed bottom-24 left-5 z-40 flex h-[60px] w-[60px] items-center justify-center rounded-full text-2xl font-light shadow-lg transition-all hover:scale-110 active:scale-95 disabled:opacity-40 animate-fab-appear bg-info text-info-foreground"
-        aria-label="לקוח חדש"
-      >
-        <Plus className="h-7 w-7" />
-      </button>
+      {!atLimit && (
+        <button
+          onClick={() => navigate("/projects/new")}
+          className="fixed bottom-28 left-5 z-[999] flex h-[60px] w-[60px] items-center justify-center rounded-full text-2xl font-light shadow-lg transition-all duration-150 hover:scale-110 hover:shadow-xl active:scale-90 pointer-events-auto bg-primary text-primary-foreground"
+          aria-label="לקוח חדש"
+        >
+          <Plus className="h-7 w-7" />
+        </button>
+      )}
     </div>
   );
 };
