@@ -65,7 +65,7 @@ const ProjectDetail = () => {
   }
 
   if (!project) {
-    return <div className="p-6 text-center"><p className="text-muted-foreground">פרויקט לא נמצא</p></div>;
+    return <div className="p-6 text-center"><p className="text-muted-foreground">לקוח לא נמצא</p></div>;
   }
 
   const clientPhone = project.client_phone?.replace(/[^0-9+]/g, "") || "";
@@ -98,7 +98,7 @@ const ProjectDetail = () => {
           <ArrowRight className="h-5 w-5" />
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-xl font-bold truncate">פרוייקט</h1>
+          <h1 className="text-xl font-bold truncate">לקוח</h1>
           <p className="text-sm text-muted-foreground truncate">{project.client_name || project.name}</p>
         </div>
         <button onClick={() => navigate(`/projects/${projectId}/edit`)}

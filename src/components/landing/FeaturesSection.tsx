@@ -5,7 +5,7 @@ const features = [
     icon: MessageSquare,
     title: "שליחה בוואטסאפ",
     description:
-      "שולחים לבעל הבית לינק ישירות בוואטסאפ. הוא פותח, רואה את השינוי עם תמונות ומחיר, ומאשר — בלי להוריד אפליקציה.",
+      "שולחים ללקוח לינק ישירות בוואטסאפ. הוא פותח, רואה את השינוי עם תמונות ומחיר, ומאשר — בלי להוריד אפליקציה.",
   },
   {
     icon: ShieldCheck,
@@ -15,9 +15,9 @@ const features = [
   },
   {
     icon: BarChart3,
-    title: "דוחות פרויקט בנייה",
+    title: "דוחות ומעקב",
     description:
-      "עוקבים אחרי כל השינויים, הסכומים וימי ההשפעה — ויודעים בדיוק כמה השתנה הפרויקט מהחוזה המקורי.",
+      "עוקבים אחרי כל השינויים, הסכומים וימי ההשפעה — ויודעים בדיוק כמה השתנתה העבודה מההצעה המקורית.",
   },
 ];
 
@@ -27,10 +27,10 @@ const FeaturesSection = () => {
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            כל מה שקבלן בנייה צריך
+            כל מה שבעל מקצוע צריך
           </h2>
           <p className="text-muted-foreground text-lg">
-            ניהול שינויי בנייה מקצועי — מהשלד ועד הגמרים.
+            ניהול שינויים מקצועי — מהתיעוד ועד החתימה.
           </p>
         </div>
 

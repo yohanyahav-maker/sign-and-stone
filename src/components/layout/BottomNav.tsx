@@ -1,10 +1,10 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { FolderOpen, Settings, Sun, Moon } from "lucide-react";
+import { Users, Settings, Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/useTheme";
 
 const navItems = [
-  { path: "/projects", label: "פרויקטים", icon: FolderOpen },
+  { path: "/projects", label: "לקוחות", icon: Users },
   { path: "/settings", label: "הגדרות", icon: Settings },
 ];
 

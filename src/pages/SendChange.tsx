@@ -197,7 +197,7 @@ const SendChange = () => {
             className="w-full"
             onClick={() => navigate(`/projects/${projectId}`)}
           >
-            חזור לפרויקט
+            חזור ללקוח
           </Button>
         </div>
       )}

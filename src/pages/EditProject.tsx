@@ -71,10 +71,10 @@ const EditProject = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-      toast.success("הפרויקט נמחק");
+      toast.success("הלקוח נמחק");
       navigate("/projects");
     },
-    onError: () => toast.error("שגיאה במחיקת הפרויקט"),
+    onError: () => toast.error("שגיאה במחיקת הלקוח"),
   });
 
   if (isLoading) {
@@ -82,7 +82,7 @@ const EditProject = () => {
   }
 
   if (!project) {
-    return <div dir="rtl" className="p-6 text-center"><p className="text-muted-foreground">פרויקט לא נמצא</p></div>;
+    return <div dir="rtl" className="p-6 text-center"><p className="text-muted-foreground">לקוח לא נמצא</p></div>;
   }
 
   return (
@@ -104,10 +104,10 @@ const EditProject = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             <DropdownMenuItem className="text-destructive gap-2" onClick={() => {
-              if (confirm("האם אתה בטוח שברצונך למחוק את הפרויקט?")) deleteMutation.mutate();
+              if (confirm("האם אתה בטוח שברצונך למחוק לקוח זה?")) deleteMutation.mutate();
             }}>
               <Trash2 className="h-4 w-4" />
-              מחק פרויקט
+              מחק לקוח
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

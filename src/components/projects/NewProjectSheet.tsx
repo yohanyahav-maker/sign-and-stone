@@ -16,12 +16,15 @@ const projectTypeOptions: { value: ProjectType; label: string }[] = [
   { value: "villa", label: "וילה" },
   { value: "ground_attached", label: "צמוד קרקע" },
   { value: "advanced", label: "בנייה מתקדמת" },
-  { value: "addition", label: "תוספת קומה" },
-  { value: "renovation", label: "שיפוץ מקיף" },
+  { value: "addition", label: "תוספת / הרחבה" },
+  { value: "renovation", label: "שיפוץ" },
+  { value: "residential", label: "דירה" },
+  { value: "commercial", label: "מסחרי" },
+  { value: "other", label: "אחר" },
 ];
 
 const schema = z.object({
-  name: z.string().trim().min(1, "שם הפרויקט נדרש").max(100, "מקסימום 100 תווים"),
+  name: z.string().trim().min(1, "שם הלקוח נדרש").max(100, "מקסימום 100 תווים"),
   address: z.string().trim().max(200, "מקסימום 200 תווים").optional(),
   project_type: z.string(),
   client_portal_enabled: z.boolean(),
@@ -38,7 +41,7 @@ interface NewProjectSheetProps {
 export function NewProjectSheet({ open, onOpenChange }: NewProjectSheetProps) {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
-  const [projectType, setProjectType] = useState<ProjectType>("villa");
+  const [projectType, setProjectType] = useState<ProjectType>("renovation");
   const [portalEnabled, setPortalEnabled] = useState(false);
   const [clientName, setClientName] = useState("");
   const [clientPhone, setClientPhone] = useState("");
@@ -48,7 +51,7 @@ export function NewProjectSheet({ open, onOpenChange }: NewProjectSheetProps) {
   const createProject = useCreateProject();
 
   const resetForm = () => {
-    setName(""); setAddress(""); setProjectType("villa");
+    setName(""); setAddress(""); setProjectType("renovation");
     setPortalEnabled(false); setClientName(""); setClientPhone(""); setClientEmail("");
     setErrors({});
   };
@@ -82,7 +85,7 @@ export function NewProjectSheet({ open, onOpenChange }: NewProjectSheetProps) {
       resetForm();
       onOpenChange(false);
     } catch {
-      setErrors({ name: "שגיאה ביצירת הפרויקט" });
+      setErrors({ name: "שגיאה ביצירת הלקוח" });
     }
   };
 
@@ -90,25 +93,25 @@ export function NewProjectSheet({ open, onOpenChange }: NewProjectSheetProps) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] overflow-y-auto" aria-describedby={undefined}>
         <SheetHeader>
-          <SheetTitle>פרויקט בנייה חדש</SheetTitle>
+          <SheetTitle>לקוח חדש</SheetTitle>
         </SheetHeader>
 
         <form onSubmit={handleSubmit} className="space-y-5 pt-4">
           <div className="space-y-1.5">
-            <Label htmlFor="proj-name">שם הפרויקט *</Label>
+            <Label htmlFor="proj-name">שם הלקוח / העבודה *</Label>
             <Input id="proj-name" value={name} onChange={(e) => { setName(e.target.value); setErrors({}); }}
-              placeholder="למשל: וילה כהן — קיסריה" autoFocus maxLength={100} />
+              placeholder="למשל: דוד כהן — שיפוץ דירה" autoFocus maxLength={100} />
             {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="proj-address">כתובת האתר</Label>
+            <Label htmlFor="proj-address">כתובת</Label>
             <Input id="proj-address" value={address} onChange={(e) => setAddress(e.target.value)}
               placeholder="רחוב, עיר" maxLength={200} />
           </div>
 
           <div className="space-y-1.5">
-            <Label>סוג בנייה</Label>
+            <Label>סוג עבודה</Label>
             <Select value={projectType} onValueChange={(v) => setProjectType(v as ProjectType)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -129,7 +132,7 @@ export function NewProjectSheet({ open, onOpenChange }: NewProjectSheetProps) {
           {portalEnabled && (
             <div className="space-y-4 rounded-lg border border-dashed p-3">
               <div className="space-y-1.5">
-                <Label htmlFor="client-name">שם הלקוח (בעל הבית)</Label>
+                <Label htmlFor="client-name">שם הלקוח</Label>
                 <Input id="client-name" value={clientName} onChange={(e) => setClientName(e.target.value)} maxLength={100} />
               </div>
               <div className="space-y-1.5">
@@ -148,7 +151,7 @@ export function NewProjectSheet({ open, onOpenChange }: NewProjectSheetProps) {
           )}
 
           <Button type="submit" size="lg" className="w-full text-base font-semibold" disabled={createProject.isPending}>
-            {createProject.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : "צור פרויקט"}
+            {createProject.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : "צור לקוח"}
           </Button>
         </form>
       </SheetContent>

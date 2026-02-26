@@ -140,7 +140,7 @@ const Settings = () => {
               <StatusBadge variant={subscription.status as any} />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">מגבלת פרויקטים</span>
+              <span className="text-sm text-muted-foreground">מגבלת לקוחות</span>
               <span className="font-semibold">{subscription.project_limit}</span>
             </div>
             <div className="flex items-center justify-between">

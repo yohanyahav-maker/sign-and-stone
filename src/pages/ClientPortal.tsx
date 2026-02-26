@@ -168,7 +168,7 @@ const ClientPortal = () => {
       <StatusScreen
         icon={<Clock className="h-12 w-12 text-muted-foreground" />}
         title="קישור פג תוקף"
-        message="הקישור אינו פעיל יותר. בקש מהקבלן לשלוח קישור חדש."
+        message="הקישור אינו פעיל יותר. בקש מנותן השירות לשלוח קישור חדש."
       />
     );
   }
@@ -195,7 +195,7 @@ const ClientPortal = () => {
       <StatusScreen
         icon={<CheckCircle className="h-12 w-12 text-success" />}
         title="השינוי אושר!"
-        message="תודה! אישורך נרשם בהצלחה. הקבלן יקבל הודעה."
+        message="תודה! אישורך נרשם בהצלחה. נותן השירות יקבל הודעה."
       />
     );
   }
@@ -205,7 +205,7 @@ const ClientPortal = () => {
       <StatusScreen
         icon={<XCircle className="h-12 w-12 text-destructive" />}
         title="השינוי נדחה"
-        message="הדחייה נרשמה. הקבלן יקבל הודעה עם סיבת הדחייה."
+        message="הדחייה נרשמה. נותן השירות יקבל הודעה עם סיבת הדחייה."
       />
     );
   }
