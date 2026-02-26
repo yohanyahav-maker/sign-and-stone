@@ -77,6 +77,7 @@ const NewChange = () => {
         file_url: urlData.publicUrl,
         file_type: f.type as any,
         file_size_bytes: f.file.size,
+        context: f.context ?? null,
       });
     }
   };

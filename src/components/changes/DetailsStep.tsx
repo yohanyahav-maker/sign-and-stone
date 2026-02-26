@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileUploadZone, type LocalFile } from "@/components/changes/FileUploadZone";
+import { ImageIcon } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type Category = Database["public"]["Enums"]["change_order_category"];
@@ -46,8 +47,16 @@ export function DetailsStep({ initial, initialFiles, onNext, onCancel }: Details
   const [title, setTitle] = useState(initial?.title ?? "");
   const [category, setCategory] = useState<Category>((initial?.category as Category) ?? "structural");
   const [description, setDescription] = useState(initial?.description ?? "");
-  const [files, setFiles] = useState<LocalFile[]>(initialFiles ?? []);
+  const [beforeFiles, setBeforeFiles] = useState<LocalFile[]>(
+    () => (initialFiles ?? []).filter((f) => f.context === "BEFORE")
+  );
+  const [afterFiles, setAfterFiles] = useState<LocalFile[]>(
+    () => (initialFiles ?? []).filter((f) => f.context === "AFTER")
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const taggedBefore = beforeFiles.map((f) => ({ ...f, context: "BEFORE" as const }));
+  const taggedAfter = afterFiles.map((f) => ({ ...f, context: "AFTER" as const }));
 
   const handleNext = () => {
     setErrors({});
@@ -58,7 +67,7 @@ export function DetailsStep({ initial, initialFiles, onNext, onCancel }: Details
       setErrors(fieldErrors);
       return;
     }
-    onNext(parsed.data, files);
+    onNext(parsed.data, [...taggedBefore, ...taggedAfter]);
   };
 
   return (
@@ -90,9 +99,24 @@ export function DetailsStep({ initial, initialFiles, onNext, onCancel }: Details
           className="rounded-[14px] text-base" />
       </div>
 
+      {/* Before / After dual cards */}
       <div className="space-y-2">
-        <Label className="text-xs text-muted-foreground">קבצים</Label>
-        <FileUploadZone files={files} onChange={setFiles} />
+        <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
+          <ImageIcon className="h-3.5 w-3.5" />
+          תמונות והשוואה
+        </Label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* BEFORE card */}
+          <div className="rounded-[16px] border border-border bg-card p-3 space-y-2">
+            <p className="text-sm font-semibold text-foreground">מצב קיים (לפני)</p>
+            <FileUploadZone files={beforeFiles} onChange={setBeforeFiles} />
+          </div>
+          {/* AFTER card */}
+          <div className="rounded-[16px] border-2 border-primary/40 bg-card p-3 space-y-2">
+            <p className="text-sm font-semibold text-primary">השינוי המבוקש (אחרי)</p>
+            <FileUploadZone files={afterFiles} onChange={setAfterFiles} />
+          </div>
+        </div>
       </div>
 
       <div className="flex gap-3 pt-4">
