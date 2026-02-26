@@ -31,16 +31,14 @@ export function ChangeOrderCard({ changeOrder, viewed }: ChangeOrderCardProps) {
   return (
     <button
       onClick={() => navigate(`/projects/${changeOrder.project_id}/changes/${changeOrder.id}`)}
-      className="w-full text-right rounded-2xl bg-card p-4 space-y-2 transition-all duration-200
-                 hover:bg-secondary active:scale-[0.985] relative overflow-hidden card-shimmer"
-      style={{ border: '1px solid var(--border-default)' }}
+      className="w-full text-right rounded-xl bg-card border border-border shadow-sm p-4 space-y-2 transition-all duration-200
+                 hover:bg-secondary active:scale-[0.985]"
     >
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-bold text-sm truncate flex-1">{changeOrder.title}</h3>
         <div className="flex items-center gap-1.5">
           {viewed && (
-            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold"
-                  style={{ background: 'rgba(59,130,246,0.12)', color: '#60A5FA', border: '1px solid rgba(59,130,246,0.25)' }}>
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold bg-primary/10 text-primary border border-primary/25">
               <CheckCheck className="h-3 w-3" />
               נצפה
             </span>
@@ -49,7 +47,7 @@ export function ChangeOrderCard({ changeOrder, viewed }: ChangeOrderCardProps) {
         </div>
       </div>
       <div className="flex items-center gap-3 text-sm text-muted-foreground">
-        <span className="px-2 py-0.5 rounded text-xs bg-muted" style={{ border: '1px solid var(--border-subtle)' }}>
+        <span className="px-2 py-0.5 rounded text-xs bg-muted border border-border">
           {categoryLabels[changeOrder.category] ?? changeOrder.category}
         </span>
         {changeOrder.price_amount != null && changeOrder.price_amount > 0 && (
@@ -58,7 +56,7 @@ export function ChangeOrderCard({ changeOrder, viewed }: ChangeOrderCardProps) {
           </span>
         )}
         {(changeOrder.impact_days ?? 0) !== 0 && (
-          <span className={`font-semibold ${changeOrder.impact_days! > 0 ? 'text-primary' : 'text-destructive'}`}>
+          <span className={`font-semibold ${changeOrder.impact_days! > 0 ? 'text-warning' : 'text-destructive'}`}>
             {changeOrder.impact_days! > 0 ? "+" : ""}{changeOrder.impact_days} ימים
           </span>
         )}

@@ -1,6 +1,6 @@
 const FooterSection = () => {
   return (
-    <footer className="bg-card" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+    <footer className="bg-card border-t border-border">
       <div className="container mx-auto px-6 py-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="font-display text-lg text-foreground">

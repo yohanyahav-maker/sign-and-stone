@@ -32,8 +32,7 @@ const HowItWorksSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-4xl mx-auto">
           {steps.map((step) => (
             <div key={step.num} className="text-center space-y-4">
-              <div className="mx-auto w-[52px] h-[52px] rounded-full flex items-center justify-center text-lg font-extrabold shadow-gold-sm"
-                   style={{ background: 'var(--gold-gradient)', color: '#1A1200' }}>
+              <div className="mx-auto w-[52px] h-[52px] rounded-full flex items-center justify-center text-lg font-extrabold bg-primary text-primary-foreground shadow-lg">
                 {step.num}
               </div>
               <h3 className="font-bold text-xl text-foreground">{step.title}</h3>
