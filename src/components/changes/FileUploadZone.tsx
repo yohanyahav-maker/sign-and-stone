@@ -7,6 +7,7 @@ export interface LocalFile {
   file: File;
   preview: string;
   type: "image" | "video" | "pdf" | "other";
+  context?: "BEFORE" | "AFTER";
 }
 
 const ACCEPTED_TYPES = [
