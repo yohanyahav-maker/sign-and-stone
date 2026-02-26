@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
-import logoImg from "@/assets/logo.png";
+import logoLight from "@/assets/logo-clean.png";
+import logoDark from "@/assets/logo-dark.png";
 
 const LandingNav = () => {
   const navigate = useNavigate();
@@ -16,7 +17,11 @@ const LandingNav = () => {
     <nav className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-xl">
       <div className="container mx-auto px-6 flex items-center justify-between h-16">
         <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-          <img src={logoImg} alt="שינוי חתום" className="h-10 w-auto object-contain dark:brightness-0 dark:invert" />
+          <img
+            src={theme === "dark" ? logoDark : logoLight}
+            alt="שינוי חתום"
+            className="h-12 w-auto object-contain"
+          />
         </div>
 
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
