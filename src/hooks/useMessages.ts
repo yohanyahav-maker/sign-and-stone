@@ -45,11 +45,48 @@ export function useMessages(projectId: string | undefined) {
         project_id: projectId,
         user_id: user.id,
         content,
+        type: "text",
       });
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: key }),
   });
 
-  return { messages, isLoading, sendMessage };
+  const sendVoiceMessage = useMutation({
+    mutationFn: async ({ blob, projectId: pid }: { blob: Blob; projectId: string }) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const uuid = crypto.randomUUID();
+      const ext = "webm";
+      const path = `projects/${pid}/voice/${uuid}.${ext}`;
+
+      // Upload to storage
+      const { error: storageError } = await supabase.storage
+        .from("files")
+        .upload(path, blob, {
+          cacheControl: "3600",
+          contentType: blob.type || "audio/webm",
+        });
+      if (storageError) throw storageError;
+
+      // Get signed URL
+      const { data: urlData, error: urlError } = await supabase.storage
+        .from("files")
+        .createSignedUrl(path, 60 * 60 * 24 * 365); // 1 year
+      if (urlError) throw urlError;
+
+      // Insert message
+      const { error: dbError } = await supabase.from("messages").insert({
+        project_id: pid,
+        user_id: user.id,
+        content: "🎤 הודעה קולית",
+        type: "voice",
+        file_url: urlData.signedUrl,
+      });
+      if (dbError) throw dbError;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: key }),
+  });
+
+  return { messages, isLoading, sendMessage, sendVoiceMessage };
 }
