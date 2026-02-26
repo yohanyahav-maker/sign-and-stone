@@ -66,15 +66,11 @@ const NewChange = () => {
         continue;
       }
 
-      const { data: urlData } = supabase.storage
-        .from("attachments")
-        .getPublicUrl(storagePath);
-
       await supabase.from("attachments").insert({
         change_order_id: changeOrderId,
         user_id: user.id,
         file_name: f.file.name,
-        file_url: urlData.publicUrl,
+        file_url: storagePath,
         file_type: f.type as any,
         file_size_bytes: f.file.size,
         context: f.context ?? null,

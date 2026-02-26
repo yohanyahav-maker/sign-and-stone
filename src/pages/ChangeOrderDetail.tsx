@@ -95,7 +95,7 @@ const ChangeOrderDetail = () => {
     },
   });
 
-  // Attachments with context
+  // Attachments with context – resolve signed URLs from storage paths
   const { data: attachments } = useQuery({
     queryKey: ["attachments", validChangeId],
     enabled: !!validChangeId && !isDemo,
@@ -105,7 +105,18 @@ const ChangeOrderDetail = () => {
         .select("id, file_name, file_url, file_type, context")
         .eq("change_order_id", validChangeId!);
       if (error) throw error;
-      return data;
+      if (!data) return [];
+
+      // file_url stores the storage path – generate signed URLs
+      const enriched = await Promise.all(
+        data.map(async (att) => {
+          const { data: signed } = await supabase.storage
+            .from("attachments")
+            .createSignedUrl(att.file_url, 86400);
+          return { ...att, file_url: signed?.signedUrl ?? att.file_url };
+        })
+      );
+      return enriched;
     },
   });
 
