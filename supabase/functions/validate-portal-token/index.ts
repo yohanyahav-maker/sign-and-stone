@@ -89,27 +89,19 @@ Deno.serve(async (req) => {
       .select("id, file_name, file_url, file_type, context")
       .eq("change_order_id", co.id);
 
-    // Generate signed URLs for attachments from the 'attachments' bucket
+    // Generate signed URLs for attachments – file_url stores the storage path
     const enrichedAttachments = [];
     if (attachments) {
       for (const att of attachments) {
-        // Extract storage path from the public URL
-        // file_url format: .../object/public/attachments/USER_ID/CO_ID/FILE.ext
-        const parts = att.file_url.split("/attachments/");
-        const storagePath = parts.length > 1 ? parts[parts.length - 1] : null;
-        let signedUrl = att.file_url;
-        if (storagePath) {
-          const { data: signed } = await adminClient.storage
-            .from("attachments")
-            .createSignedUrl(storagePath, 86400);
-          if (signed) signedUrl = signed.signedUrl;
-        }
+        const { data: signed } = await adminClient.storage
+          .from("attachments")
+          .createSignedUrl(att.file_url, 86400);
         enrichedAttachments.push({
           id: att.id,
           file_name: att.file_name,
           file_type: att.file_type,
           context: att.context,
-          signed_url: signedUrl,
+          signed_url: signed?.signedUrl ?? att.file_url,
         });
       }
     }
