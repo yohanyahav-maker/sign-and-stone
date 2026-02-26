@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { Plus, Crown } from "lucide-react";
+import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useProjects, useProjectChangeOrderCounts } from "@/hooks/useProjects";
-import { useSubscription } from "@/hooks/useSubscription";
-import { SubscriptionBanner } from "@/components/projects/SubscriptionBanner";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { EmptyProjects } from "@/components/projects/EmptyProjects";
 import { SocialFooter } from "@/components/layout/SocialFooter";
@@ -27,13 +25,9 @@ const Projects = () => {
   const { user } = useAuth();
   const { data: profile } = useProfile();
   const { data: projects, isLoading } = useProjects();
-  const { data: subscription } = useSubscription();
   const projectIds = projects?.map((p) => p.id) ?? [];
   const { data: counts } = useProjectChangeOrderCounts(projectIds);
 
-  const isPro = subscription?.plan === "pro";
-
-  // Compute KPIs
   const totalPending = projectIds.reduce((s, id) => s + (counts?.[id]?.pending ?? 0), 0);
   const totalApproved = projectIds.reduce((s, id) => {
     const c = counts?.[id];
@@ -41,18 +35,11 @@ const Projects = () => {
   }, 0);
   const totalSum = projectIds.reduce((s, id) => s + (counts?.[id]?.approvedSum ?? 0), 0);
 
-  const atLimit = subscription && projects ? projects.length >= subscription.project_limit : false;
-
   return (
     <div dir="rtl" className="px-5 py-8 space-y-8 max-w-2xl mx-auto">
-      {/* Title with crown */}
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-bold text-foreground">הלקוחות שלי</h1>
-        {isPro && <Crown className="h-5 w-5 text-primary fill-primary" />}
       </div>
-
-      {/* Subscription banner */}
-      <SubscriptionBanner />
 
       {/* KPI Cards */}
       <div className="flex gap-3">
@@ -83,22 +70,19 @@ const Projects = () => {
         )}
       </div>
 
-      {/* Social Footer */}
       <SocialFooter />
 
-      {/* FAB — Blue */}
-      {!atLimit && (
-        <motion.button
-          onClick={() => navigate("/projects/new")}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.3 }}
-          className="fixed bottom-28 left-5 z-[999] flex h-[60px] w-[60px] items-center justify-center rounded-full text-2xl font-light shadow-lg transition-all duration-150 hover:scale-110 hover:shadow-xl active:scale-90 pointer-events-auto bg-primary text-primary-foreground"
-          aria-label="לקוח חדש"
-        >
-          <Plus className="h-7 w-7" />
-        </motion.button>
-      )}
+      {/* FAB — Always visible */}
+      <motion.button
+        onClick={() => navigate("/projects/new")}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.3 }}
+        className="fixed bottom-28 left-5 z-[999] flex h-[60px] w-[60px] items-center justify-center rounded-full text-2xl font-light shadow-lg transition-all duration-150 hover:scale-110 hover:shadow-xl active:scale-90 pointer-events-auto bg-primary text-primary-foreground"
+        aria-label="לקוח חדש"
+      >
+        <Plus className="h-7 w-7" />
+      </motion.button>
     </div>
   );
 };

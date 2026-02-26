@@ -1,27 +1,22 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Loader2, User, Building2, Crown, Sun, Moon } from "lucide-react";
+import { LogOut, Loader2, User, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { StatusBadge } from "@/components/ui/status-badge";
 import { SocialFooter } from "@/components/layout/SocialFooter";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
-import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "@/hooks/useTheme";
 
-const planLabels: Record<string, string> = { basic: "בסיסי", pro: "מקצועי" };
-
 const Settings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: profile } = useProfile();
-  const { data: subscription } = useSubscription();
   const queryClient = useQueryClient();
   const { theme, toggleTheme } = useTheme();
 
@@ -30,13 +25,10 @@ const Settings = () => {
   const [businessName, setBusinessName] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const isPro = subscription?.plan === "pro";
-
   useEffect(() => {
     if (profile) {
       setFullName(profile.full_name ?? "");
       setCompanyName(profile.company_name ?? "");
-      // business_name from profile - need to fetch separately since types might not have it yet
       setBusinessName((profile as any).business_name ?? "");
     }
   }, [profile]);
@@ -123,38 +115,6 @@ const Settings = () => {
           </button>
         </CardContent>
       </Card>
-      {subscription && (
-        <Card>
-          <CardContent className="p-5 space-y-3">
-            <h2 className="text-lg font-bold flex items-center gap-2">
-              <Building2 className="h-5 w-5 text-muted-foreground" />
-              מנוי
-              {isPro && <Crown className="h-4 w-4 text-primary fill-primary" />}
-            </h2>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">תוכנית</span>
-              <span className="font-semibold">{planLabels[subscription.plan] ?? subscription.plan}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">סטטוס</span>
-              <StatusBadge variant={subscription.status as any} />
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">מגבלת לקוחות</span>
-              <span className="font-semibold">{subscription.project_limit}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">מגבלת שינויים חודשית</span>
-              <span className="font-semibold">{subscription.monthly_change_limit}</span>
-            </div>
-            {subscription.status === "trial" && subscription.trial_ends_at && (
-              <p className="text-sm text-primary font-medium">
-                ניסיון מסתיים ב-{new Date(subscription.trial_ends_at).toLocaleDateString("he-IL")}
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      )}
 
       {/* Logout */}
       <Button variant="outline" className="w-full gap-2"
