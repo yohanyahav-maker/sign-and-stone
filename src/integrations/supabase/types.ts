@@ -257,22 +257,28 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          file_url: string | null
           id: string
           project_id: string
+          type: string
           user_id: string
         }
         Insert: {
           content: string
           created_at?: string
+          file_url?: string | null
           id?: string
           project_id: string
+          type?: string
           user_id: string
         }
         Update: {
           content?: string
           created_at?: string
+          file_url?: string | null
           id?: string
           project_id?: string
+          type?: string
           user_id?: string
         }
         Relationships: [
