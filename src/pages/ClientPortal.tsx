@@ -246,7 +246,7 @@ const ClientPortal = () => {
 
         {/* Before / After Comparison */}
         {hasComparison && (
-          <div className="rounded-2xl bg-card p-4 space-y-3" style={{ border: '1px solid var(--border-default)' }}>
+          <div className="rounded-xl bg-card border border-border shadow-sm p-4 space-y-3">
             <h2 className="text-sm font-bold text-center text-muted-foreground">השוואה ויזואלית</h2>
             <div className="grid grid-cols-2 gap-3">
               {/* BEFORE */}
@@ -273,7 +273,7 @@ const ClientPortal = () => {
                 <p className="text-xs font-semibold text-center text-primary">השינוי המבוקש (אחרי)</p>
                 {afterPhotos.length > 0 ? (
                   afterPhotos.map((photo) => (
-                    <div key={photo.id} className="aspect-[4/3] overflow-hidden rounded-xl" style={{ border: '2px solid hsl(var(--primary) / 0.4)' }}>
+                    <div key={photo.id} className="aspect-[4/3] overflow-hidden rounded-xl border-2 border-primary/40">
                       <img
                         src={photo.signed_url}
                         alt={photo.file_name}
@@ -292,9 +292,7 @@ const ClientPortal = () => {
         )}
 
         {/* Change Order Card */}
-        <div className="rounded-2xl bg-card p-6 space-y-5 relative overflow-hidden card-shimmer" style={{ border: '1px solid var(--border-gold)' }}>
-          <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(var(--gold-500)), transparent)' }} />
-
+        <div className="rounded-xl bg-card border border-primary/30 shadow-sm p-6 space-y-5">
           <h1 className="text-xl font-bold text-center">{co.title}</h1>
 
           <p className="text-sm text-muted-foreground text-center">
@@ -302,7 +300,7 @@ const ClientPortal = () => {
           </p>
 
           <div className="text-center py-4">
-            <p className="text-[42px] font-black leading-none tabular-nums text-gold-shimmer font-display">
+            <p className="text-[42px] font-black leading-none tabular-nums text-primary font-display">
               ₪{totalPrice.toLocaleString("he-IL")}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
@@ -312,8 +310,7 @@ const ClientPortal = () => {
 
           {(co.impact_days ?? 0) !== 0 && (
             <div className="text-center">
-              <span className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-lg font-bold text-primary"
-                    style={{ background: 'rgba(212,168,67,0.12)', border: '1px solid rgba(212,168,67,0.25)' }}>
+              <span className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-lg font-bold text-warning bg-warning/10 border border-warning/25">
                 {co.impact_days! > 0 ? "+" : ""}{co.impact_days} ימים
               </span>
               <p className="text-xs text-muted-foreground mt-1">השפעה על לוח זמנים</p>
@@ -321,14 +318,14 @@ const ClientPortal = () => {
           )}
 
           {co.description && (
-            <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+            <div className="pt-4 border-t border-border">
               <p className="text-[15px] leading-relaxed">{co.description}</p>
             </div>
           )}
         </div>
 
         {/* Legal text */}
-        <div className="rounded-xl p-4" style={{ background: 'hsl(240 17% 8%)', border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-4 bg-secondary border border-border">
           <p className="text-xs text-muted-foreground leading-relaxed text-center">
             באישור שינוי זה, אני מאשר/ת כי קראתי והבנתי את פרטי השינוי, המחיר וההשפעה על לוח הזמנים,
             ואני מסכים/ה לתנאים המפורטים לעיל. אישור זה מהווה חתימה דיגיטלית מחייבת.
@@ -365,7 +362,7 @@ const ClientPortal = () => {
             <div
               className="rounded-xl overflow-hidden"
               style={{
-                border: hasSigned ? '2px solid hsl(var(--primary))' : '1px solid var(--border-default)',
+                border: hasSigned ? '2px solid hsl(var(--success))' : '1px solid hsl(var(--border))',
                 background: '#FFFFFF',
               }}
             >
@@ -386,8 +383,7 @@ const ClientPortal = () => {
 
           <Button
             size="lg"
-            className="w-full text-base font-extrabold h-[60px]"
-            style={{ background: 'hsl(var(--success))', color: '#fff' }}
+            className="w-full text-base font-extrabold h-[60px] bg-success text-success-foreground hover:bg-success/90"
             onClick={handleApprove}
             disabled={!canApprove}
           >
@@ -401,8 +397,7 @@ const ClientPortal = () => {
           <Button
             variant="outline"
             size="lg"
-            className="w-full"
-            style={{ background: 'var(--danger-bg)', color: 'hsl(var(--destructive))', borderColor: 'var(--danger-border)' }}
+            className="w-full bg-destructive/10 text-destructive border-destructive/25 hover:bg-destructive/20"
             onClick={() => setShowRejectModal(true)}
             disabled={state === "submitting"}
           >
@@ -412,10 +407,9 @@ const ClientPortal = () => {
 
         {/* Reject Modal */}
         {showRejectModal && (
-          <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" style={{ background: 'rgba(0,0,0,0.70)', backdropFilter: 'blur(6px)' }}>
-            <div className="w-full max-w-lg rounded-t-3xl sm:rounded-3xl bg-card p-6 space-y-4 animate-in slide-in-from-bottom"
-                 style={{ borderTop: '1px solid var(--border-default)', boxShadow: '0 -8px 60px rgba(0,0,0,0.6)' }}>
-              <div className="w-9 h-1 rounded-full mx-auto mb-2" style={{ background: 'var(--border-strong)' }} />
+          <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/70 backdrop-blur-sm">
+            <div className="w-full max-w-lg rounded-t-3xl sm:rounded-3xl bg-card border-t border-border p-6 space-y-4 animate-in slide-in-from-bottom shadow-2xl">
+              <div className="w-9 h-1 rounded-full mx-auto mb-2 bg-muted-foreground/30" />
               <h2 className="text-lg font-extrabold">דחיית שינוי</h2>
               <div className="space-y-1.5">
                 <Label htmlFor="reject-reason">סיבת הדחייה *</Label>
@@ -474,7 +468,7 @@ function StatusScreen({ icon, title, message }: { icon: React.ReactNode; title: 
         <div className="flex justify-center">{icon}</div>
         <h1 className="text-2xl font-bold">{title}</h1>
         <p className="text-muted-foreground">{message}</p>
-        <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+        <div className="pt-4 border-t border-border">
           <p className="text-xs text-muted-foreground">
             מופעל ע״י <span className="font-display">שינוי <span className="text-primary">חתום</span></span>
           </p>

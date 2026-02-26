@@ -55,21 +55,14 @@ const PricingSection = () => {
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`rounded-2xl p-8 space-y-6 relative overflow-hidden card-shimmer ${
+              className={`rounded-xl p-8 space-y-6 relative border shadow-sm ${
                 plan.popular
-                  ? "card-gold"
-                  : ""
+                  ? "border-primary bg-primary/5"
+                  : "border-border bg-card"
               }`}
-              style={{
-                border: plan.popular ? '1px solid var(--border-gold)' : '1px solid var(--border-default)',
-                background: plan.popular
-                  ? 'linear-gradient(135deg, rgba(212,168,67,0.08) 0%, rgba(168,112,32,0.04) 100%)'
-                  : 'hsl(240 17% 8%)',
-              }}
             >
               {plan.popular && (
-                <span className="absolute -top-0 left-1/2 -translate-x-1/2 translate-y-0 text-xs font-extrabold px-4 py-1 rounded-b-lg"
-                      style={{ background: 'var(--gold-gradient)', color: '#1A1200' }}>
+                <span className="absolute -top-0 left-1/2 -translate-x-1/2 translate-y-0 text-xs font-extrabold px-4 py-1 rounded-b-lg bg-primary text-primary-foreground">
                   הכי פופולרי
                 </span>
               )}
@@ -87,14 +80,14 @@ const PricingSection = () => {
               <ul className="space-y-3">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-center gap-2.5 text-sm text-foreground">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    <Check className="h-4 w-4 text-success flex-shrink-0" />
                     {f}
                   </li>
                 ))}
               </ul>
 
               <Button
-                className={`w-full h-12 font-bold ${plan.popular ? 'shadow-gold-sm' : ''}`}
+                className={`w-full h-12 font-bold ${plan.popular ? 'shadow-lg' : ''}`}
                 variant={plan.popular ? "default" : "outline"}
                 onClick={() => navigate("/login")}
               >

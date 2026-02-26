@@ -63,12 +63,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        gold: {
-          DEFAULT: "hsl(var(--gold-500))",
-          400: "hsl(var(--gold-400))",
-          300: "hsl(var(--gold-300))",
-          500: "hsl(var(--gold-500))",
-        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -87,10 +81,6 @@ export default {
       },
       boxShadow: {
         soft: "0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)",
-        "gold-sm": "0 2px 8px rgba(212,168,67,0.20)",
-        "gold-md": "0 4px 24px rgba(212,168,67,0.15), 0 8px 48px rgba(212,168,67,0.10)",
-        "gold-lg": "0 8px 30px rgba(212,168,67,0.20), 0 16px 50px rgba(212,168,67,0.15)",
-        "dark-xl": "0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,168,67,0.20)",
       },
       keyframes: {
         "accordion-down": {

@@ -2,16 +2,16 @@ import { cn } from "@/lib/utils";
 
 type StatusVariant = "draft" | "priced" | "sent" | "approved" | "rejected" | "canceled" | "trial" | "active" | "past_due";
 
-const variantStyles: Record<StatusVariant, { bg: string; text: string; border: string }> = {
-  draft:    { bg: "rgba(168,164,156,0.12)", text: "hsl(var(--muted-foreground))", border: "rgba(168,164,156,0.20)" },
-  priced:   { bg: "rgba(59,130,246,0.12)",  text: "#60A5FA",                     border: "rgba(59,130,246,0.25)" },
-  sent:     { bg: "rgba(212,168,67,0.12)",   text: "hsl(var(--gold-300))",        border: "rgba(212,168,67,0.25)" },
-  approved: { bg: "rgba(34,197,94,0.12)",    text: "hsl(var(--success))",         border: "rgba(34,197,94,0.25)" },
-  rejected: { bg: "rgba(239,68,68,0.12)",    text: "hsl(var(--destructive))",     border: "rgba(239,68,68,0.25)" },
-  canceled: { bg: "hsl(var(--muted))",       text: "hsl(var(--muted-foreground))", border: "hsl(var(--border))" },
-  trial:    { bg: "rgba(59,130,246,0.12)",   text: "#60A5FA",                     border: "rgba(59,130,246,0.25)" },
-  active:   { bg: "rgba(34,197,94,0.12)",    text: "hsl(var(--success))",         border: "rgba(34,197,94,0.25)" },
-  past_due: { bg: "rgba(239,68,68,0.12)",    text: "hsl(var(--destructive))",     border: "rgba(239,68,68,0.25)" },
+const variantStyles: Record<StatusVariant, string> = {
+  draft:    "bg-muted text-muted-foreground border-border",
+  priced:   "bg-info/10 text-info border-info/25",
+  sent:     "bg-warning/10 text-warning border-warning/25",
+  approved: "bg-success/10 text-success border-success/25",
+  rejected: "bg-destructive/10 text-destructive border-destructive/25",
+  canceled: "bg-muted text-muted-foreground border-border",
+  trial:    "bg-primary/10 text-primary border-primary/25",
+  active:   "bg-success/10 text-success border-success/25",
+  past_due: "bg-destructive/10 text-destructive border-destructive/25",
 };
 
 const variantLabels: Record<StatusVariant, string> = {
@@ -33,18 +33,13 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ variant, label, className }: StatusBadgeProps) {
-  const style = variantStyles[variant];
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold tracking-wide",
+        "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold tracking-wide border",
+        variantStyles[variant],
         className
       )}
-      style={{
-        background: style.bg,
-        color: style.text,
-        border: `1px solid ${style.border}`,
-      }}
     >
       {label ?? variantLabels[variant]}
     </span>

@@ -36,8 +36,8 @@ const FeaturesSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {features.map((f) => (
-            <div key={f.title} className="rounded-2xl bg-card p-7 space-y-4 relative overflow-hidden card-shimmer" style={{ border: '1px solid var(--border-default)' }}>
-              <div className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center" style={{ background: 'rgba(212,168,67,0.10)', border: '1px solid rgba(212,168,67,0.20)' }}>
+            <div key={f.title} className="rounded-xl bg-card border border-border shadow-sm p-7 space-y-4">
+              <div className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center bg-primary/10 border border-primary/20">
                 <f.icon className="h-6 w-6 text-primary" />
               </div>
               <h3 className="font-bold text-lg text-foreground">{f.title}</h3>

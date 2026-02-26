@@ -18,7 +18,7 @@ const HeroSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative bg-background py-24 md:py-32 overflow-hidden hero-grid gold-glow">
+    <section className="relative bg-background py-24 md:py-32 overflow-hidden hero-grid blue-glow">
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Right side — text */}
@@ -39,7 +39,7 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Button
                 size="lg"
-                className="text-base font-extrabold px-8 h-14 shadow-gold-md hover:shadow-gold-lg transition-all"
+                className="text-base font-extrabold px-8 h-14 shadow-lg hover:shadow-xl transition-all"
                 onClick={() => navigate("/login")}
               >
                 התחל ניסיון חינם 14 יום
@@ -64,35 +64,35 @@ const HeroSection = () => {
           {/* Left side — phone mockup */}
           <div className="flex justify-center">
             <div className="w-72 md:w-80">
-              <div className="rounded-[22px] border bg-card overflow-hidden relative card-shimmer" style={{ borderColor: 'var(--border-default)' }}>
+              <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-lg">
                 <div className="h-8 bg-secondary flex items-center justify-center">
                   <div className="w-20 h-1.5 rounded-full bg-foreground/10" />
                 </div>
 
-                <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                <div className="px-4 py-3 border-b border-border">
                   <p className="text-xs text-muted-foreground">דוד כהן — שיפוץ דירה</p>
                   <p className="text-sm font-bold">שינויים בעבודה</p>
                 </div>
 
                 <div className="px-3 py-2 space-y-2">
                   {mockChanges.map((c, i) => (
-                    <div key={i} className="flex items-center justify-between rounded-xl p-3" style={{ border: '1px solid var(--border-default)', background: 'hsl(240 16% 12%)' }}>
+                    <div key={i} className="flex items-center justify-between rounded-xl p-3 border border-border bg-secondary">
                       <div className="space-y-0.5">
                         <p className="text-sm font-semibold">{c.title}</p>
                         <p className="text-xs text-muted-foreground">{c.price}</p>
                       </div>
                       <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
                         c.status === "approved"
-                          ? "text-success"
-                          : "text-primary"
-                      }`} style={{ background: c.status === "approved" ? 'var(--success-bg)' : 'rgba(212,168,67,0.12)' }}>
+                          ? "text-success bg-success/10"
+                          : "text-warning bg-warning/10"
+                      }`}>
                         {c.statusLabel}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="px-3 py-3" style={{ borderTop: '1px solid var(--border-subtle)', background: 'hsl(240 16% 12% / 0.5)' }}>
+                <div className="px-3 py-3 border-t border-border bg-secondary/50">
                   <div className="grid grid-cols-3 gap-2 text-center">
                     {stats.map((s, i) => (
                       <div key={i}>

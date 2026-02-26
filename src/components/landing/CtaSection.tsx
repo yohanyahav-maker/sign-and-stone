@@ -5,7 +5,7 @@ const CtaSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden hero-grid gold-glow">
+    <section className="py-24 bg-background relative overflow-hidden hero-grid blue-glow">
       <div className="container mx-auto px-6 text-center space-y-8 max-w-2xl relative z-10">
         <h2 className="font-display text-3xl md:text-4xl text-foreground">
           שינוי אחד <span className="text-primary">חתום</span> שווה יותר מאלף שיחות
@@ -15,7 +15,7 @@ const CtaSection = () => {
         </p>
         <Button
           size="lg"
-          className="h-14 px-10 text-base font-extrabold shadow-gold-md hover:shadow-gold-lg transition-all"
+          className="h-14 px-10 text-base font-extrabold shadow-lg hover:shadow-xl transition-all"
           onClick={() => navigate("/login")}
         >
           התחל חינם — 14 יום ניסיון
