@@ -162,6 +162,26 @@ Deno.serve(async (req) => {
       performed_by: null,
     });
 
+    // Auto-generate PDF on approval
+    if (action === "approved") {
+      try {
+        const pdfResponse = await fetch(`${supabaseUrl}/functions/v1/generate-pdf`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${supabaseServiceKey}`,
+            "x-service-role": "true",
+          },
+          body: JSON.stringify({ change_order_id: co.id }),
+        });
+        if (!pdfResponse.ok) {
+          console.error("Auto PDF generation failed:", await pdfResponse.text());
+        }
+      } catch (pdfErr) {
+        console.error("Auto PDF generation error:", pdfErr);
+      }
+    }
+
     return new Response(
       JSON.stringify({ success: true, status: newStatus }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }

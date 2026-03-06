@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail, Calculator, Upload, MessageCircle } from "lucide-react";
+import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail, Calculator, Upload, MessageCircle, TrendingUp, History } from "lucide-react";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -12,6 +12,8 @@ import { FileGallery } from "@/components/projects/FileGallery";
 import { useFiles } from "@/hooks/useFiles";
 import { CalculatorDialog } from "@/components/projects/CalculatorDialog";
 import { ChatDrawer } from "@/components/projects/ChatDrawer";
+import { format } from "date-fns";
+import { he } from "date-fns/locale";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -23,7 +25,26 @@ function WhatsAppIcon({ className }: { className?: string }) {
 
 const isValidUuid = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
 
-type ViewMode = "grid" | "pending" | "approved" | "gallery";
+type ViewMode = "grid" | "pending" | "approved" | "gallery" | "timeline";
+
+const actionLabels: Record<string, string> = {
+  status_change: "שינוי סטטוס",
+  CLIENT_OPENED_PORTAL: "הלקוח צפה בשינוי",
+  EXPORT_PDF: "PDF הופק",
+};
+
+const statusLabels: Record<string, string> = {
+  draft: "טיוטה",
+  priced: "תומחר",
+  sent: "נשלח",
+  approved: "אושר",
+  rejected: "נדחה",
+  canceled: "בוטל",
+};
+
+function formatTimelineDate(dateStr: string) {
+  return format(new Date(dateStr), "d בMMM yyyy, HH:mm", { locale: he });
+}
 
 const ProjectDetail = () => {
   const { id: projectId } = useParams<{ id: string }>();
@@ -62,6 +83,22 @@ const ProjectDetail = () => {
   const allCoIds = (changeOrders ?? []).map((co) => co.id);
   const { data: viewedSet } = useViewedChangeOrders(allCoIds);
 
+  // Aggregated timeline query
+  const { data: timelineEntries, isLoading: timelineLoading } = useQuery({
+    queryKey: ["project_timeline", validProjectId, allCoIds.sort().join(",")],
+    enabled: viewMode === "timeline" && allCoIds.length > 0,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("audit_log")
+        .select("*")
+        .eq("table_name", "change_orders")
+        .in("record_id", allCoIds)
+        .order("performed_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
   if (projLoading) {
     return <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
@@ -76,21 +113,33 @@ const ProjectDetail = () => {
   const pendingOrders = changeOrders?.filter(co => co.status === "sent") ?? [];
   const approvedOrders = changeOrders?.filter(co => co.status === "approved") ?? [];
 
+  // KPI calculations
+  const approvedTotal = approvedOrders.reduce((sum, co) => {
+    const base = Number(co.price_amount) || 0;
+    return sum + (co.include_vat ? base * (1 + Number(co.vat_rate) / 100) : base);
+  }, 0);
+
+  const pendingTotal = pendingOrders.reduce((sum, co) => {
+    const base = Number(co.price_amount) || 0;
+    return sum + (co.include_vat ? base * (1 + Number(co.vat_rate) / 100) : base);
+  }, 0);
+
+  const totalCount = changeOrders?.length ?? 0;
+
+  // Map change order IDs to titles for timeline
+  const coTitleMap = new Map((changeOrders ?? []).map(co => [co.id, co.title]));
+
   const gridButtons = [
-    // Row 1: right=שינוי חדש, left=גלריה
     { icon: FilePlus, label: "שינוי חדש", color: "text-primary", onClick: () => navigate(`/projects/${projectId}/changes/new`) },
     { icon: Image, label: "גלריה", color: "text-accent", onClick: () => setViewMode("gallery") },
-    // Row 2: right=ממתין לאישור, left=העלאת מסמך
     { icon: Clock, label: "ממתין לאישור", color: "text-warning", onClick: () => setViewMode("pending"), badge: pendingOrders.length || undefined },
     { icon: FileText, label: "העלאת מסמך", color: "text-info", onClick: () => docRef.current?.click() },
-    // Row 3: right=שינויים מאושרים, left=צלם/העלה תמונה
     { icon: CheckCircle2, label: "שינויים מאושרים", color: "text-success", onClick: () => setViewMode("approved"), badge: approvedOrders.length || undefined },
     { icon: Camera, label: "צלם/העלה תמונה", color: "text-success", onClick: () => cameraRef.current?.click() },
-    // Row 4: right=מחשבון, left=צלם/העלה וידאו
     { icon: Calculator, label: "מחשבון", color: "text-info", onClick: () => setCalcOpen(true) },
     { icon: Video, label: "צלם/העלה וידאו", color: "text-info", onClick: () => videoRef.current?.click() },
-    // Row 5: right=צ׳אט
     { icon: MessageCircle, label: "צ׳אט", color: "text-primary", onClick: () => setChatOpen(true) },
+    { icon: History, label: "היסטוריה", color: "text-muted-foreground", onClick: () => setViewMode("timeline") },
   ];
 
   return (
@@ -132,6 +181,28 @@ const ProjectDetail = () => {
             <Mail className="h-6 w-6" />
           </a>
         )}
+      </div>
+
+      {/* KPI Summary Cards */}
+      <div className="grid grid-cols-3 gap-2">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
+          className="rounded-xl bg-card p-3 text-center" style={{ border: '1px solid var(--border-default)' }}>
+          <TrendingUp className="h-4 w-4 mx-auto mb-1 text-success" />
+          <p className="text-xs text-muted-foreground">מאושר</p>
+          <p className="text-sm font-bold">₪{approvedTotal.toLocaleString("he-IL", { maximumFractionDigits: 0 })}</p>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.05 }}
+          className="rounded-xl bg-card p-3 text-center" style={{ border: '1px solid var(--border-default)' }}>
+          <Clock className="h-4 w-4 mx-auto mb-1 text-warning" />
+          <p className="text-xs text-muted-foreground">ממתין</p>
+          <p className="text-sm font-bold">₪{pendingTotal.toLocaleString("he-IL", { maximumFractionDigits: 0 })}</p>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }}
+          className="rounded-xl bg-card p-3 text-center" style={{ border: '1px solid var(--border-default)' }}>
+          <FileText className="h-4 w-4 mx-auto mb-1 text-primary" />
+          <p className="text-xs text-muted-foreground">סה״כ שינויים</p>
+          <p className="text-sm font-bold">{totalCount}</p>
+        </motion.div>
       </div>
 
       {/* Content based on view mode */}
@@ -189,6 +260,57 @@ const ProjectDetail = () => {
         <div className="space-y-3">
           <h2 className="text-lg font-bold">גלריה</h2>
           <FileGallery projectId={validProjectId} />
+        </div>
+      )}
+
+      {viewMode === "timeline" && (
+        <div className="space-y-3">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            <History className="h-5 w-5 text-muted-foreground" /> היסטוריית פעילות
+          </h2>
+          {timelineLoading ? (
+            <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
+          ) : (timelineEntries ?? []).length > 0 ? (
+            <div className="relative pr-4">
+              <div className="absolute right-[7px] top-2 bottom-2 w-0.5 bg-border" />
+              <div className="space-y-4">
+                {(timelineEntries ?? []).map((entry, idx) => {
+                  const isClientAction = !entry.performed_by;
+                  const newStatus = (entry.new_value as any)?.status;
+                  const oldStatus = (entry.old_value as any)?.status;
+                  const clientName = (entry.new_value as any)?.client_name;
+                  const coTitle = coTitleMap.get(entry.record_id) ?? "";
+
+                  let label = actionLabels[entry.action] || entry.action;
+                  if (entry.action === "status_change" && oldStatus && newStatus) {
+                    label = `${statusLabels[oldStatus] ?? oldStatus} → ${statusLabels[newStatus] ?? newStatus}`;
+                  }
+
+                  return (
+                    <div key={entry.id} className="relative flex gap-3 items-start">
+                      <div className={`relative z-10 mt-1 flex h-4 w-4 items-center justify-center rounded-full border-2 ${
+                        idx === 0 ? "border-primary bg-primary" : "border-muted-foreground/40 bg-background"
+                      }`}>
+                        {idx === 0 && <div className="h-1.5 w-1.5 rounded-full bg-primary-foreground" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm font-medium">{label}</span>
+                        {coTitle && <p className="text-xs text-muted-foreground truncate">{coTitle}</p>}
+                        {isClientAction && (
+                          <span className="inline-block text-[10px] mt-0.5 px-1.5 py-0.5 rounded bg-info/10 text-info font-medium">
+                            {clientName ? `פעולת לקוח — ${clientName}` : "פעולת לקוח"}
+                          </span>
+                        )}
+                        <p className="text-xs text-muted-foreground">{formatTimelineDate(entry.performed_at)}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <p className="text-center text-muted-foreground py-8">אין פעילות עדיין</p>
+          )}
         </div>
       )}
 
