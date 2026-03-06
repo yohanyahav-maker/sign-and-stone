@@ -84,8 +84,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Must be in 'priced' status to send
-    if (co.status !== "priced") {
+    // Must be in 'priced' or 'sent' status
+    if (!["priced", "sent"].includes(co.status)) {
       return new Response(
         JSON.stringify({ error: `Cannot send from status: ${co.status}` }),
         { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -97,15 +97,21 @@ Deno.serve(async (req) => {
     const tokenHash = await sha256(rawToken);
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
-    // Update change order: set token + status to 'sent'
+    // Build update payload
+    const updatePayload: Record<string, any> = {
+      portal_token_hash: tokenHash,
+      portal_token_expires_at: expiresAt,
+      portal_token_used: false,
+    };
+
+    // Only update status if transitioning from 'priced' to 'sent'
+    if (co.status === "priced") {
+      updatePayload.status = "sent";
+    }
+
     const { error: updateError } = await adminClient
       .from("change_orders")
-      .update({
-        status: "sent",
-        portal_token_hash: tokenHash,
-        portal_token_expires_at: expiresAt,
-        portal_token_used: false,
-      })
+      .update(updatePayload)
       .eq("id", change_order_id);
 
     if (updateError) {
@@ -116,12 +122,13 @@ Deno.serve(async (req) => {
     }
 
     // Audit log
+    const auditAction = co.status === "sent" ? "REMINDER_SENT" : "status_change";
     await adminClient.from("audit_log").insert({
       table_name: "change_orders",
       record_id: change_order_id,
-      action: "status_change",
+      action: auditAction,
       old_value: { status: co.status },
-      new_value: { status: "sent" },
+      new_value: { status: updatePayload.status || co.status },
       performed_by: user.id,
     });
 

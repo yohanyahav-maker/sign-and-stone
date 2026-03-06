@@ -139,22 +139,31 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    const userClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY") ?? "", {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const { data: { user }, error: authError } = await userClient.auth.getUser();
-    if (authError || !user) {
+    // Support two auth modes: user auth OR service-role internal call
+    const isServiceCall = req.headers.get("x-service-role") === "true";
+    const authHeader = req.headers.get("Authorization");
+
+    let userId: string;
+
+    if (isServiceCall && authHeader === `Bearer ${supabaseServiceKey}`) {
+      // Internal service call — we'll determine userId from the change order
+      userId = "__service__";
+    } else if (authHeader) {
+      const userClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY") ?? "", {
+        global: { headers: { Authorization: authHeader } },
+      });
+      const { data: { user }, error: authError } = await userClient.auth.getUser();
+      if (authError || !user) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      userId = user.id;
+    } else {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -185,7 +194,10 @@ Deno.serve(async (req) => {
       });
     }
 
-    if (co.user_id !== user.id) {
+    // For user calls, verify ownership. For service calls, use the CO's user_id.
+    if (userId === "__service__") {
+      userId = co.user_id;
+    } else if (co.user_id !== userId) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -203,7 +215,7 @@ Deno.serve(async (req) => {
     const { data: profile } = await adminClient
       .from("profiles")
       .select("*")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .single();
 
     // Get approval if exists
@@ -218,10 +230,8 @@ Deno.serve(async (req) => {
     // Generate HTML
     const html = generateHtml({ co, project, profile, approval });
 
-    // Use a simple approach: store HTML as the "PDF" content
-    // For production, integrate with a proper HTML-to-PDF service
     const fileName = `change-order-${change_order_id}-${Date.now()}.html`;
-    const filePath = `${user.id}/${fileName}`;
+    const filePath = `${userId}/${fileName}`;
 
     const { error: uploadError } = await adminClient.storage
       .from("pdfs")
@@ -255,7 +265,7 @@ Deno.serve(async (req) => {
       record_id: change_order_id,
       action: "EXPORT_PDF",
       new_value: { file_path: filePath },
-      performed_by: user.id,
+      performed_by: userId,
     });
 
     return new Response(
