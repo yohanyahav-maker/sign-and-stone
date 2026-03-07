@@ -49,6 +49,12 @@ export function useCreateChangeOrder() {
         .select()
         .single();
       if (error) throw error;
+
+      // Log change_created to audit_log via edge function
+      supabase.functions.invoke("log-audit", {
+        body: { change_order_id: data.id, action: "change_created" },
+      }).catch(console.error);
+
       return data;
     },
     onSuccess: (data) => {

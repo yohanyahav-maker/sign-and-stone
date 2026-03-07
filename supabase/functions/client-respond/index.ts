@@ -153,12 +153,13 @@ Deno.serve(async (req) => {
     });
 
     // Audit log
+    const auditAction = action === "approved" ? "change_approved" : "change_rejected";
     await adminClient.from("audit_log").insert({
       table_name: "change_orders",
       record_id: co.id,
-      action: "status_change",
+      action: auditAction,
       old_value: { status: "sent" },
-      new_value: { status: newStatus, client_name: client_name.trim() },
+      new_value: { status: newStatus, client_name: client_name.trim(), project_id: co.project_id },
       performed_by: null,
     });
 
