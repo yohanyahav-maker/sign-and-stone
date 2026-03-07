@@ -122,13 +122,13 @@ Deno.serve(async (req) => {
     }
 
     // Audit log
-    const auditAction = co.status === "sent" ? "REMINDER_SENT" : "status_change";
+    const auditAction = co.status === "sent" ? "reminder_sent" : "change_sent";
     await adminClient.from("audit_log").insert({
       table_name: "change_orders",
       record_id: change_order_id,
       action: auditAction,
       old_value: { status: co.status },
-      new_value: { status: updatePayload.status || co.status },
+      new_value: { status: updatePayload.status || co.status, project_id: co.project_id },
       performed_by: user.id,
     });
 
