@@ -37,13 +37,20 @@ export function ChangeOrderCard({ changeOrder, viewed }: ChangeOrderCardProps) {
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-bold text-sm truncate flex-1">{changeOrder.title}</h3>
         <div className="flex items-center gap-1.5">
-          {viewed && (
+          {viewed && changeOrder.status !== "approved" && (
             <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold bg-primary/10 text-primary border border-primary/25">
               <CheckCheck className="h-3 w-3" />
               נצפה
             </span>
           )}
-          <StatusBadge variant={changeOrder.status as any} />
+          {changeOrder.status === "approved" ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold bg-success/15 text-success border border-success/30">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              שינוי חתום
+            </span>
+          ) : (
+            <StatusBadge variant={changeOrder.status as any} />
+          )}
         </div>
       </div>
       <div className="flex items-center gap-3 text-sm text-muted-foreground">
