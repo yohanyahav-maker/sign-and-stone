@@ -66,7 +66,7 @@ const Projects = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: i * 0.06, ease: "easeOut" }}
               >
-                <ProjectCard project={project} counts={isClient ? undefined : counts?.[project.id]} isClient={isClient} />
+                <ProjectCard project={project} counts={counts?.[project.id]} isClient={isClient} />
               </motion.div>
             );
           })

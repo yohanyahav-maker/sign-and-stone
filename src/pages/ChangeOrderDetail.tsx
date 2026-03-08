@@ -78,6 +78,9 @@ const ChangeOrderDetail = () => {
   const { data: co, isLoading } = useChangeOrder(isDemo ? "" : (validChangeId ?? ""));
   const updateCO = useUpdateChangeOrder();
 
+  // Determine if user is a client (not the owner)
+  const isClient = !!co && co.user_id !== user?.id;
+
   const [reminderLoading, setReminderLoading] = useState(false);
   const [reminderLink, setReminderLink] = useState<string | null>(null);
 
@@ -504,7 +507,24 @@ const ChangeOrderDetail = () => {
         <PdfDownloadButton changeOrderId={co.id} />
       )}
 
-      {!isTerminal && (
+      {/* Client pending signature banner */}
+      {isClient && co.status === "sent" && (
+        <Card className="border-warning/40 bg-warning/5">
+          <CardContent className="p-5 space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-warning/15">
+                <Send className="h-5 w-5 text-warning" />
+              </div>
+              <div className="flex-1">
+                <p className="text-base font-bold text-warning">ממתין לחתימתך</p>
+                <p className="text-xs text-muted-foreground">שינוי זה נשלח לאישורך. תוכל לאשר אותו דרך הקישור שקיבלת.</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {!isTerminal && !isClient && (
         <div className="fixed bottom-20 left-0 right-0 z-40 px-4 pb-2 bg-gradient-to-t from-background via-background to-transparent pt-6">
           <div className="flex gap-2">
             {co.status === "draft" && (
