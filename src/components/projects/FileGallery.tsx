@@ -67,7 +67,8 @@ export function FileGallery({ projectId }: FileGalleryProps) {
   const filteredFiles = useMemo(() => {
     if (activeFilter === "all") return files;
     return files.filter((f) => {
-      if (activeFilter === "images") return isImage(f.mime_type) || isVideo(f.mime_type);
+      if (activeFilter === "images") return isImage(f.mime_type);
+      if (activeFilter === "videos") return isVideo(f.mime_type);
       if (activeFilter === "documents") return isDocument(f) && !isPlan(f);
       if (activeFilter === "plans") return isPlan(f);
       return true;
