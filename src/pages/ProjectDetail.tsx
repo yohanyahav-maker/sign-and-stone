@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail, Calculator, Upload, MessageCircle, TrendingUp, History } from "lucide-react";
+import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail, Calculator, Upload, MessageCircle, TrendingUp, History, Paperclip, Plus, ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -25,26 +25,15 @@ function WhatsAppIcon({ className }: { className?: string }) {
 
 const isValidUuid = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
 
-type ViewMode = "grid" | "pending" | "approved" | "gallery" | "timeline";
+type ChangeFilter = "all" | "pending" | "approved" | "rejected" | "draft";
 
-const actionLabels: Record<string, string> = {
-  status_change: "שינוי סטטוס",
-  CLIENT_OPENED_PORTAL: "הלקוח צפה בשינוי",
-  EXPORT_PDF: "PDF הופק",
-};
-
-const statusLabels: Record<string, string> = {
-  draft: "טיוטה",
-  priced: "תומחר",
-  sent: "נשלח",
-  approved: "אושר",
+const changeFilterLabels: Record<ChangeFilter, string> = {
+  all: "הכל",
+  pending: "ממתין",
+  approved: "מאושר",
   rejected: "נדחה",
-  canceled: "בוטל",
+  draft: "טיוטה",
 };
-
-function formatTimelineDate(dateStr: string) {
-  return format(new Date(dateStr), "d בMMM yyyy, HH:mm", { locale: he });
-}
 
 const ProjectDetail = () => {
   const { id: projectId } = useParams<{ id: string }>();
@@ -52,13 +41,13 @@ const ProjectDetail = () => {
   const { user } = useAuth();
   const validProjectId = projectId && isValidUuid(projectId) ? projectId : undefined;
   const { uploadFile, isUploading } = useFiles("project", validProjectId);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLInputElement>(null);
   const docRef = useRef<HTMLInputElement>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [calcOpen, setCalcOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [changeFilter, setChangeFilter] = useState<ChangeFilter>("all");
+  const [showAttachments, setShowAttachments] = useState(false);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -83,22 +72,6 @@ const ProjectDetail = () => {
   const allCoIds = (changeOrders ?? []).map((co) => co.id);
   const { data: viewedSet } = useViewedChangeOrders(allCoIds);
 
-  // Aggregated timeline query
-  const { data: timelineEntries, isLoading: timelineLoading } = useQuery({
-    queryKey: ["project_timeline", validProjectId, allCoIds.sort().join(",")],
-    enabled: viewMode === "timeline" && allCoIds.length > 0,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("audit_log")
-        .select("*")
-        .eq("table_name", "change_orders")
-        .in("record_id", allCoIds)
-        .order("performed_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
-
   if (projLoading) {
     return <div className="flex justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
@@ -112,8 +85,9 @@ const ProjectDetail = () => {
 
   const pendingOrders = changeOrders?.filter(co => co.status === "sent") ?? [];
   const approvedOrders = changeOrders?.filter(co => co.status === "approved") ?? [];
+  const rejectedOrders = changeOrders?.filter(co => co.status === "rejected") ?? [];
+  const draftOrders = changeOrders?.filter(co => co.status === "draft" || co.status === "priced") ?? [];
 
-  // KPI calculations
   const approvedTotal = approvedOrders.reduce((sum, co) => {
     const base = Number(co.price_amount) || 0;
     return sum + (co.include_vat ? base * (1 + Number(co.vat_rate) / 100) : base);
@@ -126,193 +100,224 @@ const ProjectDetail = () => {
 
   const totalCount = changeOrders?.length ?? 0;
 
-  // Map change order IDs to titles for timeline
-  const coTitleMap = new Map((changeOrders ?? []).map(co => [co.id, co.title]));
-
-  const gridButtons = [
-    { icon: FilePlus, label: "שינוי חדש", color: "text-primary", onClick: () => navigate(`/projects/${projectId}/changes/new`) },
-    { icon: Image, label: "קבצים מצורפים", color: "text-accent", onClick: () => setViewMode("gallery") },
-    { icon: Clock, label: "ממתין לאישור", color: "text-warning", onClick: () => setViewMode("pending"), badge: pendingOrders.length || undefined },
-    { icon: FileText, label: "העלאת מסמך", color: "text-info", onClick: () => docRef.current?.click() },
-    { icon: CheckCircle2, label: "שינויים מאושרים", color: "text-success", onClick: () => setViewMode("approved"), badge: approvedOrders.length || undefined },
-    { icon: Camera, label: "צלם/העלה תמונה", color: "text-success", onClick: () => cameraRef.current?.click() },
-    { icon: Calculator, label: "מחשבון", color: "text-info", onClick: () => setCalcOpen(true) },
-    { icon: Video, label: "צלם/העלה וידאו", color: "text-info", onClick: () => videoRef.current?.click() },
-    { icon: MessageCircle, label: "צ׳אט", color: "text-primary", onClick: () => setChatOpen(true) },
-    { icon: History, label: "היסטוריה", color: "text-muted-foreground", onClick: () => setViewMode("timeline") },
-  ];
+  const filteredChanges = (() => {
+    if (!changeOrders) return [];
+    switch (changeFilter) {
+      case "pending": return pendingOrders;
+      case "approved": return approvedOrders;
+      case "rejected": return rejectedOrders;
+      case "draft": return draftOrders;
+      default: return changeOrders;
+    }
+  })();
 
   return (
-    <div dir="rtl" className="px-4 py-6 space-y-5">
+    <div dir="rtl" className="px-4 py-5 space-y-5 pb-28">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <button onClick={() => viewMode === "grid" ? navigate("/projects") : setViewMode("grid")}
-          className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary transition-colors" style={{ border: '1px solid var(--border-default)' }}>
-          <ArrowRight className="h-5 w-5" />
+        <button onClick={() => navigate("/projects")}
+          className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-secondary transition-colors border border-border">
+          <ArrowRight className="h-4 w-4" />
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-xl font-bold truncate">לקוח</h1>
-          <p className="text-sm text-muted-foreground truncate">{project.client_name || project.name}</p>
+          <h1 className="text-lg font-bold truncate">{project.client_name || project.name}</h1>
+          {project.address && (
+            <p className="text-xs text-muted-foreground truncate">{project.address}</p>
+          )}
         </div>
-        <button onClick={() => navigate(`/projects/${projectId}/edit`)}
-          className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-secondary transition-colors"
-          style={{ border: '1px solid var(--border-default)' }} aria-label="אפשרויות">
-          <MoreVertical className="h-4 w-4 text-muted-foreground" />
-        </button>
-      </div>
-
-      {/* Quick contact icons */}
-      <div className="flex items-center justify-center gap-4">
-        {whatsappUrl && (
-          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366]/15 text-[#25D366] hover:bg-[#25D366]/25 transition-colors">
-            <WhatsAppIcon className="h-6 w-6" />
-          </a>
-        )}
-        {clientPhone && (
-          <a href={`tel:${clientPhone}`}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-info/15 text-info hover:bg-info/25 transition-colors">
-            <Phone className="h-6 w-6" />
-          </a>
-        )}
-        {project.client_email && (
-          <a href={`mailto:${project.client_email}`}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/15 text-primary hover:bg-primary/25 transition-colors">
-            <Mail className="h-6 w-6" />
-          </a>
-        )}
+        <div className="flex items-center gap-1.5">
+          {whatsappUrl && (
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-[#25D366] hover:bg-[#25D366]/15 transition-colors">
+              <WhatsAppIcon className="h-4 w-4" />
+            </a>
+          )}
+          {clientPhone && (
+            <a href={`tel:${clientPhone}`}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-info hover:bg-info/15 transition-colors">
+              <Phone className="h-4 w-4" />
+            </a>
+          )}
+          {project.client_email && (
+            <a href={`mailto:${project.client_email}`}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-primary hover:bg-primary/15 transition-colors">
+              <Mail className="h-4 w-4" />
+            </a>
+          )}
+          <button onClick={() => navigate(`/projects/${projectId}/edit`)}
+            className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary transition-colors"
+            aria-label="אפשרויות">
+            <MoreVertical className="h-4 w-4 text-muted-foreground" />
+          </button>
+        </div>
       </div>
 
       {/* KPI Summary Cards */}
-      <div className="grid grid-cols-3 gap-2">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
-          className="rounded-xl bg-card p-3 text-center" style={{ border: '1px solid var(--border-default)' }}>
-          <TrendingUp className="h-4 w-4 mx-auto mb-1 text-success" />
-          <p className="text-xs text-muted-foreground">מאושר</p>
-          <p className="text-sm font-bold">₪{approvedTotal.toLocaleString("he-IL", { maximumFractionDigits: 0 })}</p>
+      <div className="grid grid-cols-3 gap-2.5">
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
+          className="rounded-xl bg-card border border-border p-3.5 space-y-1">
+          <div className="flex items-center gap-1.5">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/15">
+              <FileText className="h-3.5 w-3.5 text-primary" />
+            </div>
+            <span className="text-[10px] font-medium text-muted-foreground">סה״כ</span>
+          </div>
+          <p className="text-lg font-bold">{totalCount}</p>
         </motion.div>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.05 }}
-          className="rounded-xl bg-card p-3 text-center" style={{ border: '1px solid var(--border-default)' }}>
-          <Clock className="h-4 w-4 mx-auto mb-1 text-warning" />
-          <p className="text-xs text-muted-foreground">ממתין</p>
-          <p className="text-sm font-bold">₪{pendingTotal.toLocaleString("he-IL", { maximumFractionDigits: 0 })}</p>
+
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.05 }}
+          className="rounded-xl bg-card border border-border p-3.5 space-y-1">
+          <div className="flex items-center gap-1.5">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-success/15">
+              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+            </div>
+            <span className="text-[10px] font-medium text-muted-foreground">מאושר</span>
+          </div>
+          <p className="text-lg font-bold text-success">₪{approvedTotal.toLocaleString("he-IL", { maximumFractionDigits: 0 })}</p>
         </motion.div>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }}
-          className="rounded-xl bg-card p-3 text-center" style={{ border: '1px solid var(--border-default)' }}>
-          <FileText className="h-4 w-4 mx-auto mb-1 text-primary" />
-          <p className="text-xs text-muted-foreground">סה״כ שינויים</p>
-          <p className="text-sm font-bold">{totalCount}</p>
+
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }}
+          className="rounded-xl bg-card border border-border p-3.5 space-y-1">
+          <div className="flex items-center gap-1.5">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-warning/15">
+              <Clock className="h-3.5 w-3.5 text-warning" />
+            </div>
+            <span className="text-[10px] font-medium text-muted-foreground">ממתין</span>
+          </div>
+          <p className="text-lg font-bold text-warning">₪{pendingTotal.toLocaleString("he-IL", { maximumFractionDigits: 0 })}</p>
         </motion.div>
       </div>
 
-      {/* Content based on view mode */}
-      {viewMode === "grid" && (
-        <div className="grid grid-cols-2 gap-3">
-          {gridButtons.map((btn, i) => (
-            <motion.button
-              key={btn.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: i * 0.05, ease: "easeOut" }}
-              whileTap={{ scale: 0.95 }}
-              onClick={btn.onClick}
-              className="relative flex flex-col items-center justify-center gap-2 rounded-2xl bg-card p-5 min-h-[100px] transition-colors hover:bg-secondary"
-              style={{ border: '1px solid var(--border-default)' }}>
-              <btn.icon className={`h-7 w-7 ${btn.color}`} />
-              <span className="text-sm font-medium text-foreground text-center leading-tight">{btn.label}</span>
-              {btn.badge && btn.badge > 0 && (
-                <span className="absolute top-2 left-2 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground px-1">
-                  {btn.badge}
-                </span>
-              )}
-            </motion.button>
-          ))}
-        </div>
-      )}
+      {/* Quick Actions Bar */}
+      <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
+        <button onClick={() => navigate(`/projects/${projectId}/changes/new`)}
+          className="shrink-0 flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90 transition-colors">
+          <Plus className="h-4 w-4" />
+          שינוי חדש
+        </button>
+        <button onClick={() => setShowAttachments(!showAttachments)}
+          className={`shrink-0 flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors border ${
+            showAttachments ? "bg-accent/15 text-accent border-accent/30" : "bg-secondary text-muted-foreground border-border hover:bg-secondary/80"
+          }`}>
+          <Paperclip className="h-3.5 w-3.5" />
+          קבצים
+        </button>
+        <button onClick={() => setChatOpen(true)}
+          className="shrink-0 flex items-center gap-1.5 rounded-full bg-secondary text-muted-foreground px-3.5 py-2 text-sm font-medium border border-border hover:bg-secondary/80 transition-colors">
+          <MessageCircle className="h-3.5 w-3.5" />
+          צ׳אט
+        </button>
+        <button onClick={() => setCalcOpen(true)}
+          className="shrink-0 flex items-center gap-1.5 rounded-full bg-secondary text-muted-foreground px-3.5 py-2 text-sm font-medium border border-border hover:bg-secondary/80 transition-colors">
+          <Calculator className="h-3.5 w-3.5" />
+          מחשבון
+        </button>
+        <button onClick={() => cameraRef.current?.click()}
+          className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground border border-border hover:bg-secondary/80 transition-colors">
+          <Camera className="h-3.5 w-3.5" />
+        </button>
+        <button onClick={() => docRef.current?.click()}
+          className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground border border-border hover:bg-secondary/80 transition-colors">
+          <Upload className="h-3.5 w-3.5" />
+        </button>
+        <button onClick={() => videoRef.current?.click()}
+          className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground border border-border hover:bg-secondary/80 transition-colors">
+          <Video className="h-3.5 w-3.5" />
+        </button>
+      </div>
 
-      {viewMode === "pending" && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-bold">ממתינים לאישור</h2>
-          {coLoading ? (
-            <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
-          ) : pendingOrders.length > 0 ? (
-            pendingOrders.map(co => <ChangeOrderCard key={co.id} changeOrder={co} viewed={viewedSet?.has(co.id)} />)
-          ) : (
-            <p className="text-center text-muted-foreground py-8">אין שינויים ממתינים לאישור</p>
-          )}
-        </div>
-      )}
-
-      {viewMode === "approved" && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-bold">שינויים מאושרים</h2>
-          {coLoading ? (
-            <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
-          ) : approvedOrders.length > 0 ? (
-            approvedOrders.map(co => <ChangeOrderCard key={co.id} changeOrder={co} viewed={viewedSet?.has(co.id)} />)
-          ) : (
-            <p className="text-center text-muted-foreground py-8">אין שינויים מאושרים</p>
-          )}
-        </div>
-      )}
-
-      {viewMode === "gallery" && validProjectId && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-bold">קבצים מצורפים</h2>
+      {/* Attachments Section (collapsible) */}
+      {showAttachments && validProjectId && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="space-y-3"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold flex items-center gap-2">
+              <Paperclip className="h-4 w-4 text-muted-foreground" />
+              קבצים מצורפים
+            </h2>
+          </div>
           <FileGallery projectId={validProjectId} />
-        </div>
+        </motion.div>
       )}
 
-      {viewMode === "timeline" && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            <History className="h-5 w-5 text-muted-foreground" /> היסטוריית פעילות
-          </h2>
-          {timelineLoading ? (
-            <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
-          ) : (timelineEntries ?? []).length > 0 ? (
-            <div className="relative pr-4">
-              <div className="absolute right-[7px] top-2 bottom-2 w-0.5 bg-border" />
-              <div className="space-y-4">
-                {(timelineEntries ?? []).map((entry, idx) => {
-                  const isClientAction = !entry.performed_by;
-                  const newStatus = (entry.new_value as any)?.status;
-                  const oldStatus = (entry.old_value as any)?.status;
-                  const clientName = (entry.new_value as any)?.client_name;
-                  const coTitle = coTitleMap.get(entry.record_id) ?? "";
+      {/* Changes Section */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold">שינויים בעבודה</h2>
+          <span className="text-xs text-muted-foreground">{filteredChanges.length} שינויים</span>
+        </div>
 
-                  let label = actionLabels[entry.action] || entry.action;
-                  if (entry.action === "status_change" && oldStatus && newStatus) {
-                    label = `${statusLabels[oldStatus] ?? oldStatus} → ${statusLabels[newStatus] ?? newStatus}`;
-                  }
+        {/* Change Filters */}
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
+          {(Object.keys(changeFilterLabels) as ChangeFilter[]).map((key) => {
+            const count = key === "all" ? totalCount
+              : key === "pending" ? pendingOrders.length
+              : key === "approved" ? approvedOrders.length
+              : key === "rejected" ? rejectedOrders.length
+              : draftOrders.length;
 
-                  return (
-                    <div key={entry.id} className="relative flex gap-3 items-start">
-                      <div className={`relative z-10 mt-1 flex h-4 w-4 items-center justify-center rounded-full border-2 ${
-                        idx === 0 ? "border-primary bg-primary" : "border-muted-foreground/40 bg-background"
-                      }`}>
-                        {idx === 0 && <div className="h-1.5 w-1.5 rounded-full bg-primary-foreground" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-sm font-medium">{label}</span>
-                        {coTitle && <p className="text-xs text-muted-foreground truncate">{coTitle}</p>}
-                        {isClientAction && (
-                          <span className="inline-block text-[10px] mt-0.5 px-1.5 py-0.5 rounded bg-info/10 text-info font-medium">
-                            {clientName ? `פעולת לקוח — ${clientName}` : "פעולת לקוח"}
-                          </span>
-                        )}
-                        <p className="text-xs text-muted-foreground">{formatTimelineDate(entry.performed_at)}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+            return (
+              <button
+                key={key}
+                onClick={() => setChangeFilter(key)}
+                className={`shrink-0 flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                  changeFilter === key
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground hover:bg-secondary/80"
+                }`}
+              >
+                {changeFilterLabels[key]}
+                {count > 0 && (
+                  <span className={`text-[10px] ${changeFilter === key ? "text-primary-foreground/70" : "text-muted-foreground/60"}`}>
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Change Orders List */}
+        {coLoading ? (
+          <div className="flex justify-center py-10">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        ) : filteredChanges.length > 0 ? (
+          <div className="space-y-2.5">
+            {filteredChanges.map((co, i) => (
+              <motion.div
+                key={co.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: Math.min(i * 0.03, 0.3) }}
+              >
+                <ChangeOrderCard changeOrder={co} viewed={viewedSet?.has(co.id)} />
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted mb-3">
+              <FileText className="h-7 w-7 text-muted-foreground" />
             </div>
-          ) : (
-            <p className="text-center text-muted-foreground py-8">אין פעילות עדיין</p>
-          )}
-        </div>
-      )}
+            <p className="text-sm text-muted-foreground">
+              {changeFilter === "all" ? "אין שינויים עדיין" : `אין שינויים ${changeFilterLabels[changeFilter]}`}
+            </p>
+            {changeFilter === "all" && (
+              <button
+                onClick={() => navigate(`/projects/${projectId}/changes/new`)}
+                className="mt-3 text-sm font-medium text-primary hover:underline"
+              >
+                צור שינוי חדש →
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
       <CalculatorDialog open={calcOpen} onOpenChange={setCalcOpen} />
       {validProjectId && (
@@ -325,7 +330,6 @@ const ProjectDetail = () => {
       )}
 
       {/* Hidden file inputs */}
-      <input ref={fileInputRef} type="file" multiple accept="image/*,video/*,.pdf" onChange={handleFileUpload} className="hidden" />
       <input ref={docRef} type="file" multiple accept=".pdf,application/pdf" onChange={handleFileUpload} className="hidden" />
       <input ref={cameraRef} type="file" accept="image/*" capture="environment" onChange={handleFileUpload} className="hidden" />
       <input ref={videoRef} type="file" accept="video/*" capture="environment" onChange={handleFileUpload} className="hidden" />
