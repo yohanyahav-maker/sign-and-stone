@@ -194,8 +194,8 @@ const ClientPortal = () => {
     return (
       <StatusScreen
         icon={<CheckCircle className="h-12 w-12 text-success" />}
-        title="השינוי אושר!"
-        message="תודה! אישורך נרשם בהצלחה. נותן השירות יקבל הודעה."
+        title="השינוי אושר וחתום!"
+        message="תודה! אישורך וחתימתך נרשמו בהצלחה. נותן השירות יקבל הודעה."
         showBranding
       />
     );
