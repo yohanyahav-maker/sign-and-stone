@@ -40,7 +40,7 @@ const statusLabels: Record<string, string> = {
   draft: "טיוטה",
   priced: "תומחר",
   sent: "נשלח",
-  approved: "מאושר",
+  approved: "חתום",
   rejected: "נדחה",
   canceled: "בוטל",
 };
@@ -50,10 +50,11 @@ const actionLabels: Record<string, string> = {
   change_created: "נוצר",
   change_sent: "נשלח ללקוח",
   reminder_sent: "תזכורת נשלחה",
-  change_approved: "אושר",
+  change_approved: "חתום",
   change_rejected: "נדחה",
   CLIENT_OPENED_PORTAL: "הלקוח צפה בשינוי",
   client_generated_token: "הלקוח פתח קישור חתימה",
+  EXPORT_PDF: "הופק PDF",
 };
 
 function translateStatus(status: string): string {
