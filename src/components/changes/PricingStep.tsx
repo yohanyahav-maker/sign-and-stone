@@ -1,10 +1,15 @@
 import { useState, useMemo } from "react";
 import { z } from "zod";
+import { format, differenceInCalendarDays, addDays } from "date-fns";
+import { he } from "date-fns/locale";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Minus, Plus, Loader2 } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 const pricingSchema = z.object({
   price_amount: z.number().min(0, "מחיר לא יכול להיות שלילי").max(99999999, "מחיר גבוה מדי"),
@@ -27,7 +32,20 @@ export function PricingStep({ initial, onNext, onSaveDraft, onBack, loading }: P
   const [priceStr, setPriceStr] = useState(initial?.price_amount?.toString() ?? "");
   const [includeVat, setIncludeVat] = useState(initial?.include_vat ?? true);
   const [impactDays, setImpactDays] = useState(initial?.impact_days ?? 0);
+  const [deliveryDate, setDeliveryDate] = useState<Date | undefined>(
+    initial?.impact_days ? addDays(new Date(), initial.impact_days) : undefined
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleDateSelect = (date: Date | undefined) => {
+    setDeliveryDate(date);
+    if (date) {
+      const diff = differenceInCalendarDays(date, new Date());
+      setImpactDays(Math.max(-365, Math.min(365, diff)));
+    } else {
+      setImpactDays(0);
+    }
+  };
 
   const vatRate = 17;
   const priceNum = parseFloat(priceStr) || 0;
@@ -100,29 +118,46 @@ export function PricingStep({ initial, onNext, onSaveDraft, onBack, loading }: P
         <Switch id="vat-toggle" checked={includeVat} onCheckedChange={setIncludeVat} />
       </div>
 
-      {/* Impact days */}
+      {/* Schedule Impact */}
       <div className="space-y-3">
-        <Label className="text-xs text-muted-foreground">ימי השפעה</Label>
-        <div className="flex items-center justify-center gap-6">
-          <button
-            type="button"
-            onClick={() => setImpactDays((d) => Math.max(-365, d - 1))}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-card transition-colors active:bg-secondary"
-          >
-            <Minus className="h-5 w-5" />
-          </button>
-          <span className="text-4xl font-black w-24 text-center tabular-nums">
-            {impactDays > 0 ? `+${impactDays}` : impactDays}
-          </span>
-          <button
-            type="button"
-            onClick={() => setImpactDays((d) => Math.min(365, d + 1))}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-card transition-colors active:bg-secondary"
-          >
-            <Plus className="h-5 w-5" />
-          </button>
+        <Label className="text-xs text-muted-foreground">השפעה על לוח זמנים</Label>
+        <div className="rounded-[14px] bg-card p-4 space-y-3">
+          <Label className="text-sm font-medium">תאריך מסירה חדש</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full h-12 rounded-[14px] justify-start text-right font-normal",
+                  !deliveryDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="ml-2 h-4 w-4 opacity-60" />
+                {deliveryDate
+                  ? format(deliveryDate, "dd/MM/yyyy", { locale: he })
+                  : "בחר תאריך מסירה חדש"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={deliveryDate}
+                onSelect={handleDateSelect}
+                initialFocus
+                className={cn("p-3 pointer-events-auto")}
+              />
+            </PopoverContent>
+          </Popover>
+          {deliveryDate && (
+            <p className="text-sm text-center font-semibold tabular-nums">
+              {impactDays > 0
+                ? `+${impactDays} ימים`
+                : impactDays === 0
+                ? "ללא שינוי"
+                : `${impactDays} ימים`}
+            </p>
+          )}
         </div>
-        <p className="text-xs text-muted-foreground text-center">ימים</p>
         {errors.impact_days && <p className="text-sm text-destructive text-center">{errors.impact_days}</p>}
       </div>
 
