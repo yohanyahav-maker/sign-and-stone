@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { CheckCheck, CheckCircle2, Calendar } from "lucide-react";
+import { CheckCheck, CheckCircle2, Calendar, PenLine } from "lucide-react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import type { Tables } from "@/integrations/supabase/types";
@@ -27,11 +27,13 @@ const categoryLabels: Record<string, string> = {
 interface ChangeOrderCardProps {
   changeOrder: Tables<"change_orders">;
   viewed?: boolean;
+  isClient?: boolean;
 }
 
-export function ChangeOrderCard({ changeOrder, viewed }: ChangeOrderCardProps) {
+export function ChangeOrderCard({ changeOrder, viewed, isClient }: ChangeOrderCardProps) {
   const navigate = useNavigate();
   const isApproved = changeOrder.status === "approved";
+  const isSent = changeOrder.status === "sent";
 
   const { data: approval } = useQuery({
     queryKey: ["approval_card", changeOrder.id],
@@ -53,12 +55,22 @@ export function ChangeOrderCard({ changeOrder, viewed }: ChangeOrderCardProps) {
     <button
       onClick={() => navigate(`/projects/${changeOrder.project_id}/changes/${changeOrder.id}`)}
       className={`w-full text-right rounded-xl bg-card border shadow-sm p-4 space-y-2 transition-all duration-200
-                 hover:bg-secondary active:scale-[0.985] ${isApproved ? "border-success/30" : "border-border"}`}
+                 hover:bg-secondary active:scale-[0.985] ${
+                   isApproved ? "border-success/30" : 
+                   isClient && isSent ? "border-warning/40" : 
+                   "border-border"
+                 }`}
     >
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-bold text-sm truncate flex-1">{changeOrder.title}</h3>
         <div className="flex items-center gap-1.5">
-          {viewed && !isApproved && (
+          {isClient && isSent && (
+            <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold bg-warning/15 text-warning border border-warning/30">
+              <PenLine className="h-3 w-3" />
+              לחתימה
+            </span>
+          )}
+          {viewed && !isApproved && !isClient && (
             <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold bg-primary/10 text-primary border border-primary/25">
               <CheckCheck className="h-3 w-3" />
               נצפה

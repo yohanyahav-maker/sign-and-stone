@@ -326,7 +326,7 @@ const ProjectDetail = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: Math.min(i * 0.03, 0.3) }}
               >
-                <ChangeOrderCard changeOrder={co} viewed={viewedSet?.has(co.id)} />
+                <ChangeOrderCard changeOrder={co} viewed={viewedSet?.has(co.id)} isClient={isClient} />
               </motion.div>
             ))}
           </div>
