@@ -83,6 +83,7 @@ const ChangeOrderDetail = () => {
 
   const [reminderLoading, setReminderLoading] = useState(false);
   const [reminderLink, setReminderLink] = useState<string | null>(null);
+  const [clientSignLoading, setClientSignLoading] = useState(false);
 
   const { data: project } = useQuery({
     queryKey: ["project_for_co", co?.project_id],
