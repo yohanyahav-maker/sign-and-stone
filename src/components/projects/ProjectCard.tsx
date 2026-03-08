@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Eye } from "lucide-react";
+import { Eye, PenLine } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 
 const projectTypeLabels: Record<string, string> = {
@@ -21,7 +21,9 @@ export function ProjectCard({ project, counts, isClient }: ProjectCardProps) {
 
   // Left border color based on status
   const borderLeftColor = isClient
-    ? 'hsl(var(--muted-foreground))'
+    ? pending > 0
+      ? 'hsl(var(--warning))'
+      : 'hsl(var(--muted-foreground))'
     : pending > 0
       ? 'hsl(var(--gold-500))'
       : approvedSum > 0
@@ -59,6 +61,15 @@ export function ProjectCard({ project, counts, isClient }: ProjectCardProps) {
           </span>
         </div>
       </div>
+
+      {isClient && pending > 0 && (
+        <div className="flex items-center gap-2 text-xs pt-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 text-warning border border-warning/30 px-2.5 py-0.5 font-bold">
+            <PenLine className="h-3 w-3" />
+            {pending} ממתינים לחתימתך
+          </span>
+        </div>
+      )}
 
       {!isClient && (pending > 0 || approvedSum > 0) && (
         <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
