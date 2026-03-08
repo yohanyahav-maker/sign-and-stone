@@ -18,7 +18,7 @@ const CtaSection = () => {
           className="h-14 px-10 text-base font-extrabold shadow-lg hover:shadow-xl transition-all"
           onClick={() => navigate("/login")}
         >
-          צור שינוי ראשון
+          צור שינוי ראשון בחינם
         </Button>
         <p className="text-sm text-muted-foreground">
           <span className="text-success">✓</span> ללא כרטיס אשראי · ניסיון חינם ל-14 יום
