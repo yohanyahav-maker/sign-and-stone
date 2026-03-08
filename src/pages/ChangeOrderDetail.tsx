@@ -36,6 +36,58 @@ function formatDate(dateStr: string) {
   return format(new Date(dateStr), "d בMMM yyyy, HH:mm", { locale: he });
 }
 
+const statusLabels: Record<string, string> = {
+  draft: "טיוטה",
+  priced: "תומחר",
+  sent: "נשלח",
+  approved: "מאושר",
+  rejected: "נדחה",
+  canceled: "בוטל",
+};
+
+const actionLabels: Record<string, string> = {
+  status_change: "שינוי סטטוס",
+  change_created: "נוצר",
+  change_sent: "נשלח ללקוח",
+  reminder_sent: "תזכורת נשלחה",
+  change_approved: "אושר",
+  change_rejected: "נדחה",
+  CLIENT_OPENED_PORTAL: "הלקוח צפה בשינוי",
+  client_generated_token: "הלקוח פתח קישור חתימה",
+};
+
+function translateStatus(status: string): string {
+  return statusLabels[status] ?? status;
+}
+
+function translateAction(action: string): string {
+  return actionLabels[action] ?? action;
+}
+
+function SignaturePreview({ signaturePath }: { signaturePath: string }) {
+  const [url, setUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.storage
+      .from("signatures")
+      .createSignedUrl(signaturePath, 86400)
+      .then(({ data }) => {
+        if (data?.signedUrl) setUrl(data.signedUrl);
+      });
+  }, [signaturePath]);
+
+  if (!url) return null;
+
+  return (
+    <div className="border-t border-success/20 pt-3">
+      <p className="text-xs text-muted-foreground mb-2">חתימה דיגיטלית:</p>
+      <div className="rounded-xl bg-white p-3 border border-success/20">
+        <img src={url} alt="חתימת הלקוח" className="max-h-24 mx-auto object-contain" />
+      </div>
+    </div>
+  );
+}
+
 // Demo data
 const demoChangeOrdersMap: Record<string, any> = {
   "demo-co-1": {
