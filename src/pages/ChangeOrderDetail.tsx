@@ -510,19 +510,49 @@ const ChangeOrderDetail = () => {
 
       {/* Client pending signature banner */}
       {isClient && co.status === "sent" && (
-        <Card className="border-warning/40 bg-warning/5">
-          <CardContent className="p-5 space-y-2">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-warning/15">
-                <Send className="h-5 w-5 text-warning" />
+        <div className="space-y-3">
+          <Card className="border-warning/40 bg-warning/5">
+            <CardContent className="p-5 space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-warning/15">
+                  <Send className="h-5 w-5 text-warning" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-base font-bold text-warning">ממתין לחתימתך</p>
+                  <p className="text-xs text-muted-foreground">שינוי זה נשלח לאישורך. לחץ למטה כדי לחתום ולאשר.</p>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="text-base font-bold text-warning">ממתין לחתימתך</p>
-                <p className="text-xs text-muted-foreground">שינוי זה נשלח לאישורך. תוכל לאשר אותו דרך הקישור שקיבלת.</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+          <div className="fixed bottom-20 left-0 right-0 z-40 px-4 pb-2 bg-gradient-to-t from-background via-background to-transparent pt-6">
+            <Button
+              size="lg"
+              className="w-full text-base font-extrabold h-[56px] bg-success text-success-foreground hover:bg-success/90"
+              onClick={async () => {
+                setClientSignLoading(true);
+                try {
+                  const { data: resp, error: fnErr } = await supabase.functions.invoke("generate-client-token", {
+                    body: { change_order_id: co.id },
+                  });
+                  if (fnErr || resp?.error) {
+                    toast.error(resp?.error || "שגיאה ביצירת קישור חתימה");
+                    return;
+                  }
+                  const portalUrl = `/portal/${resp.token}`;
+                  navigate(portalUrl);
+                } catch {
+                  toast.error("שגיאה ביצירת קישור חתימה");
+                } finally {
+                  setClientSignLoading(false);
+                }
+              }}
+              disabled={clientSignLoading}
+            >
+              {clientSignLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <CheckCircle2 className="h-5 w-5" />}
+              חתום ואשר שינוי
+            </Button>
+          </div>
+        </div>
       )}
 
       {!isTerminal && !isClient && (
