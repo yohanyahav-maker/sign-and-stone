@@ -284,7 +284,7 @@ const ProjectDetail = () => {
 
         {/* Change Filters */}
         <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
-          {(Object.keys(changeFilterLabels) as ChangeFilter[]).map((key) => {
+          {(Object.keys(changeFilterLabels) as ChangeFilter[]).filter(key => !isClient || key !== "draft").map((key) => {
             const count = key === "all" ? totalCount
               : key === "pending" ? pendingOrders.length
               : key === "approved" ? approvedOrders.length
