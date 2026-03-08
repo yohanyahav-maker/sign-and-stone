@@ -190,13 +190,30 @@ const ProjectDetail = () => {
         </motion.div>
       </div>
 
+      {/* Pending signature banner for clients */}
+      {isClient && pendingOrders.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-xl bg-warning/10 border border-warning/30 p-4 space-y-1"
+        >
+          <p className="text-sm font-bold text-warning flex items-center gap-2">
+            <Clock className="h-4 w-4" />
+            {pendingOrders.length} שינויים ממתינים לחתימתך
+          </p>
+          <p className="text-xs text-muted-foreground">לחץ על שינוי כדי לצפות בפרטים</p>
+        </motion.div>
+      )}
+
       {/* Quick Actions Bar */}
       <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
-        <button onClick={() => navigate(`/projects/${projectId}/changes/new`)}
-          className="shrink-0 flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90 transition-colors">
-          <Plus className="h-4 w-4" />
-          שינוי חדש
-        </button>
+        {!isClient && (
+          <button onClick={() => navigate(`/projects/${projectId}/changes/new`)}
+            className="shrink-0 flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90 transition-colors">
+            <Plus className="h-4 w-4" />
+            שינוי חדש
+          </button>
+        )}
         <button onClick={() => setShowAttachments(!showAttachments)}
           className={`shrink-0 flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors border ${
             showAttachments ? "bg-accent/15 text-accent border-accent/30" : "bg-secondary text-muted-foreground border-border hover:bg-secondary/80"
@@ -204,28 +221,32 @@ const ProjectDetail = () => {
           <Paperclip className="h-3.5 w-3.5" />
           קבצים
         </button>
-        <button onClick={() => setChatOpen(true)}
-          className="shrink-0 flex items-center gap-1.5 rounded-full bg-secondary text-muted-foreground px-3.5 py-2 text-sm font-medium border border-border hover:bg-secondary/80 transition-colors">
-          <MessageCircle className="h-3.5 w-3.5" />
-          צ׳אט
-        </button>
-        <button onClick={() => setCalcOpen(true)}
-          className="shrink-0 flex items-center gap-1.5 rounded-full bg-secondary text-muted-foreground px-3.5 py-2 text-sm font-medium border border-border hover:bg-secondary/80 transition-colors">
-          <Calculator className="h-3.5 w-3.5" />
-          מחשבון
-        </button>
-        <button onClick={() => cameraRef.current?.click()}
-          className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground border border-border hover:bg-secondary/80 transition-colors">
-          <Camera className="h-3.5 w-3.5" />
-        </button>
-        <button onClick={() => docRef.current?.click()}
-          className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground border border-border hover:bg-secondary/80 transition-colors">
-          <Upload className="h-3.5 w-3.5" />
-        </button>
-        <button onClick={() => videoRef.current?.click()}
-          className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground border border-border hover:bg-secondary/80 transition-colors">
-          <Video className="h-3.5 w-3.5" />
-        </button>
+        {!isClient && (
+          <>
+            <button onClick={() => setChatOpen(true)}
+              className="shrink-0 flex items-center gap-1.5 rounded-full bg-secondary text-muted-foreground px-3.5 py-2 text-sm font-medium border border-border hover:bg-secondary/80 transition-colors">
+              <MessageCircle className="h-3.5 w-3.5" />
+              צ׳אט
+            </button>
+            <button onClick={() => setCalcOpen(true)}
+              className="shrink-0 flex items-center gap-1.5 rounded-full bg-secondary text-muted-foreground px-3.5 py-2 text-sm font-medium border border-border hover:bg-secondary/80 transition-colors">
+              <Calculator className="h-3.5 w-3.5" />
+              מחשבון
+            </button>
+            <button onClick={() => cameraRef.current?.click()}
+              className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground border border-border hover:bg-secondary/80 transition-colors">
+              <Camera className="h-3.5 w-3.5" />
+            </button>
+            <button onClick={() => docRef.current?.click()}
+              className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground border border-border hover:bg-secondary/80 transition-colors">
+              <Upload className="h-3.5 w-3.5" />
+            </button>
+            <button onClick={() => videoRef.current?.click()}
+              className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground border border-border hover:bg-secondary/80 transition-colors">
+              <Video className="h-3.5 w-3.5" />
+            </button>
+          </>
+        )}
       </div>
 
       {/* Attachments Section (collapsible) */}
