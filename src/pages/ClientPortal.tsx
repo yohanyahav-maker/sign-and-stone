@@ -158,7 +158,7 @@ const ClientPortal = () => {
       <StatusScreen
         icon={<AlertTriangle className="h-12 w-12 text-destructive" />}
         title="קישור לא תקין"
-        message="הקישור שגוי או שלא נמצא שינוי חוזה מתאים."
+        message="הקישור שגוי או שלא נמצא שינוי מתאים."
       />
     );
   }
