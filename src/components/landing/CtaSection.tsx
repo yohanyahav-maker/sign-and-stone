@@ -8,20 +8,20 @@ const CtaSection = () => {
     <section className="py-24 bg-background relative overflow-hidden hero-grid blue-glow">
       <div className="container mx-auto px-6 text-center space-y-8 max-w-2xl relative z-10">
         <h2 className="font-display text-3xl md:text-4xl text-foreground">
-          שינוי אחד <span className="text-primary">חתום</span> שווה יותר מאלף שיחות
+          התחל להשתמש ב<span className="text-primary">שינוי חתום</span> היום
         </h2>
         <p className="text-muted-foreground text-lg">
-          הצטרף לבעלי מקצוע שכבר חוסכים זמן, כסף ועצבים בכל עבודה.
+          תיעוד שינויים, אישור לקוח וחתימה דיגיטלית במקום אחד.
         </p>
         <Button
           size="lg"
           className="h-14 px-10 text-base font-extrabold shadow-lg hover:shadow-xl transition-all"
           onClick={() => navigate("/login")}
         >
-          התחל חינם — 14 יום ניסיון
+          צור שינוי ראשון
         </Button>
         <p className="text-sm text-muted-foreground">
-          <span className="text-success">✓</span> ללא כרטיס אשראי &nbsp; <span className="text-success">✓</span> ביטול בכל עת
+          <span className="text-success">✓</span> ללא כרטיס אשראי · ניסיון חינם ל-14 יום
         </p>
       </div>
     </section>
