@@ -206,7 +206,7 @@ const ClientPortal = () => {
       <StatusScreen
         icon={<XCircle className="h-12 w-12 text-destructive" />}
         title="השינוי נדחה"
-        message="הדחייה נרשמה. נותן השירות יקבל הודעה עם סיבת הדחייה."
+        message="הדחייה נרשמה בהצלחה. נותן השירות יקבל הודעה עם סיבת הדחייה."
       />
     );
   }
