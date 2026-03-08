@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail, Calculator, Upload, MessageCircle, TrendingUp, History, Paperclip, Plus, ChevronDown } from "lucide-react";
+import { ArrowRight, Loader2, MoreVertical, FileText, Camera, Image, Video, Clock, CheckCircle2, FilePlus, Phone, Mail, Calculator, Upload, MessageCircle, TrendingUp, History, Paperclip, Plus, ChevronDown, Eye } from "lucide-react";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
