@@ -78,6 +78,9 @@ const ChangeOrderDetail = () => {
   const { data: co, isLoading } = useChangeOrder(isDemo ? "" : (validChangeId ?? ""));
   const updateCO = useUpdateChangeOrder();
 
+  // Determine if user is a client (not the owner)
+  const isClient = !!co && co.user_id !== user?.id;
+
   const [reminderLoading, setReminderLoading] = useState(false);
   const [reminderLink, setReminderLink] = useState<string | null>(null);
 
