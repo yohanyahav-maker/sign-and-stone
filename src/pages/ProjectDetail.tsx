@@ -68,6 +68,8 @@ const ProjectDetail = () => {
     },
   });
 
+  const isClient = !!project && project.user_id !== user?.id;
+
   const { data: changeOrders, isLoading: coLoading } = useChangeOrders(validProjectId ?? "");
   const allCoIds = (changeOrders ?? []).map((co) => co.id);
   const { data: viewedSet } = useViewedChangeOrders(allCoIds);
