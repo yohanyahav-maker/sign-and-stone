@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Eye } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 
 const projectTypeLabels: Record<string, string> = {
@@ -10,19 +11,22 @@ const projectTypeLabels: Record<string, string> = {
 interface ProjectCardProps {
   project: Tables<"projects">;
   counts?: { pending: number; approvedSum: number };
+  isClient?: boolean;
 }
 
-export function ProjectCard({ project, counts }: ProjectCardProps) {
+export function ProjectCard({ project, counts, isClient }: ProjectCardProps) {
   const navigate = useNavigate();
   const pending = counts?.pending ?? 0;
   const approvedSum = counts?.approvedSum ?? 0;
 
   // Left border color based on status
-  const borderLeftColor = pending > 0
-    ? 'hsl(var(--gold-500))'
-    : approvedSum > 0
-      ? 'hsl(var(--success))'
-      : 'var(--border-default)';
+  const borderLeftColor = isClient
+    ? 'hsl(var(--muted-foreground))'
+    : pending > 0
+      ? 'hsl(var(--gold-500))'
+      : approvedSum > 0
+        ? 'hsl(var(--success))'
+        : 'var(--border-default)';
 
   return (
     <button
@@ -43,12 +47,20 @@ export function ProjectCard({ project, counts }: ProjectCardProps) {
             <p className="text-sm text-muted-foreground truncate">{project.address}</p>
           )}
         </div>
-        <span className="text-xs text-muted-foreground shrink-0">
-          {projectTypeLabels[project.project_type] ?? project.project_type}
-        </span>
+        <div className="flex items-center gap-2 shrink-0">
+          {isClient && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+              <Eye className="h-3 w-3" />
+              צפייה
+            </span>
+          )}
+          <span className="text-xs text-muted-foreground">
+            {projectTypeLabels[project.project_type] ?? project.project_type}
+          </span>
+        </div>
       </div>
 
-      {(pending > 0 || approvedSum > 0) && (
+      {!isClient && (pending > 0 || approvedSum > 0) && (
         <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
           {pending > 0 && <span className="text-primary font-semibold">{pending} ממתינים</span>}
           {approvedSum > 0 && <span className="text-success font-semibold">₪{approvedSum.toLocaleString("he-IL")} מאושר</span>}
