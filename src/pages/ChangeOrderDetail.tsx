@@ -327,7 +327,14 @@ const ChangeOrderDetail = () => {
         <div className="flex-1 min-w-0">
           <h1 className="text-xl font-bold truncate">{co.title}</h1>
           <div className="flex items-center gap-2 mt-1">
-            <StatusBadge variant={co.status as any} />
+            {co.status === "approved" ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold bg-success/15 text-success border border-success/30">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                שינוי חתום
+              </span>
+            ) : (
+              <StatusBadge variant={co.status as any} />
+            )}
             {isViewed && (
               <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold"
                     style={{ background: 'rgba(59,130,246,0.12)', color: '#60A5FA', border: '1px solid rgba(59,130,246,0.25)' }}>
