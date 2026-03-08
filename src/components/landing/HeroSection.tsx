@@ -44,7 +44,7 @@ const HeroSection = () => {
                 className="text-base font-extrabold px-8 h-14 shadow-lg hover:shadow-xl transition-all"
                 onClick={() => navigate("/login")}
               >
-                התחל ניסיון חינם 14 יום
+                התחל ניסיון חינם – 14 יום
                 <ArrowLeft className="h-5 w-5 mr-2" />
               </Button>
               <Button
