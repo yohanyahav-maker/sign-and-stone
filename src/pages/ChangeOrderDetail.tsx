@@ -435,6 +435,9 @@ const ChangeOrderDetail = () => {
                 <span className="font-medium">{formatDate(approval.signed_at)}</span>
               </div>
             </div>
+            {approval.signature_url && (
+              <SignaturePreview signaturePath={approval.signature_url} />
+            )}
           </CardContent>
         </Card>
       )}
