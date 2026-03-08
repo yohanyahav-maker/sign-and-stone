@@ -127,31 +127,39 @@ const ProjectDetail = () => {
             <p className="text-xs text-muted-foreground truncate">{project.address}</p>
           )}
         </div>
-        <div className="flex items-center gap-1.5">
-          {whatsappUrl && (
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-[#25D366] hover:bg-[#25D366]/15 transition-colors">
-              <WhatsAppIcon className="h-4 w-4" />
-            </a>
-          )}
-          {clientPhone && (
-            <a href={`tel:${clientPhone}`}
-              className="flex h-8 w-8 items-center justify-center rounded-full text-info hover:bg-info/15 transition-colors">
-              <Phone className="h-4 w-4" />
-            </a>
-          )}
-          {project.client_email && (
-            <a href={`mailto:${project.client_email}`}
-              className="flex h-8 w-8 items-center justify-center rounded-full text-primary hover:bg-primary/15 transition-colors">
-              <Mail className="h-4 w-4" />
-            </a>
-          )}
-          <button onClick={() => navigate(`/projects/${projectId}/edit`)}
-            className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary transition-colors"
-            aria-label="אפשרויות">
-            <MoreVertical className="h-4 w-4 text-muted-foreground" />
-          </button>
-        </div>
+        {!isClient && (
+          <div className="flex items-center gap-1.5">
+            {whatsappUrl && (
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-[#25D366] hover:bg-[#25D366]/15 transition-colors">
+                <WhatsAppIcon className="h-4 w-4" />
+              </a>
+            )}
+            {clientPhone && (
+              <a href={`tel:${clientPhone}`}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-info hover:bg-info/15 transition-colors">
+                <Phone className="h-4 w-4" />
+              </a>
+            )}
+            {project.client_email && (
+              <a href={`mailto:${project.client_email}`}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-primary hover:bg-primary/15 transition-colors">
+                <Mail className="h-4 w-4" />
+              </a>
+            )}
+            <button onClick={() => navigate(`/projects/${projectId}/edit`)}
+              className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-secondary transition-colors"
+              aria-label="אפשרויות">
+              <MoreVertical className="h-4 w-4 text-muted-foreground" />
+            </button>
+          </div>
+        )}
+        {isClient && (
+          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground border border-border">
+            <Eye className="h-3.5 w-3.5" />
+            צפייה בלבד
+          </span>
+        )}
       </div>
 
       {/* KPI Summary Cards */}
