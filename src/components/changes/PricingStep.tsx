@@ -32,7 +32,20 @@ export function PricingStep({ initial, onNext, onSaveDraft, onBack, loading }: P
   const [priceStr, setPriceStr] = useState(initial?.price_amount?.toString() ?? "");
   const [includeVat, setIncludeVat] = useState(initial?.include_vat ?? true);
   const [impactDays, setImpactDays] = useState(initial?.impact_days ?? 0);
+  const [deliveryDate, setDeliveryDate] = useState<Date | undefined>(
+    initial?.impact_days ? addDays(new Date(), initial.impact_days) : undefined
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleDateSelect = (date: Date | undefined) => {
+    setDeliveryDate(date);
+    if (date) {
+      const diff = differenceInCalendarDays(date, new Date());
+      setImpactDays(Math.max(-365, Math.min(365, diff)));
+    } else {
+      setImpactDays(0);
+    }
+  };
 
   const vatRate = 17;
   const priceNum = parseFloat(priceStr) || 0;
