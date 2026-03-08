@@ -38,6 +38,7 @@ const filters: { key: FilterType; label: string }[] = [
   { key: "images", label: "📷 תמונות" },
   { key: "documents", label: "📄 מסמכים" },
   { key: "plans", label: "📐 תוכניות" },
+  { key: "videos", label: "🎥 וידאו" },
 ];
 
 export function FileGallery({ projectId }: FileGalleryProps) {
