@@ -8,7 +8,7 @@ interface FileGalleryProps {
   projectId: string;
 }
 
-type FilterType = "all" | "images" | "documents" | "plans";
+type FilterType = "all" | "images" | "documents" | "plans" | "videos";
 
 const isImage = (mime: string | null) => mime?.startsWith("image/");
 const isVideo = (mime: string | null) => mime?.startsWith("video/");
@@ -38,6 +38,7 @@ const filters: { key: FilterType; label: string }[] = [
   { key: "images", label: "📷 תמונות" },
   { key: "documents", label: "📄 מסמכים" },
   { key: "plans", label: "📐 תוכניות" },
+  { key: "videos", label: "🎥 וידאו" },
 ];
 
 export function FileGallery({ projectId }: FileGalleryProps) {
@@ -66,7 +67,8 @@ export function FileGallery({ projectId }: FileGalleryProps) {
   const filteredFiles = useMemo(() => {
     if (activeFilter === "all") return files;
     return files.filter((f) => {
-      if (activeFilter === "images") return isImage(f.mime_type) || isVideo(f.mime_type);
+      if (activeFilter === "images") return isImage(f.mime_type);
+      if (activeFilter === "videos") return isVideo(f.mime_type);
       if (activeFilter === "documents") return isDocument(f) && !isPlan(f);
       if (activeFilter === "plans") return isPlan(f);
       return true;
