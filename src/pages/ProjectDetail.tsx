@@ -131,7 +131,7 @@ const ProjectDetail = () => {
 
   const gridButtons = [
     { icon: FilePlus, label: "שינוי חדש", color: "text-primary", onClick: () => navigate(`/projects/${projectId}/changes/new`) },
-    { icon: Image, label: "גלריה", color: "text-accent", onClick: () => setViewMode("gallery") },
+    { icon: Image, label: "קבצים ומסמכים", color: "text-accent", onClick: () => setViewMode("gallery") },
     { icon: Clock, label: "ממתין לאישור", color: "text-warning", onClick: () => setViewMode("pending"), badge: pendingOrders.length || undefined },
     { icon: FileText, label: "העלאת מסמך", color: "text-info", onClick: () => docRef.current?.click() },
     { icon: CheckCircle2, label: "שינויים מאושרים", color: "text-success", onClick: () => setViewMode("approved"), badge: approvedOrders.length || undefined },
