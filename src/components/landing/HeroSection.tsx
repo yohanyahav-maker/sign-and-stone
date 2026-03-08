@@ -72,7 +72,7 @@ const HeroSection = () => {
 
                 <div className="px-4 py-3 border-b border-border">
                   <p className="text-xs text-muted-foreground">דוד כהן — שיפוץ דירה</p>
-                  <p className="text-sm font-bold">שינויים בעבודה</p>
+                  <p className="text-sm font-bold">שינויים</p>
                 </div>
 
                 <div className="px-3 py-2 space-y-2">
