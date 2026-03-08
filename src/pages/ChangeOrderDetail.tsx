@@ -490,7 +490,7 @@ const ChangeOrderDetail = () => {
                       {idx === timeline.length - 1 && <div className="h-1.5 w-1.5 rounded-full bg-primary-foreground" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className="text-sm font-medium">{oldStatus && newStatus ? `${oldStatus} → ${newStatus}` : entry.action}</span>
+                      <span className="text-sm font-medium">{oldStatus && newStatus ? `${translateStatus(oldStatus)} → ${translateStatus(newStatus)}` : translateAction(entry.action)}</span>
                       <p className="text-xs text-muted-foreground">{formatDate(entry.performed_at)}</p>
                     </div>
                   </div>
