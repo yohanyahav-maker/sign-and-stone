@@ -28,12 +28,14 @@ const HeroSection = () => {
             </span>
 
             <h1 className="font-display text-[42px] md:text-[52px] leading-[1.08] text-foreground">
-              כל שינוי בעבודה —{" "}
-              <span className="text-primary">חתום ומתועד</span> מול הלקוח תוך דקות
+              כל שינוי בעבודה –{" "}
+              <span className="text-primary">מאושר וחתום</span> מול הלקוח
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
-              קבלן? מעצב פנים? טכנאי? כל שינוי מתומחר, מצולם, נשלח ללקוח ונחתם דיגיטלית — בלי אקסלים, בלי ויכוחים, בלי הפתעות.
+              צלם את השינוי, הוסף מחיר ושלח ללקוח לאישור.
+              <br />
+              הלקוח חותם באצבע והכל נשמר מסודר במערכת.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
