@@ -44,10 +44,12 @@ const PricingSection = () => {
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-            תמחור פשוט, ללא הפתעות
+            מחיר פשוט. בלי הפתעות.
           </h2>
-          <p className="text-muted-foreground text-lg">
-            14 יום ניסיון חינם · ללא כרטיס אשראי · ביטול בכל רגע
+          <p className="text-muted-foreground text-lg leading-relaxed">
+            נסה את המערכת 14 יום בחינם.
+            <br />
+            לא צריך כרטיס אשראי כדי להתחיל.
           </p>
         </div>
 

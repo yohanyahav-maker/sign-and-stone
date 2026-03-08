@@ -46,7 +46,7 @@ const FeaturesSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {features.map((f) => (
             <div key={f.title} className="rounded-xl bg-card border border-border shadow-sm p-7 space-y-4">
               <div className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center bg-primary/10 border border-primary/20">

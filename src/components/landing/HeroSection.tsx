@@ -59,7 +59,7 @@ const HeroSection = () => {
 
             <div className="flex gap-5 text-[13px] text-muted-foreground font-semibold">
               <span><span className="text-success">✓</span> ללא כרטיס אשראי</span>
-              <span><span className="text-success">✓</span> התקנה תוך דקות</span>
+              <span><span className="text-success">✓</span> ביטול בכל רגע</span>
             </div>
           </div>
 

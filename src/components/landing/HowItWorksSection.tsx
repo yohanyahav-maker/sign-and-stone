@@ -22,7 +22,7 @@ const HowItWorksSection = () => {
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-            איך זה עובד?
+            איך זה עובד
           </h2>
           <p className="text-muted-foreground text-lg">
             תהליך פשוט ב-3 שלבים — מהשינוי ועד לחתימה.
