@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 const mockChanges = [
-  { title: "שינוי פריט מטבח", price: "₪12,500", status: "approved" as const, statusLabel: "אושר" },
+  { title: "שינוי פריט מטבח", price: "₪12,500", status: "approved" as const, statusLabel: "חתום ✔" },
   { title: "תוספת נקודת חשמל", price: "₪1,800", status: "pending" as const, statusLabel: "ממתין" },
-  { title: "שדרוג חומרי גמר", price: "₪9,200", status: "approved" as const, statusLabel: "אושר" },
+  { title: "שדרוג חומרי גמר", price: "₪9,200", status: "approved" as const, statusLabel: "חתום ✔" },
 ];
 
 const stats = [
