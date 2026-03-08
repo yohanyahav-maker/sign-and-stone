@@ -338,7 +338,7 @@ const ProjectDetail = () => {
             <p className="text-sm text-muted-foreground">
               {changeFilter === "all" ? "אין שינויים עדיין" : `אין שינויים ${changeFilterLabels[changeFilter]}`}
             </p>
-            {changeFilter === "all" && (
+        {changeFilter === "all" && !isClient && (
               <button
                 onClick={() => navigate(`/projects/${projectId}/changes/new`)}
                 className="mt-3 text-sm font-medium text-primary hover:underline"
