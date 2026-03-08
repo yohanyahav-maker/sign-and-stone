@@ -57,16 +57,19 @@ const Projects = () => {
         ) : !projects || projects.length === 0 ? (
           <EmptyProjects />
         ) : (
-          projects.map((project, i) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: i * 0.06, ease: "easeOut" }}
-            >
-              <ProjectCard project={project} counts={counts?.[project.id]} />
-            </motion.div>
-          ))
+          projects.map((project, i) => {
+            const isClient = project.user_id !== user?.id;
+            return (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: i * 0.06, ease: "easeOut" }}
+              >
+                <ProjectCard project={project} counts={isClient ? undefined : counts?.[project.id]} isClient={isClient} />
+              </motion.div>
+            );
+          })
         )}
       </div>
 
