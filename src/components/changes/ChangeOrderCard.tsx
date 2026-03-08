@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { CheckCheck } from "lucide-react";
+import { CheckCheck, CheckCircle2 } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 
 const categoryLabels: Record<string, string> = {

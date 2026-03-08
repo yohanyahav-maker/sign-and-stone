@@ -402,12 +402,38 @@ const ChangeOrderDetail = () => {
         <Card><CardContent className="p-4"><p className="text-sm text-muted-foreground mb-1">תיאור</p><p className="text-sm whitespace-pre-wrap">{co.description}</p></CardContent></Card>
       )}
 
-      {approval && (
-        <Card className={co.status === "approved" ? "border-success/30" : "border-destructive/30"}>
+      {approval && co.status === "approved" && (
+        <Card className="border-success/40 bg-success/5">
+          <CardContent className="p-5 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success/15">
+                <CheckCircle2 className="h-5 w-5 text-success" />
+              </div>
+              <div className="flex-1">
+                <p className="text-base font-bold text-success">שינוי חתום ✔</p>
+                <p className="text-xs text-muted-foreground">אושר וחתום דיגיטלית</p>
+              </div>
+            </div>
+            <div className="border-t border-success/20 pt-3 space-y-1.5">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">חתם:</span>
+                <span className="font-semibold">{approval.client_name}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">תאריך חתימה:</span>
+                <span className="font-medium">{formatDate(approval.signed_at)}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {approval && co.status === "rejected" && (
+        <Card className="border-destructive/30">
           <CardContent className="p-4 space-y-1">
             <p className="text-sm font-semibold flex items-center gap-2">
-              {co.status === "approved" ? <CheckCircle2 className="h-4 w-4 text-success" /> : <XCircle className="h-4 w-4 text-destructive" />}
-              {co.status === "approved" ? "אושר ע״י" : "נדחה ע״י"} {approval.client_name}
+              <XCircle className="h-4 w-4 text-destructive" />
+              נדחה ע״י {approval.client_name}
             </p>
             <p className="text-xs text-muted-foreground">{formatDate(approval.signed_at)}</p>
             {approval.rejection_reason && <p className="text-sm mt-2 text-destructive bg-destructive/10 rounded p-2">סיבת דחייה: {approval.rejection_reason}</p>}
