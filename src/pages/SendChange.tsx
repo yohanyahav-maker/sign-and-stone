@@ -126,9 +126,9 @@ const SendChange = () => {
           {(co.impact_days ?? 0) !== 0 && (
             <div>
               <p className="text-3xl font-black">
-                {co.impact_days! > 0 ? "+" : ""}{co.impact_days}
+                {co.impact_days! > 0 ? "+" : ""}{co.impact_days} ימים
               </p>
-              <p className="text-xs text-muted-foreground">ימים</p>
+              <p className="text-xs text-muted-foreground">השפעה על לוח זמנים</p>
             </div>
           )}
         </div>

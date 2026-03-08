@@ -312,9 +312,8 @@ const ClientPortal = () => {
           {(co.impact_days ?? 0) !== 0 && (
             <div className="text-center">
               <span className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-lg font-bold text-warning bg-warning/10 border border-warning/25">
-                {co.impact_days! > 0 ? "+" : ""}{co.impact_days} ימים
+                {co.impact_days! > 0 ? "+" : ""}{co.impact_days} ימים · השפעה על לוח זמנים
               </span>
-              <p className="text-xs text-muted-foreground mt-1">השפעה על לוח זמנים</p>
             </div>
           )}
 

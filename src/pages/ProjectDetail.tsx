@@ -30,7 +30,7 @@ type ChangeFilter = "all" | "pending" | "approved" | "rejected" | "draft";
 const changeFilterLabels: Record<ChangeFilter, string> = {
   all: "הכל",
   pending: "ממתין",
-  approved: "מאושר",
+  approved: "חתום",
   rejected: "נדחה",
   draft: "טיוטה",
 };

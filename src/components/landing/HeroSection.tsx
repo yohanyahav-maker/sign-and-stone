@@ -9,9 +9,9 @@ const mockChanges = [
 ];
 
 const stats = [
-  { value: "₪82K", label: "מאושר" },
+  { value: "₪82K", label: "סה״כ מאושר" },
   { value: "3", label: "ממתינים" },
-  { value: "12", label: "חתומים" },
+  { value: "12", label: "שינויים חתומים" },
 ];
 
 const HeroSection = () => {
