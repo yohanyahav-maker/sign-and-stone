@@ -39,10 +39,10 @@ const FeaturesSection = () => {
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-            כל מה שבעל מקצוע צריך לניהול שינויים
+            הכל כדי שכל שינוי יהיה מתועד וחתום
           </h2>
           <p className="text-muted-foreground text-lg">
-            ניהול שינויים מקצועי — מהתיעוד ועד החתימה.
+            תעד → שלח ללקוח → קבל חתימה דיגיטלית.
           </p>
         </div>
 

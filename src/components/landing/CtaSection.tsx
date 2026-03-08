@@ -8,10 +8,10 @@ const CtaSection = () => {
     <section className="py-24 bg-background relative overflow-hidden hero-grid blue-glow">
       <div className="container mx-auto px-6 text-center space-y-8 max-w-2xl relative z-10">
         <h2 className="font-display text-3xl md:text-4xl text-foreground">
-          התחל להשתמש ב<span className="text-primary">שינוי חתום</span> היום
+          תעד את השינוי. שלח ללקוח. קבל <span className="text-primary">חתימה דיגיטלית</span>.
         </h2>
         <p className="text-muted-foreground text-lg">
-          תיעוד שינויים, אישור לקוח וחתימה דיגיטלית במקום אחד.
+          הכל במקום אחד — מהשינוי ועד לחתימה מחייבת.
         </p>
         <Button
           size="lg"

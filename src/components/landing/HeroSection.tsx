@@ -33,9 +33,9 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
-              צלם את השינוי, הוסף מחיר ושלח ללקוח לאישור.
+              תעד את השינוי, הוסף מחיר ושלח ללקוח.
               <br />
-              הלקוח חותם באצבע והכל נשמר מסודר במערכת.
+              הלקוח חותם באצבע — והשינוי חתום ושמור במערכת.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
