@@ -258,7 +258,7 @@ const ProjectDetail = () => {
 
       {viewMode === "gallery" && validProjectId && (
         <div className="space-y-3">
-          <h2 className="text-lg font-bold">גלריה</h2>
+          <h2 className="text-lg font-bold">קבצים ומסמכים</h2>
           <FileGallery projectId={validProjectId} />
         </div>
       )}
