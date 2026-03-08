@@ -8,7 +8,7 @@ interface FileGalleryProps {
   projectId: string;
 }
 
-type FilterType = "all" | "images" | "documents" | "plans";
+type FilterType = "all" | "images" | "documents" | "plans" | "videos";
 
 const isImage = (mime: string | null) => mime?.startsWith("image/");
 const isVideo = (mime: string | null) => mime?.startsWith("video/");
