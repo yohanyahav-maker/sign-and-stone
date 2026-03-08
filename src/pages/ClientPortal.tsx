@@ -462,15 +462,31 @@ const ClientPortal = () => {
   );
 };
 
-function StatusScreen({ icon, title, message }: { icon: React.ReactNode; title: string; message: string }) {
+function StatusScreen({ icon, title, message, showBranding }: { icon: React.ReactNode; title: string; message: string; showBranding?: boolean }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-6">
       <div className="text-center space-y-4 max-w-sm">
         <div className="flex justify-center">{icon}</div>
         <h1 className="text-2xl font-bold">{title}</h1>
         <p className="text-muted-foreground">{message}</p>
+        {showBranding && (
+          <div className="pt-5 space-y-1">
+            <p className="text-xs text-muted-foreground/70">שינוי זה אושר ונחתם דיגיטלית</p>
+            <p className="text-xs text-muted-foreground/70">
+              באמצעות{" "}
+              <a
+                href="https://sign-and-stone.lovable.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-display text-primary hover:underline"
+              >
+                שינוי חתום
+              </a>
+            </p>
+          </div>
+        )}
         <div className="pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground/50">
             מופעל ע״י <span className="font-display">שינוי <span className="text-primary">חתום</span></span>
           </p>
         </div>
