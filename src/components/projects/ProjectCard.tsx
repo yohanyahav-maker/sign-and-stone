@@ -74,7 +74,7 @@ export function ProjectCard({ project, counts, isClient }: ProjectCardProps) {
       {!isClient && (pending > 0 || approvedSum > 0) && (
         <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
           {pending > 0 && <span className="text-primary font-semibold">{pending} ממתינים</span>}
-          {approvedSum > 0 && <span className="text-success font-semibold">₪{approvedSum.toLocaleString("he-IL")} מאושר</span>}
+          {approvedSum > 0 && <span className="text-success font-semibold">₪{approvedSum.toLocaleString("he-IL")} חתום</span>}
         </div>
       )}
     </button>

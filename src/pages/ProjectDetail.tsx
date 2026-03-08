@@ -30,7 +30,7 @@ type ChangeFilter = "all" | "pending" | "approved" | "rejected" | "draft";
 const changeFilterLabels: Record<ChangeFilter, string> = {
   all: "הכל",
   pending: "ממתין",
-  approved: "מאושר",
+  approved: "חתום",
   rejected: "נדחה",
   draft: "טיוטה",
 };
@@ -181,7 +181,7 @@ const ProjectDetail = () => {
             <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-success/15">
               <CheckCircle2 className="h-3.5 w-3.5 text-success" />
             </div>
-            <span className="text-[10px] font-medium text-muted-foreground">מאושר</span>
+            <span className="text-[10px] font-medium text-muted-foreground">חתום</span>
           </div>
           <p className="text-lg font-bold text-success">₪{approvedTotal.toLocaleString("he-IL", { maximumFractionDigits: 0 })}</p>
         </motion.div>
@@ -278,7 +278,7 @@ const ProjectDetail = () => {
       {/* Changes Section */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold">שינויים בעבודה</h2>
+          <h2 className="text-base font-bold">שינויים</h2>
           <span className="text-xs text-muted-foreground">{filteredChanges.length} שינויים</span>
         </div>
 

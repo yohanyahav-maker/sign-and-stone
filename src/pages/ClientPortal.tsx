@@ -158,7 +158,7 @@ const ClientPortal = () => {
       <StatusScreen
         icon={<AlertTriangle className="h-12 w-12 text-destructive" />}
         title="קישור לא תקין"
-        message="הקישור שגוי או שלא נמצא שינוי חוזה מתאים."
+        message="הקישור שגוי או שלא נמצא שינוי מתאים."
       />
     );
   }
@@ -194,8 +194,8 @@ const ClientPortal = () => {
     return (
       <StatusScreen
         icon={<CheckCircle className="h-12 w-12 text-success" />}
-        title="השינוי אושר!"
-        message="תודה! אישורך נרשם בהצלחה. נותן השירות יקבל הודעה."
+        title="השינוי אושר וחתום!"
+        message="תודה! אישורך וחתימתך נרשמו בהצלחה. נותן השירות יקבל הודעה."
         showBranding
       />
     );
@@ -206,7 +206,7 @@ const ClientPortal = () => {
       <StatusScreen
         icon={<XCircle className="h-12 w-12 text-destructive" />}
         title="השינוי נדחה"
-        message="הדחייה נרשמה. נותן השירות יקבל הודעה עם סיבת הדחייה."
+        message="הדחייה נרשמה בהצלחה. נותן השירות יקבל הודעה עם סיבת הדחייה."
       />
     );
   }
@@ -312,9 +312,8 @@ const ClientPortal = () => {
           {(co.impact_days ?? 0) !== 0 && (
             <div className="text-center">
               <span className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-lg font-bold text-warning bg-warning/10 border border-warning/25">
-                {co.impact_days! > 0 ? "+" : ""}{co.impact_days} ימים
+                {co.impact_days! > 0 ? "+" : ""}{co.impact_days} ימים · השפעה על לוח זמנים
               </span>
-              <p className="text-xs text-muted-foreground mt-1">השפעה על לוח זמנים</p>
             </div>
           )}
 

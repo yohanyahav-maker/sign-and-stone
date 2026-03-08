@@ -79,9 +79,9 @@ export function ReviewStep({ details, pricing, filesCount, onSend, onSaveDraft, 
           </div>
           {pricing.impact_days !== 0 && (
             <div className="text-left">
-              <p className="text-xs text-muted-foreground mb-1">ימי השפעה</p>
+              <p className="text-xs text-muted-foreground mb-1">השפעה על לוח זמנים</p>
               <p className="text-2xl font-black text-foreground">
-                {pricing.impact_days > 0 ? "+" : ""}{pricing.impact_days}
+                {pricing.impact_days > 0 ? "+" : ""}{pricing.impact_days} ימים
               </p>
             </div>
           )}

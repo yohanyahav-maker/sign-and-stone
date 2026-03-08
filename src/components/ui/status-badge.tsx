@@ -17,8 +17,8 @@ const variantStyles: Record<StatusVariant, string> = {
 const variantLabels: Record<StatusVariant, string> = {
   draft: "טיוטה",
   priced: "תומחר",
-  sent: "נשלח",
-  approved: "אושר",
+  sent: "ממתין לחתימה",
+  approved: "חתום ✔",
   rejected: "נדחה",
   canceled: "בוטל",
   trial: "ניסיון",

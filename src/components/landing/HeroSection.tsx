@@ -3,15 +3,15 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 const mockChanges = [
-  { title: "שינוי פריט מטבח", price: "₪12,500", status: "approved" as const, statusLabel: "אושר" },
+  { title: "שינוי פריט מטבח", price: "₪12,500", status: "approved" as const, statusLabel: "חתום ✔" },
   { title: "תוספת נקודת חשמל", price: "₪1,800", status: "pending" as const, statusLabel: "ממתין" },
-  { title: "שדרוג חומרי גמר", price: "₪9,200", status: "approved" as const, statusLabel: "אושר" },
+  { title: "שדרוג חומרי גמר", price: "₪9,200", status: "approved" as const, statusLabel: "חתום ✔" },
 ];
 
 const stats = [
-  { value: "₪82K", label: "מאושר" },
+  { value: "₪82K", label: "סה״כ מאושר" },
   { value: "3", label: "ממתינים" },
-  { value: "12", label: "חתומים" },
+  { value: "12", label: "שינויים חתומים" },
 ];
 
 const HeroSection = () => {
@@ -33,9 +33,9 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
-              צלם את השינוי, הוסף מחיר ושלח ללקוח לאישור.
+              תעד את השינוי, הוסף מחיר ושלח ללקוח.
               <br />
-              הלקוח חותם באצבע והכל נשמר מסודר במערכת.
+              הלקוח חותם באצבע — והשינוי חתום ושמור במערכת.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
@@ -72,7 +72,7 @@ const HeroSection = () => {
 
                 <div className="px-4 py-3 border-b border-border">
                   <p className="text-xs text-muted-foreground">דוד כהן — שיפוץ דירה</p>
-                  <p className="text-sm font-bold">שינויים בעבודה</p>
+                  <p className="text-sm font-bold">שינויים</p>
                 </div>
 
                 <div className="px-3 py-2 space-y-2">

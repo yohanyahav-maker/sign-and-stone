@@ -295,10 +295,10 @@ const ChangeOrderDetail = () => {
                 <p className="text-xs text-muted-foreground">כולל מע״מ {demoCo.vat_rate}% · בסיס ₪{demoCo.price_amount.toLocaleString("he-IL")}</p>
               )}
             </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">השפעה</p>
-              <p className="text-lg font-bold text-accent">+{demoCo.impact_days} ימים</p>
-            </div>
+               <div className="text-center">
+                <p className="text-sm text-muted-foreground">השפעה על לוח זמנים</p>
+                <p className="text-lg font-bold text-accent">+{demoCo.impact_days} ימים</p>
+              </div>
           </CardContent>
         </Card>
 
@@ -453,7 +453,7 @@ const ChangeOrderDetail = () => {
             </div>
             {(co.impact_days ?? 0) !== 0 && (
               <div className="text-center">
-                <p className="text-sm text-muted-foreground">השפעה</p>
+                <p className="text-sm text-muted-foreground">השפעה על לוח זמנים</p>
                 <p className="text-lg font-bold text-accent">{co.impact_days! > 0 ? "+" : ""}{co.impact_days} ימים</p>
               </div>
             )}

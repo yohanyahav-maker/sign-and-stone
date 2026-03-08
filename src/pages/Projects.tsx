@@ -43,9 +43,9 @@ const Projects = () => {
 
       {/* KPI Cards */}
       <div className="flex gap-3">
-        <KpiCard value={String(totalPending)} label="ממתינים לאישור" variant="gold" />
-        <KpiCard value={String(totalApproved)} label="שינויים מאושרים" />
-        <KpiCard value={`₪${totalSum.toLocaleString("he-IL")}`} label="סה״כ תוספות" variant="green" />
+        <KpiCard value={String(totalPending)} label="ממתינים" variant="gold" />
+        <KpiCard value={String(totalApproved)} label="חתומים" />
+        <KpiCard value={`₪${totalSum.toLocaleString("he-IL")}`} label="סה״כ מאושר" variant="green" />
       </div>
 
       {/* Project List */}
