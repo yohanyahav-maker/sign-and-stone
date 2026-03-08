@@ -73,11 +73,11 @@ const SendChange = () => {
 
   const whatsappUrl = portalUrl && project?.client_phone
     ? `https://wa.me/${project.client_phone.replace(/\D/g, "")}?text=${encodeURIComponent(
-        `שלום ${project.client_name || ""},\n\nמצורף שינוי חוזה לאישור:\n"${co?.title}"\n\nמחיר: ₪${Number(co?.price_amount ?? 0).toLocaleString("he-IL")}\n\nלצפייה ואישור:\n${portalUrl}\n\nבברכה`
+        `שלום ${project.client_name || ""},\n\nמצורף שינוי לאישור:\n"${co?.title}"\n\nמחיר: ₪${Number(co?.price_amount ?? 0).toLocaleString("he-IL")}\n\nלצפייה ואישור:\n${portalUrl}\n\nבברכה`
       )}`
     : portalUrl
       ? `https://wa.me/?text=${encodeURIComponent(
-          `שינוי חוזה לאישור:\n"${co?.title}"\n\nמחיר: ₪${Number(co?.price_amount ?? 0).toLocaleString("he-IL")}\n\nלצפייה ואישור:\n${portalUrl}`
+          `שינוי לאישור:\n"${co?.title}"\n\nמחיר: ₪${Number(co?.price_amount ?? 0).toLocaleString("he-IL")}\n\nלצפייה ואישור:\n${portalUrl}`
         )}`
       : null;
 
