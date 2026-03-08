@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useChangeOrder, useUpdateChangeOrder } from "@/hooks/useChangeOrders";
 import { useAuth } from "@/hooks/useAuth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -34,6 +34,58 @@ const categoryLabels: Record<string, string> = {
 
 function formatDate(dateStr: string) {
   return format(new Date(dateStr), "d בMMM yyyy, HH:mm", { locale: he });
+}
+
+const statusLabels: Record<string, string> = {
+  draft: "טיוטה",
+  priced: "תומחר",
+  sent: "נשלח",
+  approved: "מאושר",
+  rejected: "נדחה",
+  canceled: "בוטל",
+};
+
+const actionLabels: Record<string, string> = {
+  status_change: "שינוי סטטוס",
+  change_created: "נוצר",
+  change_sent: "נשלח ללקוח",
+  reminder_sent: "תזכורת נשלחה",
+  change_approved: "אושר",
+  change_rejected: "נדחה",
+  CLIENT_OPENED_PORTAL: "הלקוח צפה בשינוי",
+  client_generated_token: "הלקוח פתח קישור חתימה",
+};
+
+function translateStatus(status: string): string {
+  return statusLabels[status] ?? status;
+}
+
+function translateAction(action: string): string {
+  return actionLabels[action] ?? action;
+}
+
+function SignaturePreview({ signaturePath }: { signaturePath: string }) {
+  const [url, setUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.storage
+      .from("signatures")
+      .createSignedUrl(signaturePath, 86400)
+      .then(({ data }) => {
+        if (data?.signedUrl) setUrl(data.signedUrl);
+      });
+  }, [signaturePath]);
+
+  if (!url) return null;
+
+  return (
+    <div className="border-t border-success/20 pt-3">
+      <p className="text-xs text-muted-foreground mb-2">חתימה דיגיטלית:</p>
+      <div className="rounded-xl bg-white p-3 border border-success/20">
+        <img src={url} alt="חתימת הלקוח" className="max-h-24 mx-auto object-contain" />
+      </div>
+    </div>
+  );
 }
 
 // Demo data
@@ -435,6 +487,9 @@ const ChangeOrderDetail = () => {
                 <span className="font-medium">{formatDate(approval.signed_at)}</span>
               </div>
             </div>
+            {approval.signature_url && (
+              <SignaturePreview signaturePath={approval.signature_url} />
+            )}
           </CardContent>
         </Card>
       )}
@@ -487,7 +542,7 @@ const ChangeOrderDetail = () => {
                       {idx === timeline.length - 1 && <div className="h-1.5 w-1.5 rounded-full bg-primary-foreground" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className="text-sm font-medium">{oldStatus && newStatus ? `${oldStatus} → ${newStatus}` : entry.action}</span>
+                      <span className="text-sm font-medium">{oldStatus && newStatus ? `${translateStatus(oldStatus)} → ${translateStatus(newStatus)}` : translateAction(entry.action)}</span>
                       <p className="text-xs text-muted-foreground">{formatDate(entry.performed_at)}</p>
                     </div>
                   </div>
