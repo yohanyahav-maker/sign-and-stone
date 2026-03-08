@@ -181,7 +181,7 @@ const ProjectDetail = () => {
             <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-success/15">
               <CheckCircle2 className="h-3.5 w-3.5 text-success" />
             </div>
-            <span className="text-[10px] font-medium text-muted-foreground">מאושר</span>
+            <span className="text-[10px] font-medium text-muted-foreground">חתום</span>
           </div>
           <p className="text-lg font-bold text-success">₪{approvedTotal.toLocaleString("he-IL", { maximumFractionDigits: 0 })}</p>
         </motion.div>
