@@ -28,12 +28,14 @@ const HeroSection = () => {
             </span>
 
             <h1 className="font-display text-[42px] md:text-[52px] leading-[1.08] text-foreground">
-              כל שינוי בעבודה —{" "}
-              <span className="text-primary">חתום ומתועד</span> מול הלקוח תוך דקות
+              כל שינוי בעבודה –{" "}
+              <span className="text-primary">מאושר וחתום</span> מול הלקוח
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
-              קבלן? מעצב פנים? טכנאי? כל שינוי מתומחר, מצולם, נשלח ללקוח ונחתם דיגיטלית — בלי אקסלים, בלי ויכוחים, בלי הפתעות.
+              צלם את השינוי, הוסף מחיר ושלח ללקוח לאישור.
+              <br />
+              הלקוח חותם באצבע והכל נשמר מסודר במערכת.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
@@ -42,7 +44,7 @@ const HeroSection = () => {
                 className="text-base font-extrabold px-8 h-14 shadow-lg hover:shadow-xl transition-all"
                 onClick={() => navigate("/login")}
               >
-                התחל ניסיון חינם 14 יום
+                התחל ניסיון חינם – 14 יום
                 <ArrowLeft className="h-5 w-5 mr-2" />
               </Button>
               <Button
@@ -57,7 +59,7 @@ const HeroSection = () => {
 
             <div className="flex gap-5 text-[13px] text-muted-foreground font-semibold">
               <span><span className="text-success">✓</span> ללא כרטיס אשראי</span>
-              <span><span className="text-success">✓</span> התקנה תוך דקות</span>
+              <span><span className="text-success">✓</span> ביטול בכל רגע</span>
             </div>
           </div>
 

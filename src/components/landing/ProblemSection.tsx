@@ -27,8 +27,15 @@ const ProblemSection = () => {
           <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
             הבעיות שכל בעל מקצוע מכיר
           </h2>
-          <p className="text-muted-foreground text-lg">
-            בלי מערכת מסודרת, כל שינוי בעבודה הוא פצצה מתקתקת.
+          <p className="text-muted-foreground text-lg leading-relaxed">
+            שינויים באמצע עבודה קורים כל הזמן.
+            <br />
+            אבל כשאין תיעוד מסודר – מתחילים ויכוחים.
+          </p>
+          <p className="text-muted-foreground text-base mt-3 leading-relaxed">
+            סיכומים בעל פה, הודעות בוואטסאפ ותמונות בגלריה
+            <br />
+            לא באמת מגנים עליך כשמגיעים לחשבון הסופי.
           </p>
         </div>
 

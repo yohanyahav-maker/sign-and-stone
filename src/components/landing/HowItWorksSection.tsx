@@ -1,18 +1,18 @@
 const steps = [
   {
     num: 1,
-    title: "מתעדים את השינוי",
-    description: "מתארים את השינוי, מצלמים, בוחרים קטגוריה ומתמחרים — תוך דקה.",
+    title: "צלם את השינוי",
+    description: "הוסף תיאור, קטגוריה ומחיר תוך פחות מדקה.",
   },
   {
     num: 2,
-    title: "שולחים ללקוח",
-    description: "הלקוח מקבל לינק בוואטסאפ, רואה את כל הפרטים עם תמונות ומחיר, ומחליט.",
+    title: "שלח ללקוח",
+    description: "הלקוח מקבל לינק בוואטסאפ ורואה את כל הפרטים.",
   },
   {
     num: 3,
-    title: "חתימה דיגיטלית",
-    description: "חתימה מחייבת — השינוי ננעל, נשמר בענן, ומוכן להפקת PDF חתום.",
+    title: "אישור וחתימה",
+    description: "הלקוח מאשר וחותם עם האצבע והשינוי נשמר במערכת.",
   },
 ];
 
@@ -22,7 +22,7 @@ const HowItWorksSection = () => {
       <div className="container mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-            איך זה עובד?
+            איך זה עובד
           </h2>
           <p className="text-muted-foreground text-lg">
             תהליך פשוט ב-3 שלבים — מהשינוי ועד לחתימה.
