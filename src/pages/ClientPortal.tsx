@@ -196,6 +196,7 @@ const ClientPortal = () => {
         icon={<CheckCircle className="h-12 w-12 text-success" />}
         title="השינוי אושר!"
         message="תודה! אישורך נרשם בהצלחה. נותן השירות יקבל הודעה."
+        showBranding
       />
     );
   }
