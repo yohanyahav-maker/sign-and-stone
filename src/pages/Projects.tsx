@@ -38,7 +38,7 @@ const Projects = () => {
   return (
     <div dir="rtl" className="px-5 py-8 space-y-8 max-w-2xl mx-auto">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-bold text-foreground">הלקוחות שלי</h1>
+        <h1 className="text-2xl font-bold text-foreground">הפרויקטים שלי</h1>
       </div>
 
       {/* KPI Cards */}

@@ -10,10 +10,10 @@ export function useProjects() {
     queryKey: ["projects", user?.id],
     enabled: !!user,
     queryFn: async () => {
+      // RLS returns both owned projects and projects where client_email matches
       const { data, error } = await supabase
         .from("projects")
         .select("*")
-        .eq("user_id", user!.id)
         .eq("is_archived", false)
         .order("created_at", { ascending: false });
       if (error) throw error;
