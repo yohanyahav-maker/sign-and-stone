@@ -108,6 +108,7 @@ const ResetPassword = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
                 tabIndex={-1}
+                aria-label={showPassword ? "הסתר סיסמה" : "הצג סיסמה"}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
