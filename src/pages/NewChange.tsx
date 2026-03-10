@@ -215,8 +215,6 @@ const NewChange = () => {
       navigate(`/projects/${projectId}/changes/${coId}/send`, { replace: true });
     } catch (err: any) {
       toast.error(parseChangeOrderError(err));
-    } finally {
-      setIsSaving(false);
     }
   };
 
