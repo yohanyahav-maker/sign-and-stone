@@ -53,11 +53,11 @@ export function EmailAuthForm() {
     setLoading(true);
     try {
       if (isSignUp) {
-        const { error: signUpError } = await supabase.auth.signUp({ email, password });
+        const { error: signUpError } = await supabase.auth.signUp({ email: email.trim(), password });
         if (signUpError) { setError(signUpError.message); setLoading(false); return; }
         toast.success("נרשמת בהצלחה! בדוק את האימייל לאימות.");
       } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
         if (signInError) { setError(signInError.message); setLoading(false); return; }
       }
       setLoading(false);
@@ -72,7 +72,7 @@ export function EmailAuthForm() {
     if (!email) { setError("הזן אימייל תחילה"); return; }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) setError(error.message);
