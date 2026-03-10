@@ -178,8 +178,7 @@ const NewChange = () => {
   };
 
   const handleSlideToSend = async () => {
-    if (!details || !projectId || !pricing || isSaving) return;
-    setIsSaving(true);
+    if (!details || !projectId || !pricing || isMutating) return;
 
     try {
       let coId: string;
