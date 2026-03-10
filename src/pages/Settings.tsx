@@ -71,17 +71,17 @@ const Settings = () => {
         <CardContent className="p-5 space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="settings-name">שם מלא</Label>
-            <Input id="settings-name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="השם שלך" maxLength={100} />
+            <Input id="settings-name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="השם שלך" maxLength={100} disabled={saving} />
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="settings-company">שם חברה</Label>
-            <Input id="settings-company" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="שם החברה" maxLength={100} />
+            <Input id="settings-company" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="שם החברה" maxLength={100} disabled={saving} />
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="settings-business">שם העסק</Label>
-            <Input id="settings-business" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="שם העסק" maxLength={100} />
+            <Input id="settings-business" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="שם העסק" maxLength={100} disabled={saving} />
           </div>
 
           <div className="space-y-1.5">
