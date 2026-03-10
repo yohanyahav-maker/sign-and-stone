@@ -7,13 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { SlideToSend } from "@/components/changes/SlideToSend";
 
-const categoryLabels: Record<string, string> = {
-  structural: "שלד ובטון", concrete: "יציקות", electrical: "חשמל",
-  plumbing: "אינסטלציה", aluminum: "אלומיניום", kitchen: "מטבח",
-  finishing: "גמרים", flooring: "ריצוף", painting: "צביעה",
-  insulation: "איטום", hvac: "מיזוג", landscaping: "פיתוח חוץ",
-  safety: "בטיחות", other: "אחר",
-};
+import { CATEGORY_LABELS as categoryLabels } from "@/lib/constants";
 
 const SendChange = () => {
   const { projectId, changeId } = useParams<{ projectId: string; changeId: string }>();
