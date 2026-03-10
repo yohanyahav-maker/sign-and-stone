@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { DetailsStep, type ChangeOrderDetails } from "@/components/changes/DetailsStep";
 import { PricingStep, type ChangeOrderPricing } from "@/components/changes/PricingStep";
 import { ReviewStep } from "@/components/changes/ReviewStep";
-import { useCreateChangeOrder } from "@/hooks/useChangeOrders";
+import { useCreateChangeOrder, useUpdateChangeOrder } from "@/hooks/useChangeOrders";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import type { LocalFile } from "@/components/changes/FileUploadZone";
@@ -17,13 +17,53 @@ const stepLabels = ["פרטים", "תמחור", "סיכום ושליחה"];
 const NewChange = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [details, setDetails] = useState<ChangeOrderDetails | null>(null);
   const [pricing, setPricing] = useState<ChangeOrderPricing | null>(null);
   const [files, setFiles] = useState<LocalFile[]>([]);
   const createCO = useCreateChangeOrder();
+  const updateCO = useUpdateChangeOrder();
   const [isSaving, setIsSaving] = useState(false);
+
+  const editId = (location.state as any)?.editId as string | undefined;
+  const isEdit = !!editId;
+
+  // Fetch existing change order for edit mode
+  const { data: existingCO } = useQuery({
+    queryKey: ["change_order", editId],
+    enabled: !!editId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("change_orders")
+        .select("*")
+        .eq("id", editId!)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Pre-populate state from existing change order
+  useEffect(() => {
+    if (!existingCO) return;
+    if (details === null) {
+      setDetails({
+        title: existingCO.title,
+        category: existingCO.category,
+        description: existingCO.description ?? "",
+      });
+    }
+    if (pricing === null) {
+      setPricing({
+        price_amount: Number(existingCO.price_amount ?? 0),
+        include_vat: existingCO.include_vat,
+        vat_rate: Number(existingCO.vat_rate),
+        impact_days: existingCO.impact_days ?? 0,
+      });
+    }
+  }, [existingCO]);
 
   const { data: project } = useQuery({
     queryKey: ["project", projectId],
@@ -90,26 +130,44 @@ const NewChange = () => {
     };
 
     try {
-      const co = await createCO.mutateAsync({
-        project_id: projectId,
-        title: details.title,
-        category: details.category as any,
-        description: details.description,
-        status,
-        price_amount: pricingData.price_amount,
-        include_vat: pricingData.include_vat,
-        vat_rate: pricingData.vat_rate,
-        impact_days: pricingData.impact_days,
-      });
+      let coId: string;
 
-      await uploadFiles(co.id);
+      if (isEdit) {
+        const updated = await updateCO.mutateAsync({
+          id: editId!,
+          title: details.title,
+          category: details.category as any,
+          description: details.description,
+          status,
+          price_amount: pricingData.price_amount,
+          include_vat: pricingData.include_vat,
+          vat_rate: pricingData.vat_rate,
+          impact_days: pricingData.impact_days,
+        });
+        coId = updated.id;
+      } else {
+        const created = await createCO.mutateAsync({
+          project_id: projectId,
+          title: details.title,
+          category: details.category as any,
+          description: details.description,
+          status,
+          price_amount: pricingData.price_amount,
+          include_vat: pricingData.include_vat,
+          vat_rate: pricingData.vat_rate,
+          impact_days: pricingData.impact_days,
+        });
+        coId = created.id;
+      }
+
+      await uploadFiles(coId);
 
       if (status === "sent" || status === "priced") {
         if (status === "priced") {
           toast.success("השינוי נשמר בהצלחה");
           navigate(`/projects/${projectId}`, { replace: true });
         } else {
-          navigate(`/projects/${projectId}/changes/${co.id}/send`, { replace: true });
+          navigate(`/projects/${projectId}/changes/${coId}/send`, { replace: true });
         }
       } else {
         toast.success("הטיוטה נשמרה");
@@ -127,20 +185,38 @@ const NewChange = () => {
     setIsSaving(true);
 
     try {
-      const co = await createCO.mutateAsync({
-        project_id: projectId,
-        title: details.title,
-        category: details.category as any,
-        description: details.description,
-        status: "priced",
-        price_amount: pricing.price_amount,
-        include_vat: pricing.include_vat,
-        vat_rate: pricing.vat_rate,
-        impact_days: pricing.impact_days,
-      });
+      let coId: string;
 
-      await uploadFiles(co.id);
-      navigate(`/projects/${projectId}/changes/${co.id}/send`, { replace: true });
+      if (isEdit) {
+        const updated = await updateCO.mutateAsync({
+          id: editId!,
+          title: details.title,
+          category: details.category as any,
+          description: details.description,
+          status: "priced",
+          price_amount: pricing.price_amount,
+          include_vat: pricing.include_vat,
+          vat_rate: pricing.vat_rate,
+          impact_days: pricing.impact_days,
+        });
+        coId = updated.id;
+      } else {
+        const created = await createCO.mutateAsync({
+          project_id: projectId,
+          title: details.title,
+          category: details.category as any,
+          description: details.description,
+          status: "priced",
+          price_amount: pricing.price_amount,
+          include_vat: pricing.include_vat,
+          vat_rate: pricing.vat_rate,
+          impact_days: pricing.impact_days,
+        });
+        coId = created.id;
+      }
+
+      await uploadFiles(coId);
+      navigate(`/projects/${projectId}/changes/${coId}/send`, { replace: true });
     } catch (err: any) {
       toast.error(parseChangeOrderError(err));
     } finally {
@@ -154,6 +230,8 @@ const NewChange = () => {
     else navigate(-1);
   };
 
+  const isMutating = createCO.isPending || updateCO.isPending;
+
   return (
     <div dir="rtl" className="px-5 py-8 space-y-8 max-w-2xl mx-auto">
       {/* Header */}
@@ -166,7 +244,7 @@ const NewChange = () => {
           <ArrowRight className="h-5 w-5" />
         </button>
         <div>
-          <h1 className="text-xl font-bold">שינוי חדש</h1>
+          <h1 className="text-xl font-bold">{isEdit ? "עריכת שינוי" : "שינוי חדש"}</h1>
           <p className="text-sm text-muted-foreground">
             {stepLabels[step - 1]}
           </p>
@@ -201,7 +279,7 @@ const NewChange = () => {
           onNext={handlePricingNext}
           onSaveDraft={() => handleSave("draft")}
           onBack={() => setStep(1)}
-          loading={createCO.isPending}
+          loading={isMutating}
         />
       )}
 
@@ -213,7 +291,7 @@ const NewChange = () => {
           onSend={handleSlideToSend}
           onSaveDraft={() => handleSave(pricing.price_amount > 0 ? "priced" : "draft")}
           onBack={() => setStep(2)}
-          loading={createCO.isPending}
+          loading={isMutating}
           clientEnabled={project?.client_portal_enabled ?? false}
         />
       )}
