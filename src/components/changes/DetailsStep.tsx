@@ -8,25 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FileUploadZone, type LocalFile } from "@/components/changes/FileUploadZone";
 import { ImageIcon } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { CATEGORY_LABELS } from "@/lib/constants";
 
 type Category = Database["public"]["Enums"]["change_order_category"];
 
-const categoryOptions: { value: Category; label: string }[] = [
-  { value: "structural", label: "שלד ובטון" },
-  { value: "concrete", label: "יציקות ותבניות" },
-  { value: "electrical", label: "חשמל" },
-  { value: "plumbing", label: "אינסטלציה" },
-  { value: "aluminum", label: "אלומיניום וחלונות" },
-  { value: "kitchen", label: "מטבח" },
-  { value: "finishing", label: "גמרים" },
-  { value: "flooring", label: "ריצוף וחיפוי" },
-  { value: "painting", label: "צביעה וטיח" },
-  { value: "insulation", label: "איטום ובידוד" },
-  { value: "hvac", label: "מיזוג אוויר" },
-  { value: "landscaping", label: "פיתוח חוץ וגינון" },
-  { value: "safety", label: "בטיחות" },
-  { value: "other", label: "אחר" },
-];
+const categoryOptions: { value: Category; label: string }[] = (
+  Object.entries(CATEGORY_LABELS) as [Category, string][]
+).map(([value, label]) => ({ value, label }));
 
 const detailsSchema = z.object({
   title: z.string().trim().min(1, "כותרת נדרשת").max(150, "מקסימום 150 תווים"),

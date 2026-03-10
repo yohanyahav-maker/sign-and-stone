@@ -8,13 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, CheckCircle, XCircle, AlertTriangle, Clock, Eraser } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-const categoryLabels: Record<string, string> = {
-  structural: "שלד ובטון", concrete: "יציקות", electrical: "חשמל",
-  plumbing: "אינסטלציה", aluminum: "אלומיניום", kitchen: "מטבח",
-  finishing: "גמרים", flooring: "ריצוף", painting: "צביעה",
-  insulation: "איטום", hvac: "מיזוג", landscaping: "פיתוח חוץ",
-  safety: "בטיחות", other: "אחר",
-};
+import { CATEGORY_LABELS as categoryLabels } from "@/lib/constants";
 
 interface Attachment {
   id: string;

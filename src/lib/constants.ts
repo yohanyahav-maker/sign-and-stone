@@ -1,0 +1,16 @@
+export const CATEGORY_LABELS: Record<string, string> = {
+  structural: "שלד ובטון",
+  concrete: "יציקות",
+  electrical: "חשמל",
+  plumbing: "אינסטלציה",
+  aluminum: "אלומיניום",
+  kitchen: "מטבח",
+  finishing: "גמרים",
+  flooring: "ריצוף",
+  painting: "צביעה",
+  insulation: "איטום",
+  hvac: "מיזוג",
+  landscaping: "פיתוח חוץ",
+  safety: "בטיחות",
+  other: "אחר",
+};
