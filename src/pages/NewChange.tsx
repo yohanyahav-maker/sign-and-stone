@@ -119,8 +119,7 @@ const NewChange = () => {
   };
 
   const handleSave = async (status: "draft" | "priced" | "sent") => {
-    if (!details || !projectId || isSaving) return;
-    setIsSaving(true);
+    if (!details || !projectId || isMutating) return;
 
     const pricingData = pricing ?? {
       price_amount: 0,
