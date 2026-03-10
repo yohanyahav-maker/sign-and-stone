@@ -174,8 +174,6 @@ const NewChange = () => {
       }
     } catch (err: any) {
       toast.error(parseChangeOrderError(err));
-    } finally {
-      setIsSaving(false);
     }
   };
 
