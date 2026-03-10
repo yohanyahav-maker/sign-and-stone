@@ -232,7 +232,7 @@ const ChangeOrderDetail = () => {
         toast.error("שגיאה ביצירת קישור");
         return;
       }
-      const portalUrl = `${window.location.origin}/portal?token=${token}`;
+      const portalUrl = `${window.location.origin}/portal/${token}`;
       setReminderLink(portalUrl);
       // Refresh timeline
       queryClient.invalidateQueries({ queryKey: ["audit_log", validChangeId] });
