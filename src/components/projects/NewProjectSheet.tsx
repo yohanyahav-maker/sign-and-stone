@@ -142,7 +142,7 @@ export function NewProjectSheet({ open, onOpenChange }: NewProjectSheetProps) {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="client-email">אימייל לקוח</Label>
-                <Input id="client-email" type="email" dir="ltr" value={clientEmail}
+                <Input id="client-email" type="email" dir="ltr" autoComplete="email" value={clientEmail}
                   onChange={(e) => { setClientEmail(e.target.value); setErrors({}); }}
                   placeholder="client@example.com" maxLength={255} />
                 {errors.client_email && <p className="text-sm text-destructive">{errors.client_email}</p>}
