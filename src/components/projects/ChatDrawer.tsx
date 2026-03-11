@@ -187,6 +187,7 @@ export function ChatDrawer({ open, onOpenChange, projectId, clientName }: ChatDr
                 placeholder="כתוב הודעה..."
                 className="min-h-[44px] max-h-[120px] resize-none text-sm rounded-xl"
                 rows={1}
+                maxLength={1000}
               />
               {text.trim() ? (
                 <Button
