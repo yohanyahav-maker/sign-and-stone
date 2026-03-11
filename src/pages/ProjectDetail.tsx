@@ -331,20 +331,31 @@ const ProjectDetail = () => {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted mb-3">
-              <FileText className="h-7 w-7 text-muted-foreground" />
+          <div className="flex flex-col items-center justify-center py-14 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted mb-4">
+              <History className="h-7 w-7 text-muted-foreground" />
             </div>
-            <p className="text-sm text-muted-foreground">
-              {changeFilter === "all" ? "אין שינויים עדיין" : `אין שינויים ${changeFilterLabels[changeFilter]}`}
-            </p>
-        {changeFilter === "all" && !isClient && (
-              <button
-                onClick={() => navigate(`/projects/${projectId}/changes/new`)}
-                className="mt-3 text-sm font-medium text-primary hover:underline"
-              >
-                צור שינוי חדש →
-              </button>
+            {changeFilter === "all" ? (
+              <>
+                <p className="text-base font-semibold text-foreground mb-1.5">
+                  עדיין לא תועד אף שינוי בפרויקט
+                </p>
+                <p className="text-sm text-muted-foreground max-w-xs mb-6">
+                  תיעוד שינויים מאפשר לך לעקוב אחרי כל החלטה, חומר ועדכון בפרויקט
+                </p>
+                {!isClient && (
+                  <button
+                    onClick={() => navigate(`/projects/${projectId}/changes/new`)}
+                    className="flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm"
+                  >
+                    + תעד שינוי ראשון
+                  </button>
+                )}
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {`אין שינויים ${changeFilterLabels[changeFilter]}`}
+              </p>
             )}
           </div>
         )}
