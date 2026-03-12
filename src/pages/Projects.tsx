@@ -1,12 +1,16 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useProjects, useProjectChangeOrderCounts } from "@/hooks/useProjects";
+import { useSubscription } from "@/hooks/useSubscription";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { EmptyProjects } from "@/components/projects/EmptyProjects";
 import { SocialFooter } from "@/components/layout/SocialFooter";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 function KpiCard({ value, label, variant }: { value: string; label: string; variant?: "gold" | "green" }) {
   return (
@@ -25,6 +29,9 @@ const Projects = () => {
   const { user } = useAuth();
   const { data: profile } = useProfile();
   const { data: projects, isLoading } = useProjects();
+  const { data: subscription } = useSubscription();
+  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
+  const atLimit = (projects?.length ?? 0) >= (subscription?.project_limit ?? 3);
   const projectIds = projects?.map((p) => p.id) ?? [];
   const { data: counts } = useProjectChangeOrderCounts(projectIds);
 
@@ -77,7 +84,13 @@ const Projects = () => {
 
       {/* FAB — Always visible */}
       <motion.button
-        onClick={() => navigate("/projects/new")}
+        onClick={() => {
+          if (atLimit) {
+            setShowUpgradeDialog(true);
+          } else {
+            navigate("/projects/new");
+          }
+        }}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.3 }}
@@ -86,6 +99,22 @@ const Projects = () => {
       >
         <Plus className="h-7 w-7" />
       </motion.button>
+
+      <Dialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog}>
+        <DialogContent dir="rtl" className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>הגעת למגבלת הלקוחות שלך</DialogTitle>
+            <DialogDescription className="pt-1">
+              בתוכנית הנוכחית ניתן לנהל עד {subscription?.project_limit ?? 3} לקוחות פעילים.
+              שדרג לפרו וקבל לקוחות ללא הגבלה, יחד עם דוחות מתקדמים וייצוא PDF חתום.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-col gap-2 sm:flex-col">
+            <Button className="w-full">שדרג לפרו — ₪349 / חודש</Button>
+            <Button variant="ghost" className="w-full" onClick={() => setShowUpgradeDialog(false)}>בטל</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -7,7 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Loader2 } from "lucide-react";
-import { useCreateProject } from "@/hooks/useProjects";
+import { useCreateProject, useProjects } from "@/hooks/useProjects";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useToast } from "@/hooks/use-toast";
 import type { Database } from "@/integrations/supabase/types";
 
 type ProjectType = Database["public"]["Enums"]["project_type"];
@@ -49,6 +51,9 @@ export function NewProjectSheet({ open, onOpenChange }: NewProjectSheetProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const createProject = useCreateProject();
+  const { data: projects } = useProjects();
+  const { data: subscription } = useSubscription();
+  const { toast } = useToast();
 
   const resetForm = () => {
     setName(""); setAddress(""); setProjectType("renovation");
@@ -71,6 +76,16 @@ export function NewProjectSheet({ open, onOpenChange }: NewProjectSheetProps) {
       const fieldErrors: Record<string, string> = {};
       parsed.error.errors.forEach((e) => { if (e.path[0]) fieldErrors[e.path[0] as string] = e.message; });
       setErrors(fieldErrors);
+      return;
+    }
+
+    const atLimit = (projects?.length ?? 0) >= (subscription?.project_limit ?? 3);
+    if (atLimit) {
+      toast({
+        title: "הגעת למגבלת הלקוחות שלך",
+        description: `בתוכנית הנוכחית ניתן לנהל עד ${subscription?.project_limit ?? 3} לקוחות פעילים. שדרג לפרו להמשיך.`,
+        variant: "destructive",
+      });
       return;
     }
 
