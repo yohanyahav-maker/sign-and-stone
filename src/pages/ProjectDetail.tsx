@@ -47,8 +47,6 @@ const ProjectDetail = () => {
   const [calcOpen, setCalcOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [changeFilter, setChangeFilter] = useState<ChangeFilter>("all");
-  const [showAttachments, setShowAttachments] = useState(false);
-
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files?.length || !validProjectId) return;
@@ -222,13 +220,6 @@ const ProjectDetail = () => {
             שינוי חדש
           </button>
         )}
-        <button onClick={() => setShowAttachments(!showAttachments)}
-          className={`shrink-0 flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors border ${
-            showAttachments ? "bg-accent/15 text-accent border-accent/30" : "bg-secondary text-muted-foreground border-border hover:bg-secondary/80"
-          }`}>
-          <Paperclip className="h-3.5 w-3.5" />
-          קבצים
-        </button>
         {!isClient && (
           <>
             <button onClick={() => setChatOpen(true)}
@@ -257,14 +248,9 @@ const ProjectDetail = () => {
         )}
       </div>
 
-      {/* Attachments Section (collapsible) */}
-      {showAttachments && validProjectId && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          className="space-y-3"
-        >
+      {/* Files Section */}
+      {validProjectId && (
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-muted-foreground" />
@@ -272,7 +258,7 @@ const ProjectDetail = () => {
             </h2>
           </div>
           <FileGallery projectId={validProjectId} />
-        </motion.div>
+        </div>
       )}
 
       {/* Changes Section */}
